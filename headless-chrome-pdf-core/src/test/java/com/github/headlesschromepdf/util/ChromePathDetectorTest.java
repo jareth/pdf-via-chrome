@@ -303,7 +303,7 @@ class ChromePathDetectorTest {
 
         // Both calls should return the same result
         assertThat(first.isPresent()).isEqualTo(second.isPresent());
-        if (first.isPresent()) {
+        if (first.isPresent() && second.isPresent()) {
             assertThat(first.get()).isEqualTo(second.get());
         }
     }
