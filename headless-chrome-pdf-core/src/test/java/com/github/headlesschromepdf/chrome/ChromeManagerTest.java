@@ -1,5 +1,6 @@
 package com.github.headlesschromepdf.chrome;
 
+import com.github.headlesschromepdf.exception.ChromeNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -171,7 +172,7 @@ class ChromeManagerTest {
         ChromeManager manager = new ChromeManager(options);
 
         assertThatThrownBy(manager::start)
-            .isInstanceOf(ChromeManager.ChromeLaunchException.class)
+            .isInstanceOf(ChromeNotFoundException.class)
             .hasMessageContaining("Chrome executable not found");
     }
 

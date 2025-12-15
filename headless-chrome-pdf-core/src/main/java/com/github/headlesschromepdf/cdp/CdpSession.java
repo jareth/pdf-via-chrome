@@ -1,5 +1,6 @@
 package com.github.headlesschromepdf.cdp;
 
+import com.github.headlesschromepdf.exception.CdpConnectionException;
 import com.github.kklisura.cdt.protocol.commands.*;
 import com.github.kklisura.cdt.services.ChromeDevToolsService;
 import com.github.kklisura.cdt.services.ChromeService;
@@ -63,7 +64,7 @@ public class CdpSession implements AutoCloseable {
      *
      * @throws CdpConnectionException if the connection fails
      */
-    public void connect() throws CdpConnectionException {
+    public void connect() {
         lock.lock();
         try {
             if (closed) {
@@ -292,19 +293,6 @@ public class CdpSession implements AutoCloseable {
             logger.trace("CDP protocol event logging is enabled");
         } catch (Exception e) {
             logger.debug("Failed to enable protocol logging", e);
-        }
-    }
-
-    /**
-     * Exception thrown when a CDP connection fails.
-     */
-    public static class CdpConnectionException extends Exception {
-        public CdpConnectionException(String message) {
-            super(message);
-        }
-
-        public CdpConnectionException(String message, Throwable cause) {
-            super(message, cause);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.github.headlesschromepdf.cdp;
 
 import com.github.headlesschromepdf.chrome.ChromeProcess;
+import com.github.headlesschromepdf.exception.CdpConnectionException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -50,13 +51,13 @@ class CdpClientTest {
     @Test
     void createSession_withInvalidUrl_shouldThrowException() {
         assertThatThrownBy(() -> CdpClient.createSession("invalid-url"))
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
     }
 
     @Test
     void createSession_withNonWebSocketUrl_shouldThrowException() {
         assertThatThrownBy(() -> CdpClient.createSession("http://localhost:9222/devtools/page/123"))
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
     }
 
     @Test
@@ -74,7 +75,7 @@ class CdpClientTest {
             .webSocketUrl(VALID_WS_URL);
 
         assertThatThrownBy(() -> builder.build())
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
     }
 
     @Test
@@ -86,7 +87,7 @@ class CdpClientTest {
             .chromeProcess(mockChromeProcess);
 
         assertThatThrownBy(() -> builder.build())
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
     }
 
     @Test
@@ -96,7 +97,7 @@ class CdpClientTest {
             .connectionTimeout(5000);
 
         assertThatThrownBy(() -> builder.build())
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
     }
 
     @Test
@@ -118,7 +119,7 @@ class CdpClientTest {
             .chromeProcess(mockChromeProcess);
 
         assertThatThrownBy(() -> builder.build())
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
 
         verify(mockChromeProcess).getWebSocketDebuggerUrl();
     }

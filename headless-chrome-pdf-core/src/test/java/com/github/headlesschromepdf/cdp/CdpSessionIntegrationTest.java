@@ -3,6 +3,7 @@ package com.github.headlesschromepdf.cdp;
 import com.github.headlesschromepdf.chrome.ChromeManager;
 import com.github.headlesschromepdf.chrome.ChromeOptions;
 import com.github.headlesschromepdf.chrome.ChromeProcess;
+import com.github.headlesschromepdf.exception.CdpConnectionException;
 import com.github.kklisura.cdt.protocol.commands.Page;
 import com.github.kklisura.cdt.protocol.commands.Network;
 import org.junit.jupiter.api.Test;
@@ -78,7 +79,7 @@ class CdpSessionIntegrationTest {
         CdpSession session = new CdpSession("ws://localhost:99999/invalid");
 
         assertThatThrownBy(() -> session.connect())
-            .isInstanceOf(CdpSession.CdpConnectionException.class);
+            .isInstanceOf(CdpConnectionException.class);
     }
 
     @Test
@@ -86,7 +87,7 @@ class CdpSessionIntegrationTest {
         CdpSession session = new CdpSession("http://localhost:9222/devtools/page/123");
 
         assertThatThrownBy(() -> session.connect())
-            .isInstanceOf(CdpSession.CdpConnectionException.class)
+            .isInstanceOf(CdpConnectionException.class)
             .hasMessageContaining("Invalid WebSocket URL scheme");
     }
 
@@ -95,7 +96,7 @@ class CdpSessionIntegrationTest {
         CdpSession session = new CdpSession("not-a-valid-url");
 
         assertThatThrownBy(() -> session.connect())
-            .isInstanceOf(CdpSession.CdpConnectionException.class)
+            .isInstanceOf(CdpConnectionException.class)
             .hasMessageContaining("Invalid WebSocket URL format");
     }
 

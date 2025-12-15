@@ -1,5 +1,8 @@
 package com.github.headlesschromepdf.chrome;
 
+import com.github.headlesschromepdf.exception.BrowserTimeoutException;
+import com.github.headlesschromepdf.exception.ChromeNotFoundException;
+import com.github.headlesschromepdf.exception.PdfGenerationException;
 import com.github.headlesschromepdf.util.ChromePathDetector;
 import com.github.headlesschromepdf.util.ResourceCleanup;
 import org.slf4j.Logger;
@@ -52,9 +55,11 @@ public class ChromeManager implements AutoCloseable {
      * Starts the Chrome browser process and returns the ChromeProcess instance.
      *
      * @return the ChromeProcess containing the process and CDP endpoint
-     * @throws ChromeLaunchException if Chrome fails to start
+     * @throws ChromeNotFoundException if Chrome executable cannot be found
+     * @throws BrowserTimeoutException if Chrome startup exceeds the timeout
+     * @throws PdfGenerationException if Chrome fails to start for other reasons
      */
-    public ChromeProcess start() throws ChromeLaunchException {
+    public ChromeProcess start() {
         if (closed) {
             throw new IllegalStateException("ChromeManager has been closed");
         }
@@ -97,14 +102,14 @@ public class ChromeManager implements AutoCloseable {
 
         } catch (IOException e) {
             cleanupUserDataDir(userDataDir, isTemporaryUserDataDir);
-            throw new ChromeLaunchException("Failed to start Chrome process", e);
+            throw new PdfGenerationException("Failed to start Chrome process", e);
         } catch (TimeoutException e) {
             cleanupUserDataDir(userDataDir, isTemporaryUserDataDir);
-            throw new ChromeLaunchException("Timeout waiting for Chrome to start", e);
+            throw new BrowserTimeoutException("Timeout waiting for Chrome to start", e);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             cleanupUserDataDir(userDataDir, isTemporaryUserDataDir);
-            throw new ChromeLaunchException("Interrupted while starting Chrome", e);
+            throw new PdfGenerationException("Interrupted while starting Chrome", e);
         }
     }
 
@@ -187,9 +192,9 @@ public class ChromeManager implements AutoCloseable {
      * Resolves the Chrome executable path, either from options or auto-detection.
      *
      * @return the Chrome executable path
-     * @throws ChromeLaunchException if Chrome cannot be found
+     * @throws ChromeNotFoundException if Chrome cannot be found
      */
-    private Path resolveChromePath() throws ChromeLaunchException {
+    private Path resolveChromePath() {
         Path chromePath = options.getChromePath();
 
         if (chromePath == null) {
@@ -197,7 +202,7 @@ public class ChromeManager implements AutoCloseable {
             Optional<Path> detected = ChromePathDetector.detectChromePath();
 
             if (detected.isEmpty()) {
-                throw new ChromeLaunchException(
+                throw new ChromeNotFoundException(
                     "Chrome executable not found. Please specify the path explicitly using ChromeOptions.chromePath()");
             }
 
@@ -206,7 +211,7 @@ public class ChromeManager implements AutoCloseable {
         }
 
         if (!Files.exists(chromePath)) {
-            throw new ChromeLaunchException("Chrome executable not found at: " + chromePath);
+            throw new ChromeNotFoundException("Chrome executable not found at: " + chromePath);
         }
 
         return chromePath;
@@ -216,9 +221,9 @@ public class ChromeManager implements AutoCloseable {
      * Prepares the user data directory for Chrome.
      *
      * @return the user data directory path
-     * @throws ChromeLaunchException if the directory cannot be created
+     * @throws PdfGenerationException if the directory cannot be created
      */
-    private Path prepareUserDataDir() throws ChromeLaunchException {
+    private Path prepareUserDataDir() {
         Path userDataDir = options.getUserDataDir();
 
         if (userDataDir == null) {
@@ -226,13 +231,13 @@ public class ChromeManager implements AutoCloseable {
                 userDataDir = Files.createTempDirectory("chrome-user-data-");
                 logger.debug("Created temporary user data directory: {}", userDataDir);
             } catch (IOException e) {
-                throw new ChromeLaunchException("Failed to create temporary user data directory", e);
+                throw new PdfGenerationException("Failed to create temporary user data directory", e);
             }
         } else {
             try {
                 Files.createDirectories(userDataDir);
             } catch (IOException e) {
-                throw new ChromeLaunchException("Failed to create user data directory: " + userDataDir, e);
+                throw new PdfGenerationException("Failed to create user data directory: " + userDataDir, e);
             }
         }
 
@@ -381,19 +386,6 @@ public class ChromeManager implements AutoCloseable {
                           logger.debug("Failed to delete: {}", path, e);
                       }
                   });
-        }
-    }
-
-    /**
-     * Exception thrown when Chrome fails to launch.
-     */
-    public static class ChromeLaunchException extends Exception {
-        public ChromeLaunchException(String message) {
-            super(message);
-        }
-
-        public ChromeLaunchException(String message, Throwable cause) {
-            super(message, cause);
         }
     }
 }
