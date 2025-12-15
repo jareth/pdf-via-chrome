@@ -25,11 +25,11 @@
             <name>Project Bootstrap</name>
             <description>Setup project structure, build configuration, and initial documentation</description>
             <tasks>
-                <task-ref id="TASK-001" file="tasks/TASK-001.xml"/>
-                <task-ref id="TASK-002" file="tasks/TASK-002.xml"/>
+                <task-ref id="TASK-001" file="tasks/TASK-001.xml" status="Completed"/>
+                <task-ref id="TASK-002" file="tasks/TASK-002.xml" status="Completed"/>
                 <task-ref id="TASK-003" file="tasks/TASK-003.xml"/>
                 <task-ref id="TASK-004" file="tasks/TASK-004.xml"/>
-                <task-ref id="TASK-005" file="tasks/TASK-005.xml"/>
+                <task-ref id="TASK-005" file="tasks/TASK-005.xml" status="Completed"/>
             </tasks>
         </phase>
 
@@ -37,8 +37,8 @@
             <name>Core Infrastructure and Design Patterns</name>
             <description>Implement AutoCloseable pattern, Chrome process management, and resource cleanup</description>
             <tasks>
-                <task-ref id="TASK-006" file="tasks/TASK-006.xml"/>
-                <task-ref id="TASK-007" file="tasks/TASK-007.xml"/>
+                <task-ref id="TASK-006" file="tasks/TASK-006.xml" status="Completed"/>
+                <task-ref id="TASK-007" file="tasks/TASK-007.xml" status="Completed"/>
                 <task-ref id="TASK-008" file="tasks/TASK-008.xml"/>
                 <task-ref id="TASK-009" file="tasks/TASK-009.xml"/>
                 <task-ref id="TASK-010" file="tasks/TASK-010.xml"/>
