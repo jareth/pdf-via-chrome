@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
+                             http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.headlesschrome</groupId>
+        <artifactId>headless-chrome-pdf-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>headless-chrome-pdf-test-app</artifactId>
+    <packaging>jar</packaging>
+
+    <name>Headless Chrome PDF - Test Application</name>
+    <description>Spring Boot test application for demonstrating the library</description>
+
+    <dependencies>
+        <!-- Spring Boot and other dependencies will be added in future tasks -->
+    </dependencies>
+
+</project>

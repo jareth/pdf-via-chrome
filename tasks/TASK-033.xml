@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-033</task-id>
+    <task-name>Create Spring Boot Application Structure</task-name>
+    <phase>Phase 6: Test Application</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-021: Create Integration Tests with Testcontainers</dependency>
+    </dependencies>
+
+    <description>
+        Create Spring Boot application structure for the test app module. This
+        provides a web interface for manual testing and demonstration of the
+        PDF generation library.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Spring Boot application class created</criterion>
+        <criterion>Application properties configured</criterion>
+        <criterion>Dependency on headless-chrome-pdf-core module</criterion>
+        <criterion>Application starts successfully on port 8080</criterion>
+        <criterion>Basic health check endpoint works</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Create main application class:
+            @SpringBootApplication
+            public class PdfTestApplication {
+                public static void main(String[] args) {
+                    SpringApplication.run(PdfTestApplication.class, args);
+                }
+            }
+        </note>
+        <note>
+            application.properties:
+            - server.port=8080
+            - spring.application.name=headless-chrome-pdf-test-app
+            - logging.level.com.github.headlesschromepdf=DEBUG
+        </note>
+        <note>
+            Add Spring Boot dependencies in pom.xml:
+            - spring-boot-starter-web
+            - spring-boot-starter-thymeleaf
+            - headless-chrome-pdf-core
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/PdfTestApplication.java</file>
+        <file>headless-chrome-pdf-test-app/src/main/resources/application.properties</file>
+        <file>headless-chrome-pdf-test-app/pom.xml</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run 'mvn spring-boot:run' to start application</requirement>
+        <requirement>Verify application starts without errors</requirement>
+        <requirement>Verify port 8080 is listening</requirement>
+    </testing-requirements>
+
+    <estimated-effort>2-3 hours</estimated-effort>
+</task>

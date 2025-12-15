@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-003</task-id>
+    <task-name>Configure Code Formatting</task-name>
+    <phase>Phase 1: Project Bootstrap</phase>
+    <priority>MEDIUM</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-001: Create Maven Multi-Module Structure</dependency>
+    </dependencies>
+
+    <description>
+        Setup automated code formatting to ensure consistent code style across the project.
+        Configure either Google Java Format or Spotless with a standard formatter.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Formatter plugin configured in parent POM</criterion>
+        <criterion>Format check runs during verify phase</criterion>
+        <criterion>Format can be applied with mvn command</criterion>
+        <criterion>EditorConfig file created for IDE support</criterion>
+        <criterion>Formatting rules documented in README</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Recommended: Use maven-spotless-plugin with Google Java Format
+        </note>
+        <note>
+            Add plugin configuration to parent POM pluginManagement section
+        </note>
+        <note>
+            Configure to run 'spotless:check' during verify phase
+        </note>
+        <note>
+            Provide 'mvn spotless:apply' command to auto-format code
+        </note>
+        <note>
+            Create .editorconfig file for IDE support:
+            - indent_style = space
+            - indent_size = 4
+            - charset = utf-8
+            - trim_trailing_whitespace = true
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>pom.xml</file>
+        <file>.editorconfig</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run 'mvn spotless:check' to verify configuration</requirement>
+        <requirement>Create a test Java file and verify 'mvn spotless:apply' formats it</requirement>
+    </testing-requirements>
+
+    <estimated-effort>1-2 hours</estimated-effort>
+</task>

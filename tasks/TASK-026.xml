@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-026</task-id>
+    <task-name>Implement CustomConditionWait Strategy</task-name>
+    <phase>Phase 4: Wait Strategies</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-022: Design WaitStrategy Interface</dependency>
+    </dependencies>
+
+    <description>
+        Implement CustomConditionWait strategy that executes custom JavaScript
+        and waits for it to return true. This provides maximum flexibility for
+        complex waiting conditions.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>CustomConditionWait class implements WaitStrategy</criterion>
+        <criterion>Accepts JavaScript expression as parameter</criterion>
+        <criterion>Uses CDP Runtime.evaluate to execute JavaScript</criterion>
+        <criterion>Polls until JavaScript returns truthy value or timeout</criterion>
+        <criterion>Configurable poll interval (default 100ms)</criterion>
+        <criterion>Unit and integration tests</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Constructor: CustomConditionWait(String javascriptExpression)
+        </note>
+        <note>
+            Example usage:
+            new CustomConditionWait("window.myApp &amp;&amp; window.myApp.ready === true")
+        </note>
+        <note>
+            Use CDP Runtime.evaluate() to execute JavaScript expression
+        </note>
+        <note>
+            Poll with interval until expression returns true or timeout
+        </note>
+        <note>
+            Handle JavaScript errors gracefully (continue polling)
+        </note>
+        <note>
+            Static factory: WaitStrategy.customCondition(String jsExpression)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/CustomConditionWait.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/CustomConditionWaitTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit test with mocked Runtime domain</requirement>
+        <requirement>Integration test with custom JavaScript condition</requirement>
+        <requirement>Test timeout when condition never becomes true</requirement>
+        <requirement>Test JavaScript error handling</requirement>
+    </testing-requirements>
+
+    <estimated-effort>4-5 hours</estimated-effort>
+</task>

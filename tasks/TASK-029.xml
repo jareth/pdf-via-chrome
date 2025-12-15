@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-029</task-id>
+    <task-name>Implement JavaScript Execution</task-name>
+    <phase>Phase 5: Advanced Features</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-019: Implement URL-to-PDF Converter</dependency>
+    </dependencies>
+
+    <description>
+        Add capability to execute custom JavaScript before PDF generation.
+        This allows users to manipulate the page, trigger actions, or wait for
+        dynamic content before capturing the PDF.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>PdfGenerator API supports JavaScript execution</criterion>
+        <criterion>Can execute JavaScript string</criterion>
+        <criterion>Can execute JavaScript from file</criterion>
+        <criterion>JavaScript executed after page load, before PDF generation</criterion>
+        <criterion>Can access return values from JavaScript</criterion>
+        <criterion>Works with both HTML and URL sources</criterion>
+        <criterion>Integration tests validate JavaScript execution</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Add method to PdfGenerator builder:
+            .executeJavaScript(String jsCode)
+            .executeJavaScriptFromFile(Path jsFile)
+        </note>
+        <note>
+            Use CDP Runtime.evaluate() to execute JavaScript
+        </note>
+        <note>
+            Execute after page load (or wait strategy), before PDF generation
+        </note>
+        <note>
+            Handle JavaScript errors and log warnings
+        </note>
+        <note>
+            Consider supporting Promise-based JavaScript (await completion)
+        </note>
+        <note>
+            Example use cases:
+            - Remove elements: document.querySelector('.ads').remove()
+            - Trigger rendering: window.renderChart()
+            - Modify content: document.title = 'PDF Export'
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfGenerator.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/HtmlToPdfConverter.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/UrlToPdfConverter.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/JavaScriptExecutionTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit test JavaScript execution logic</requirement>
+        <requirement>Integration test modifying DOM before PDF generation</requirement>
+        <requirement>Integration test with JavaScript from file</requirement>
+        <requirement>Test JavaScript error handling</requirement>
+        <requirement>Verify JavaScript effects are visible in PDF</requirement>
+    </testing-requirements>
+
+    <estimated-effort>5-6 hours</estimated-effort>
+</task>

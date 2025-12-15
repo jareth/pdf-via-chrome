@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-016</task-id>
+    <task-name>Implement PageOptions.Builder</task-name>
+    <phase>Phase 3: API Design with Builder Pattern</phase>
+    <priority>HIGH</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-013: Design and Implement PdfGenerator Fluent API</dependency>
+    </dependencies>
+
+    <description>
+        Create PageOptions class with builder for page-specific settings like
+        viewport size, user agent, and page load timeout.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>PageOptions class with builder</criterion>
+        <criterion>Support viewport width and height</criterion>
+        <criterion>Support custom user agent</criterion>
+        <criterion>Support page load timeout</criterion>
+        <criterion>Support JavaScript enable/disable</criterion>
+        <criterion>Immutable PageOptions instance</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Page options to support:
+            - viewportWidth: int (default 1920)
+            - viewportHeight: int (default 1080)
+            - userAgent: String (custom user agent)
+            - pageLoadTimeout: Duration (default 30 seconds)
+            - javascriptEnabled: boolean (default true)
+            - deviceScaleFactor: double (default 1.0)
+        </note>
+        <note>
+            These options are applied before navigation using CDP:
+            - Emulation.setDeviceMetricsOverride (viewport)
+            - Emulation.setUserAgentOverride (user agent)
+            - Runtime.enable/disable (JavaScript)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PageOptions.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/PageOptionsTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Test builder with all options</requirement>
+        <requirement>Test default values</requirement>
+        <requirement>Test immutability</requirement>
+    </testing-requirements>
+
+    <estimated-effort>3-4 hours</estimated-effort>
+</task>

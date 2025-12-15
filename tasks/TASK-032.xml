@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-032</task-id>
+    <task-name>Integration Tests for Advanced Features</task-name>
+    <phase>Phase 5: Advanced Features</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-028: Implement CSS Injection Support</dependency>
+        <dependency>TASK-029: Implement JavaScript Execution</dependency>
+        <dependency>TASK-030: Implement Custom Headers and Footers</dependency>
+        <dependency>TASK-031: Implement Page Range Selection</dependency>
+    </dependencies>
+
+    <description>
+        Create comprehensive integration test suite for all advanced features,
+        including combinations of features to ensure they work together correctly.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Integration tests for each advanced feature</criterion>
+        <criterion>Tests for combinations of features</criterion>
+        <criterion>Tests validate actual PDF output</criterion>
+        <criterion>Use Testcontainers with Chrome</criterion>
+        <criterion>Test coverage &gt;= 80% for advanced features</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Test scenarios:
+            - CSS injection + JavaScript execution
+            - Headers/footers + page ranges
+            - All features combined
+            - JavaScript modifying page before CSS injection
+            - Complex header template with styling
+        </note>
+        <note>
+            Consider using Apache PDFBox to parse and validate PDF:
+            - Check page count
+            - Extract text to verify content
+            - Verify page dimensions
+        </note>
+        <note>
+            Create diverse test HTML pages
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/AdvancedFeaturesIT.java</file>
+        <file>headless-chrome-pdf-core/src/test/resources/test-pages/multi-page.html</file>
+        <file>headless-chrome-pdf-core/src/test/resources/test-css/print-styles.css</file>
+        <file>headless-chrome-pdf-core/src/test/resources/test-js/page-manipulation.js</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>All integration tests pass</requirement>
+        <requirement>Tests run with 'mvn verify'</requirement>
+        <requirement>Generated PDFs are validated</requirement>
+        <requirement>Code coverage &gt;= 80%</requirement>
+    </testing-requirements>
+
+    <estimated-effort>6-8 hours</estimated-effort>
+</task>

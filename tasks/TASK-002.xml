@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-002</task-id>
+    <task-name>Setup Parent POM with Dependency Management</task-name>
+    <phase>Phase 1: Project Bootstrap</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-001: Create Maven Multi-Module Structure</dependency>
+    </dependencies>
+
+    <description>
+        Configure parent POM with comprehensive dependency management, plugin management,
+        and properties. This centralizes version management for all modules.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>All dependency versions defined in dependencyManagement section</criterion>
+        <criterion>Plugin versions and configuration in pluginManagement section</criterion>
+        <criterion>Properties defined for all version numbers</criterion>
+        <criterion>Spring Boot BOM imported for test app dependencies</criterion>
+        <criterion>JUnit BOM imported for testing dependencies</criterion>
+        <criterion>Child modules can reference dependencies without version numbers</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Key dependencies to manage:
+            - chrome-devtools-java-client (com.github.kklisura.cdt:cdt-java-client)
+            - slf4j-api
+            - commons-io
+            - JUnit 5 (BOM)
+            - Mockito
+            - AssertJ
+            - Testcontainers
+            - Spring Boot (BOM)
+        </note>
+        <note>
+            Key plugins to configure:
+            - maven-compiler-plugin (Java 17)
+            - maven-surefire-plugin (unit tests)
+            - maven-failsafe-plugin (integration tests)
+            - jacoco-maven-plugin (code coverage)
+            - maven-source-plugin
+            - maven-javadoc-plugin
+        </note>
+        <note>
+            Use properties like ${chrome-devtools.version}, ${slf4j.version}, etc.
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>pom.xml</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Verify 'mvn dependency:tree' shows managed versions</requirement>
+        <requirement>Verify 'mvn help:effective-pom' shows inherited configuration</requirement>
+    </testing-requirements>
+
+    <estimated-effort>3-4 hours</estimated-effort>
+</task>

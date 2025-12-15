@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-015</task-id>
+    <task-name>Implement ChromeOptions.Builder</task-name>
+    <phase>Phase 3: API Design with Builder Pattern</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-007: Create ChromeManager with AutoCloseable</dependency>
+    </dependencies>
+
+    <description>
+        Create ChromeOptions class with builder pattern for configuring Chrome browser
+        launch options. This allows users to customize Chrome behavior, add flags,
+        and configure paths.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>ChromeOptions class with builder</criterion>
+        <criterion>Support custom Chrome executable path</criterion>
+        <criterion>Support headless mode configuration</criterion>
+        <criterion>Support custom Chrome flags</criterion>
+        <criterion>Support custom user data directory</criterion>
+        <criterion>Support remote debugging port configuration</criterion>
+        <criterion>Immutable ChromeOptions instance</criterion>
+        <criterion>Sensible defaults for production use</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Chrome options to support:
+            - chromePath: Path (custom Chrome executable)
+            - headless: boolean (default true)
+            - disableGpu: boolean (default true)
+            - noSandbox: boolean (default false, enable for Docker)
+            - disableDevShmUsage: boolean (default false, enable for Docker)
+            - userDataDir: Path (custom temp directory)
+            - remoteDebuggingPort: int (0 for random, default)
+            - additionalFlags: List&lt;String&gt; (custom flags)
+            - windowSize: String (e.g., "1920,1080")
+        </note>
+        <note>
+            Provide convenience methods:
+            - dockerDefaults(): Sets noSandbox and disableDevShmUsage
+            - withWindowSize(width, height)
+            - addFlag(String flag)
+        </note>
+        <note>
+            Validate chromePath exists and is executable if provided
+        </note>
+        <note>
+            Build command-line arguments list from options
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeOptions.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/chrome/ChromeOptionsTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Test builder with various options</requirement>
+        <requirement>Test dockerDefaults() sets correct flags</requirement>
+        <requirement>Test command-line argument generation</requirement>
+        <requirement>Test validation of Chrome path</requirement>
+        <requirement>Test addFlag() accumulates flags correctly</requirement>
+    </testing-requirements>
+
+    <estimated-effort>5-6 hours</estimated-effort>
+</task>

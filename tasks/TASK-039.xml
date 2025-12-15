@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-039</task-id>
+    <task-name>Create Usage Examples in README</task-name>
+    <phase>Phase 7: Documentation and Polish</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-038: Write Comprehensive Javadocs</dependency>
+    </dependencies>
+
+    <description>
+        Expand README.md with comprehensive usage examples, configuration guide,
+        and troubleshooting section. The README should be the primary documentation
+        for getting started with the library.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Quick start guide with minimal example</criterion>
+        <criterion>Detailed usage examples for all major features</criterion>
+        <criterion>Configuration options documented</criterion>
+        <criterion>Common issues and troubleshooting section</criterion>
+        <criterion>Platform-specific notes (Windows/Linux/macOS)</criterion>
+        <criterion>Docker deployment guide</criterion>
+        <criterion>Links to Javadoc and test app</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            README sections:
+            # headless-chrome-pdf
+            ## Features
+            ## Requirements
+            ## Installation (Maven dependency)
+            ## Quick Start
+            ## Usage Examples
+              - Basic HTML to PDF
+              - URL to PDF
+              - Custom options (landscape, margins, etc.)
+              - Wait strategies
+              - CSS injection
+              - JavaScript execution
+              - Headers and footers
+            ## Configuration
+            ## Platform Support
+            ## Docker
+            ## Troubleshooting
+            ## Contributing
+            ## License
+        </note>
+        <note>
+            Include Maven dependency snippet:
+            &lt;dependency&gt;
+                &lt;groupId&gt;com.github&lt;/groupId&gt;
+                &lt;artifactId&gt;headless-chrome-pdf-core&lt;/artifactId&gt;
+                &lt;version&gt;1.0.0&lt;/version&gt;
+            &lt;/dependency&gt;
+        </note>
+        <note>
+            Add badges: build status, coverage, version, license
+        </note>
+        <note>
+            Include screenshots from test app if applicable
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>README.md</file>
+        <file>docs/USAGE.md (optional detailed guide)</file>
+        <file>docs/CONFIGURATION.md (optional)</file>
+        <file>docs/TROUBLESHOOTING.md (optional)</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Verify all code examples compile and run</requirement>
+        <requirement>Test examples on different platforms</requirement>
+        <requirement>Review README for clarity and completeness</requirement>
+        <requirement>Check all links work</requirement>
+    </testing-requirements>
+
+    <estimated-effort>4-6 hours</estimated-effort>
+</task>

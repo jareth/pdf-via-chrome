@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-041</task-id>
+    <task-name>Performance Testing and Optimization</task-name>
+    <phase>Phase 7: Documentation and Polish</phase>
+    <priority>MEDIUM</priority>
+    <complexity>COMPLEX</complexity>
+
+    <dependencies>
+        <dependency>TASK-032: Integration Tests for Advanced Features</dependency>
+    </dependencies>
+
+    <description>
+        Create performance tests to measure PDF generation throughput and latency.
+        Identify bottlenecks and optimize critical paths. Document performance
+        characteristics and resource requirements.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Performance test suite measuring generation time</criterion>
+        <criterion>Tests for various scenarios (simple HTML, complex HTML, large documents)</criterion>
+        <criterion>Memory usage profiling</criterion>
+        <criterion>Concurrent generation testing</criterion>
+        <criterion>Performance regression tests</criterion>
+        <criterion>Performance characteristics documented</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Performance test scenarios:
+            - Simple HTML (1 page) - baseline
+            - Complex HTML with CSS/images (10 pages)
+            - Large document (100+ pages)
+            - URL to PDF (external site)
+            - Concurrent generation (10 PDFs simultaneously)
+        </note>
+        <note>
+            Metrics to measure:
+            - PDF generation time (p50, p95, p99)
+            - Chrome startup time
+            - Memory usage (heap, native)
+            - CPU usage
+            - Throughput (PDFs per second)
+        </note>
+        <note>
+            Use JMH (Java Microbenchmark Harness) for accurate benchmarking
+        </note>
+        <note>
+            Profile with JProfiler or VisualVM
+        </note>
+        <note>
+            Optimization opportunities:
+            - Reuse Chrome instances (browser pool)
+            - Connection pooling
+            - Resource cleanup optimization
+        </note>
+        <note>
+            Document resource requirements:
+            - Memory: ~200MB per Chrome instance
+            - CPU: Single core per instance
+            - Disk: Minimal (temp files)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/performance/PerformanceTest.java</file>
+        <file>docs/PERFORMANCE.md</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run performance tests on different hardware</requirement>
+        <requirement>Document baseline performance metrics</requirement>
+        <requirement>Verify no memory leaks with continuous generation</requirement>
+        <requirement>Test concurrent generation stability</requirement>
+    </testing-requirements>
+
+    <estimated-effort>8-10 hours</estimated-effort>
+</task>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-022</task-id>
+    <task-name>Design WaitStrategy Interface</task-name>
+    <phase>Phase 4: Wait Strategies</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-009: Setup CDP Client Initialization</dependency>
+    </dependencies>
+
+    <description>
+        Design WaitStrategy interface that defines how to wait for page readiness
+        before generating PDF. Different strategies will implement this interface
+        to support various waiting conditions.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>WaitStrategy interface defined</criterion>
+        <criterion>Method to execute wait logic given CDP session</criterion>
+        <criterion>Returns boolean indicating success or timeout</criterion>
+        <criterion>Supports configurable timeout</criterion>
+        <criterion>Well-documented with Javadoc and examples</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Interface design:
+            public interface WaitStrategy {
+                void await(ChromeDevToolsService cdp, Duration timeout) throws TimeoutException;
+            }
+        </note>
+        <note>
+            Consider builder pattern for complex strategies
+        </note>
+        <note>
+            Static factory methods for common strategies:
+            - WaitStrategy.networkIdle()
+            - WaitStrategy.networkIdle(Duration quietPeriod)
+            - WaitStrategy.element(String selector)
+            - WaitStrategy.timeout(Duration duration)
+            - WaitStrategy.domContentLoaded()
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/WaitStrategy.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Document interface with comprehensive Javadoc</requirement>
+        <requirement>Create example implementations in Javadoc</requirement>
+    </testing-requirements>
+
+    <estimated-effort>2-3 hours</estimated-effort>
+</task>

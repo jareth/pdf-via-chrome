@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-027</task-id>
+    <task-name>Add Tests for Wait Strategies</task-name>
+    <phase>Phase 4: Wait Strategies</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-023: Implement NetworkIdleWait Strategy</dependency>
+        <dependency>TASK-024: Implement ElementWait Strategy</dependency>
+        <dependency>TASK-025: Implement TimeoutWait Strategy</dependency>
+        <dependency>TASK-026: Implement CustomConditionWait Strategy</dependency>
+    </dependencies>
+
+    <description>
+        Create comprehensive test suite for all wait strategy implementations,
+        including unit tests and integration tests with real Chrome instances.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Unit tests for each strategy with mocked CDP</criterion>
+        <criterion>Integration tests with real Chrome for each strategy</criterion>
+        <criterion>Test timeout handling for all strategies</criterion>
+        <criterion>Test edge cases and error conditions</criterion>
+        <criterion>Test coverage &gt;= 85% for wait package</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Integration test scenarios:
+            - NetworkIdle: Page with delayed AJAX requests
+            - Element: Page with element appearing after delay
+            - Timeout: Simple wait verification
+            - CustomCondition: JavaScript variable set after delay
+        </note>
+        <note>
+            Create test HTML pages with controlled timing
+        </note>
+        <note>
+            Use Testcontainers for integration tests
+        </note>
+        <note>
+            Test combinations of strategies (if supported)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/WaitStrategyIntegrationTest.java</file>
+        <file>headless-chrome-pdf-core/src/test/resources/test-pages/*.html</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>All unit tests pass</requirement>
+        <requirement>All integration tests pass</requirement>
+        <requirement>Code coverage report shows &gt;=85% for wait package</requirement>
+    </testing-requirements>
+
+    <estimated-effort>6-8 hours</estimated-effort>
+</task>

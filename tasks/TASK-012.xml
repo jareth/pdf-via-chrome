@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-012</task-id>
+    <task-name>Add Process Tracking</task-name>
+    <phase>Phase 2: Core Infrastructure and Design Patterns</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-007: Create ChromeManager with AutoCloseable</dependency>
+        <dependency>TASK-010: Implement Shutdown Hooks</dependency>
+    </dependencies>
+
+    <description>
+        Implement process tracking mechanism to monitor all spawned Chrome processes
+        and ensure none become zombies. This is especially important for long-running
+        applications that generate many PDFs.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Global registry tracks all active Chrome processes</criterion>
+        <criterion>Processes are registered when started</criterion>
+        <criterion>Processes are unregistered when properly closed</criterion>
+        <criterion>Can query active process count</criterion>
+        <criterion>Can forcefully clean up all active processes (emergency cleanup)</criterion>
+        <criterion>Logging for process lifecycle events</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Create ProcessRegistry singleton or static utility class
+        </note>
+        <note>
+            Use ConcurrentHashMap to store active processes (thread-safe)
+        </note>
+        <note>
+            Store Process and associated metadata (start time, PID if available)
+        </note>
+        <note>
+            Key methods:
+            - register(Process): Add process to registry
+            - unregister(Process): Remove process from registry
+            - getActiveProcessCount(): Return count
+            - cleanupAll(): Force kill all processes (emergency)
+        </note>
+        <note>
+            Consider periodic health checks to detect orphaned processes
+        </note>
+        <note>
+            Use SLF4J for logging process lifecycle events
+        </note>
+        <note>
+            Add JMX MBean support for monitoring (optional)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/ProcessRegistry.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeManager.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/util/ProcessRegistryTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Test process registration and unregistration</requirement>
+        <requirement>Test active process count tracking</requirement>
+        <requirement>Test cleanupAll() terminates all processes</requirement>
+        <requirement>Test thread safety with concurrent registrations</requirement>
+        <requirement>Integration test with actual Chrome processes</requirement>
+    </testing-requirements>
+
+    <estimated-effort>4-5 hours</estimated-effort>
+</task>

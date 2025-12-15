@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-024</task-id>
+    <task-name>Implement ElementWait Strategy</task-name>
+    <phase>Phase 4: Wait Strategies</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-022: Design WaitStrategy Interface</dependency>
+    </dependencies>
+
+    <description>
+        Implement ElementWait strategy that waits for a specific element to be
+        present in the DOM using a CSS selector. Useful when you know a specific
+        element indicates page readiness.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>ElementWait class implements WaitStrategy</criterion>
+        <criterion>Accepts CSS selector as parameter</criterion>
+        <criterion>Uses CDP Runtime.evaluate to check element presence</criterion>
+        <criterion>Polls until element found or timeout</criterion>
+        <criterion>Configurable poll interval (default 100ms)</criterion>
+        <criterion>Unit and integration tests</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Use CDP Runtime.evaluate() to execute JavaScript:
+            document.querySelector(selector) !== null
+        </note>
+        <note>
+            Poll with interval (default 100ms) until:
+            - Element found: return success
+            - Timeout: throw TimeoutException
+        </note>
+        <note>
+            Constructor: ElementWait(String cssSelector)
+        </note>
+        <note>
+            Optional: Support waiting for element to be visible (not just present)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/ElementWait.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/ElementWaitTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit test with mocked Runtime domain</requirement>
+        <requirement>Integration test with HTML containing delayed element</requirement>
+        <requirement>Test timeout when element never appears</requirement>
+        <requirement>Test immediate success when element already present</requirement>
+    </testing-requirements>
+
+    <estimated-effort>4-5 hours</estimated-effort>
+</task>

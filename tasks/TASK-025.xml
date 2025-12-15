@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-025</task-id>
+    <task-name>Implement TimeoutWait Strategy</task-name>
+    <phase>Phase 4: Wait Strategies</phase>
+    <priority>LOW</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-022: Design WaitStrategy Interface</dependency>
+    </dependencies>
+
+    <description>
+        Implement simple TimeoutWait strategy that waits for a fixed duration.
+        This is the simplest strategy, useful when you know exactly how long
+        a page takes to load.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>TimeoutWait class implements WaitStrategy</criterion>
+        <criterion>Accepts Duration as parameter</criterion>
+        <criterion>Waits for specified duration using Thread.sleep</criterion>
+        <criterion>Always succeeds (unless interrupted)</criterion>
+        <criterion>Unit tests</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Very simple implementation:
+            public void await(...) {
+                Thread.sleep(duration.toMillis());
+            }
+        </note>
+        <note>
+            Handle InterruptedException appropriately
+        </note>
+        <note>
+            Constructor: TimeoutWait(Duration duration)
+        </note>
+        <note>
+            Static factory: WaitStrategy.timeout(Duration duration)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/TimeoutWait.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/TimeoutWaitTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Test wait duration is approximately correct</requirement>
+        <requirement>Test interruption handling</requirement>
+    </testing-requirements>
+
+    <estimated-effort>1-2 hours</estimated-effort>
+</task>

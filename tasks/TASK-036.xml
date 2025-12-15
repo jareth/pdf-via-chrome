@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-036</task-id>
+    <task-name>Add Request Validation</task-name>
+    <phase>Phase 6: Test Application</phase>
+    <priority>MEDIUM</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-034: Implement REST Endpoints</dependency>
+    </dependencies>
+
+    <description>
+        Add comprehensive request validation to REST endpoints to ensure
+        data integrity and provide clear error messages for invalid requests.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Bean Validation annotations on request DTOs</criterion>
+        <criterion>Custom validators for complex validation rules</criterion>
+        <criterion>Validation errors return 400 with detailed messages</criterion>
+        <criterion>HTML content validation (not empty, size limits)</criterion>
+        <criterion>URL format validation</criterion>
+        <criterion>PDF options range validation</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Use Bean Validation annotations:
+            - @NotBlank for required fields
+            - @Size for length constraints
+            - @Pattern for format validation
+            - @Min/@Max for numeric ranges
+        </note>
+        <note>
+            HtmlRequest validation:
+            - html: @NotBlank, @Size(max=1000000)
+
+            UrlRequest validation:
+            - url: @NotBlank, @Pattern(regexp=URL_REGEX)
+        </note>
+        <note>
+            Create @ControllerAdvice for global exception handling:
+            - MethodArgumentNotValidException → 400 with field errors
+            - PdfGenerationException → 500 with error message
+            - ChromeNotFoundException → 503 Service Unavailable
+        </note>
+        <note>
+            Return JSON error response with structure:
+            { "error": "...", "details": [...] }
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/HtmlRequest.java</file>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/UrlRequest.java</file>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/exception/GlobalExceptionHandler.java</file>
+        <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/ValidationTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Test invalid HTML (empty, too large)</requirement>
+        <requirement>Test invalid URL format</requirement>
+        <requirement>Test invalid PDF options (scale out of range, etc.)</requirement>
+        <requirement>Verify error responses have correct structure and status codes</requirement>
+    </testing-requirements>
+
+    <estimated-effort>3-4 hours</estimated-effort>
+</task>

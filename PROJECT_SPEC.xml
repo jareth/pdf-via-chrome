@@ -1,0 +1,681 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-specification>
+    <metadata>
+        <name>headless-chrome-pdf</name>
+        <description>A Java library for generating PDFs using headless Chrome/Chromium via Chrome DevTools Protocol</description>
+        <version>1.0.0-SNAPSHOT</version>
+    </metadata>
+
+    <technology-stack>
+        <build-system>
+            <tool>Maven</tool>
+            <version>3.8+</version>
+            <rationale>Better Java ecosystem support, simpler dependency management for libraries</rationale>
+        </build-system>
+        <java-version>17</java-version>
+        <cdp-client>
+            <library>chrome-devtools-java-client</library>
+            <group-id>com.github.kklisura.cdt</group-id>
+            <artifact-id>cdt-java-client</artifact-id>
+            <rationale>Native CDP implementation, lightweight, actively maintained, comprehensive API coverage</rationale>
+            <alternative>
+                <name>playwright-java</name>
+                <note>More features but heavier dependency, includes bundled browsers</note>
+            </alternative>
+        </cdp-client>
+        <testing>
+            <framework>JUnit 5</framework>
+            <mocking>Mockito</mocking>
+            <assertion-library>AssertJ</assertion-library>
+            <test-containers>Testcontainers with Chrome</test-containers>
+        </testing>
+    </technology-stack>
+
+    <project-structure>
+        <module-layout>
+            <root-pom>Parent POM with shared configuration</root-pom>
+            <modules>
+                <module>
+                    <name>headless-chrome-pdf-core</name>
+                    <type>library</type>
+                    <description>Core library with PDF generation capabilities</description>
+                    <output>JAR artifact for distribution</output>
+                </module>
+                <module>
+                    <name>headless-chrome-pdf-test-app</name>
+                    <type>application</type>
+                    <description>Simple Spring Boot application for manual testing</description>
+                    <output>Executable JAR with embedded web server</output>
+                </module>
+            </modules>
+        </module-layout>
+
+        <core-library-structure>
+            <package base="com.github.headlesschromepdf">
+                <package name="api">
+                    <description>Public API interfaces and builders</description>
+                    <classes>
+                        <class>PdfGenerator</class>
+                        <class>PdfOptions</class>
+                        <class>PdfGenerationResult</class>
+                        <class>PageOptions</class>
+                    </classes>
+                </package>
+                <package name="chrome">
+                    <description>Chrome/Chromium browser management</description>
+                    <classes>
+                        <class>ChromeManager</class>
+                        <class>ChromeProcess</class>
+                        <class>ChromeOptions</class>
+                        <class>BrowserPool</class>
+                    </classes>
+                </package>
+                <package name="cdp">
+                    <description>CDP protocol interaction layer</description>
+                    <classes>
+                        <class>CdpClient</class>
+                        <class>CdpSession</class>
+                        <class>PageController</class>
+                    </classes>
+                </package>
+                <package name="converter">
+                    <description>Conversion implementations</description>
+                    <classes>
+                        <class>HtmlToPdfConverter</class>
+                        <class>UrlToPdfConverter</class>
+                        <class>ConversionContext</class>
+                    </classes>
+                </package>
+                <package name="wait">
+                    <description>Wait strategies for page readiness</description>
+                    <classes>
+                        <class>WaitStrategy</class>
+                        <class>NetworkIdleWait</class>
+                        <class>ElementWait</class>
+                        <class>TimeoutWait</class>
+                    </classes>
+                </package>
+                <package name="exception">
+                    <description>Custom exceptions</description>
+                    <classes>
+                        <class>PdfGenerationException</class>
+                        <class>ChromeNotFoundException</class>
+                        <class>BrowserTimeoutException</class>
+                    </classes>
+                </package>
+                <package name="util">
+                    <description>Utilities and helpers</description>
+                    <classes>
+                        <class>ChromePathDetector</class>
+                        <class>TempFileManager</class>
+                        <class>ResourceCleanup</class>
+                    </classes>
+                </package>
+            </package>
+        </core-library-structure>
+    </project-structure>
+
+    <core-features>
+        <feature>
+            <name>PDF Generation from HTML String</name>
+            <priority>HIGH</priority>
+            <description>Generate PDF from raw HTML content</description>
+            <api-example>
+                PdfGenerator.create()
+                    .fromHtml("&lt;html&gt;...&lt;/html&gt;")
+                    .withOptions(PdfOptions.builder()
+                        .landscape(false)
+                        .printBackground(true)
+                        .marginTop("1cm")
+                        .build())
+                    .generate();
+            </api-example>
+        </feature>
+        <feature>
+            <name>PDF Generation from URL</name>
+            <priority>HIGH</priority>
+            <description>Generate PDF from web URL</description>
+            <api-example>
+                PdfGenerator.create()
+                    .fromUrl("https://example.com")
+                    .waitFor(WaitStrategy.networkIdle())
+                    .generate();
+            </api-example>
+        </feature>
+        <feature>
+            <name>Custom Headers and Footers</name>
+            <priority>MEDIUM</priority>
+            <description>Support HTML headers/footers with page numbers</description>
+        </feature>
+        <feature>
+            <name>Custom CSS Injection</name>
+            <priority>MEDIUM</priority>
+            <description>Inject custom CSS for print styling</description>
+        </feature>
+        <feature>
+            <name>JavaScript Execution</name>
+            <priority>MEDIUM</priority>
+            <description>Execute JavaScript before PDF generation</description>
+        </feature>
+        <feature>
+            <name>Browser Instance Pooling</name>
+            <priority>LOW</priority>
+            <description>Reuse browser instances for better performance</description>
+            <implementation-note>Consider for v2.0, adds complexity</implementation-note>
+        </feature>
+        <feature>
+            <name>Automatic Chrome Detection</name>
+            <priority>HIGH</priority>
+            <description>Detect Chrome/Chromium installation on system</description>
+            <platforms>
+                <platform>Windows (Program Files, Registry)</platform>
+                <platform>Linux (standard paths, which command)</platform>
+                <platform>macOS (Applications folder)</platform>
+            </platforms>
+        </feature>
+        <feature>
+            <name>Custom Browser Path</name>
+            <priority>HIGH</priority>
+            <description>Allow specifying custom Chrome/Chromium path</description>
+        </feature>
+        <feature>
+            <name>Page Load Wait Strategies</name>
+            <priority>HIGH</priority>
+            <description>Multiple strategies for determining page readiness</description>
+            <strategies>
+                <strategy>Network idle (no requests for X ms)</strategy>
+                <strategy>Specific element present</strategy>
+                <strategy>Fixed timeout</strategy>
+                <strategy>DOM content loaded</strategy>
+                <strategy>Custom JavaScript condition</strategy>
+            </strategies>
+        </feature>
+        <feature>
+            <name>Error Handling and Retry</name>
+            <priority>MEDIUM</priority>
+            <description>Configurable retry logic for transient failures</description>
+        </feature>
+    </core-features>
+
+    <pdf-options>
+        <option name="landscape" type="boolean" default="false"/>
+        <option name="displayHeaderFooter" type="boolean" default="false"/>
+        <option name="printBackground" type="boolean" default="false"/>
+        <option name="scale" type="double" default="1.0" range="0.1-2.0"/>
+        <option name="paperWidth" type="double" unit="inches"/>
+        <option name="paperHeight" type="double" unit="inches"/>
+        <option name="marginTop" type="string" unit="cm/in/px"/>
+        <option name="marginBottom" type="string" unit="cm/in/px"/>
+        <option name="marginLeft" type="string" unit="cm/in/px"/>
+        <option name="marginRight" type="string" unit="cm/in/px"/>
+        <option name="pageRanges" type="string" example="1-5, 8, 11-13"/>
+        <option name="headerTemplate" type="string" format="html"/>
+        <option name="footerTemplate" type="string" format="html"/>
+        <option name="preferCSSPageSize" type="boolean" default="false"/>
+    </pdf-options>
+
+    <testing-strategy>
+        <unit-tests>
+            <coverage-target>80%</coverage-target>
+            <focus>
+                <area>API builders and option validation</area>
+                <area>Chrome path detection logic</area>
+                <area>Wait strategy implementations</area>
+                <area>Error handling and exceptions</area>
+            </focus>
+            <mocking>Mock CDP client interactions</mocking>
+        </unit-tests>
+        <integration-tests>
+            <approach>Use Testcontainers with official Chrome Docker image</approach>
+            <container>selenium/standalone-chrome</container>
+            <tests>
+                <test>HTML to PDF conversion</test>
+                <test>URL to PDF conversion</test>
+                <test>Custom headers/footers</test>
+                <test>CSS injection</test>
+                <test>JavaScript execution</test>
+                <test>Various page sizes and orientations</test>
+            </tests>
+        </integration-tests>
+        <manual-testing>
+            <test-app>
+                <description>Spring Boot web app with REST endpoints</description>
+                <endpoints>
+                    <endpoint method="POST" path="/api/pdf/from-html">
+                        <request-body>HTML content + options JSON</request-body>
+                        <response>PDF file download</response>
+                    </endpoint>
+                    <endpoint method="POST" path="/api/pdf/from-url">
+                        <request-body>URL + options JSON</request-body>
+                        <response>PDF file download</response>
+                    </endpoint>
+                    <endpoint method="GET" path="/ui">
+                        <response>Simple web UI for testing</response>
+                    </endpoint>
+                </endpoints>
+                <ui>
+                    <description>Simple HTML form to test conversions</description>
+                    <features>
+                        <feature>Textarea for HTML input</feature>
+                        <feature>URL input field</feature>
+                        <feature>Option checkboxes/inputs</feature>
+                        <feature>Preview button</feature>
+                        <feature>Download PDF button</feature>
+                    </features>
+                </ui>
+            </test-app>
+        </manual-testing>
+    </testing-strategy>
+
+    <build-configuration>
+        <maven-plugins>
+            <plugin>
+                <name>maven-compiler-plugin</name>
+                <config>Java 17, enable preview features if needed</config>
+            </plugin>
+            <plugin>
+                <name>maven-surefire-plugin</name>
+                <config>Run unit tests</config>
+            </plugin>
+            <plugin>
+                <name>maven-failsafe-plugin</name>
+                <config>Run integration tests (*IT.java)</config>
+            </plugin>
+            <plugin>
+                <name>jacoco-maven-plugin</name>
+                <config>Code coverage reports</config>
+            </plugin>
+            <plugin>
+                <name>maven-source-plugin</name>
+                <config>Generate sources JAR</config>
+            </plugin>
+            <plugin>
+                <name>maven-javadoc-plugin</name>
+                <config>Generate Javadoc JAR</config>
+            </plugin>
+        </maven-plugins>
+        <dependency-management>
+            <scope>Parent POM manages all versions</scope>
+            <bill-of-materials>
+                <bom>Spring Boot BOM (for test app)</bom>
+                <bom>JUnit BOM</bom>
+            </bill-of-materials>
+        </dependency-management>
+    </build-configuration>
+
+    <key-dependencies>
+        <core-library>
+            <dependency>
+                <name>chrome-devtools-java-client</name>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <name>slf4j-api</name>
+                <scope>compile</scope>
+                <note>Logging facade, let users choose implementation</note>
+            </dependency>
+            <dependency>
+                <name>commons-io</name>
+                <scope>compile</scope>
+                <note>File utilities</note>
+            </dependency>
+            <dependency>
+                <name>JUnit 5</name>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <name>Mockito</name>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <name>AssertJ</name>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <name>Testcontainers</name>
+                <scope>test</scope>
+            </dependency>
+        </core-library>
+        <test-app>
+            <dependency>
+                <name>Spring Boot Starter Web</name>
+            </dependency>
+            <dependency>
+                <name>Spring Boot Starter Thymeleaf</name>
+            </dependency>
+            <dependency>
+                <name>headless-chrome-pdf-core</name>
+            </dependency>
+        </test-app>
+    </key-dependencies>
+
+    <implementation-phases>
+        <phase number="1">
+            <name>Project Bootstrap</name>
+            <tasks>
+                <task>Create Maven multi-module structure</task>
+                <task>Setup parent POM with dependency management</task>
+                <task>Configure code formatting (Google Java Format or similar)</task>
+                <task>Setup .gitignore</task>
+                <task>Create README.md with project overview</task>
+            </tasks>
+        </phase>
+        <phase number="2">
+            <name>Core Infrastructure and Design Patterns</name>
+            <design-pattern-implementation>
+                <pattern>Builder Pattern (Suggestion #1)</pattern>
+                <pattern>AutoCloseable Pattern (Suggestion #2)</pattern>
+            </design-pattern-implementation>
+            <tasks>
+                <task priority="HIGH">Implement Chrome path detection for Windows/Linux/macOS</task>
+                <task priority="HIGH">Create ChromeManager implementing AutoCloseable for browser process lifecycle management</task>
+                <task priority="HIGH">Implement CdpSession implementing AutoCloseable for CDP client connections</task>
+                <task priority="HIGH">Setup CDP client initialization and connection with proper resource cleanup</task>
+                <task priority="HIGH">Implement shutdown hooks to ensure browser processes are terminated on JVM exit</task>
+                <task priority="HIGH">Create exception hierarchy (PdfGenerationException, ChromeNotFoundException, BrowserTimeoutException)</task>
+                <task priority="MEDIUM">Add process tracking to prevent zombie Chrome processes</task>
+            </tasks>
+            <autocloseable-classes>
+                <class>ChromeManager - manages Chrome process lifecycle</class>
+                <class>CdpSession - manages CDP connection lifecycle</class>
+                <class>PdfGenerator - top-level API that manages all resources</class>
+            </autocloseable-classes>
+        </phase>
+        <phase number="3">
+            <name>API Design with Builder Pattern</name>
+            <design-pattern-implementation>
+                <pattern>Builder Pattern (Suggestion #1)</pattern>
+            </design-pattern-implementation>
+            <tasks>
+                <task priority="HIGH">Design and implement PdfGenerator fluent API with builder pattern</task>
+                <task priority="HIGH">Implement PdfOptions.Builder with all CDP parameters (landscape, margins, headers, footers, etc.)</task>
+                <task priority="HIGH">Implement ChromeOptions.Builder for browser configuration (headless mode, flags, user data dir)</task>
+                <task priority="HIGH">Implement PageOptions.Builder for page-specific settings</task>
+                <task priority="MEDIUM">Add validation logic in builders (e.g., scale between 0.1-2.0, valid margin units)</task>
+                <task priority="HIGH">Create basic HTML-to-PDF converter using the builder API</task>
+                <task priority="HIGH">Implement URL-to-PDF converter using the builder API</task>
+                <task priority="HIGH">Add unit tests for all builders and option validators</task>
+                <task priority="HIGH">Create integration tests with Testcontainers</task>
+            </tasks>
+            <builder-classes>
+                <class>PdfGenerator.Builder - main entry point for fluent API</class>
+                <class>PdfOptions.Builder - PDF generation options</class>
+                <class>ChromeOptions.Builder - browser configuration</class>
+                <class>PageOptions.Builder - page-specific settings</class>
+            </builder-classes>
+            <api-examples>
+                <example>
+                    // Example 1: Simple HTML to PDF with builder pattern
+                    try (PdfGenerator generator = PdfGenerator.create()
+                            .withChrome(ChromeOptions.builder()
+                                .headless(true)
+                                .disableGpu(true)
+                                .build())) {
+                        byte[] pdf = generator.fromHtml("&lt;html&gt;...&lt;/html&gt;")
+                            .withOptions(PdfOptions.builder()
+                                .landscape(false)
+                                .printBackground(true)
+                                .marginTop("1cm")
+                                .build())
+                            .generate();
+                    } // AutoCloseable ensures cleanup
+                </example>
+                <example>
+                    // Example 2: URL to PDF with custom browser path
+                    try (PdfGenerator generator = PdfGenerator.create()
+                            .withChromePath("/path/to/chrome")
+                            .withTimeout(Duration.ofSeconds(30))) {
+                        byte[] pdf = generator.fromUrl("https://example.com")
+                            .waitFor(WaitStrategy.networkIdle())
+                            .generate();
+                    }
+                </example>
+            </api-examples>
+        </phase>
+        <phase number="4">
+            <name>Wait Strategies</name>
+            <tasks>
+                <task>Design WaitStrategy interface</task>
+                <task>Implement NetworkIdleWait</task>
+                <task>Implement ElementWait</task>
+                <task>Implement TimeoutWait</task>
+                <task>Implement CustomConditionWait</task>
+                <task>Add tests for each strategy</task>
+            </tasks>
+        </phase>
+        <phase number="5">
+            <name>Advanced Features</name>
+            <tasks>
+                <task>CSS injection support</task>
+                <task>JavaScript execution before PDF generation</task>
+                <task>Custom headers and footers</task>
+                <task>Page range selection</task>
+                <task>Integration tests for advanced features</task>
+            </tasks>
+        </phase>
+        <phase number="6">
+            <name>Test Application</name>
+            <tasks>
+                <task>Create Spring Boot application structure</task>
+                <task>Implement REST endpoints</task>
+                <task>Create Thymeleaf UI with forms</task>
+                <task>Add request validation</task>
+                <task>Add error handling and logging</task>
+            </tasks>
+        </phase>
+        <phase number="7">
+            <name>Documentation and Polish</name>
+            <tasks>
+                <task>Write comprehensive Javadocs</task>
+                <task>Create usage examples in README</task>
+                <task>Add code coverage reporting</task>
+                <task>Performance testing and optimization</task>
+                <task>Security review</task>
+            </tasks>
+        </phase>
+    </implementation-phases>
+
+    <design-suggestions>
+        <note>Suggestions #1 and #2 are integrated into implementation phases 2 and 3</note>
+        <suggestion priority="HIGH" id="1" status="INCLUDED_IN_PLAN">
+            <title>Use Builder Pattern for API</title>
+            <rationale>Fluent API makes library easy to use and self-documenting</rationale>
+            <example>PdfGenerator.create().fromHtml(...).withOptions(...).generate()</example>
+            <implementation-phase>Phase 3: API Design with Builder Pattern</implementation-phase>
+            <affected-classes>
+                <class>PdfGenerator.Builder</class>
+                <class>PdfOptions.Builder</class>
+                <class>ChromeOptions.Builder</class>
+                <class>PageOptions.Builder</class>
+            </affected-classes>
+        </suggestion>
+        <suggestion priority="HIGH" id="2" status="INCLUDED_IN_PLAN">
+            <title>Implement AutoCloseable</title>
+            <rationale>Ensure browser processes are cleaned up with try-with-resources</rationale>
+            <implementation-phase>Phase 2: Core Infrastructure and Design Patterns</implementation-phase>
+            <affected-classes>
+                <class>PdfGenerator - top-level API resource management</class>
+                <class>ChromeManager - browser process lifecycle</class>
+                <class>CdpSession - CDP connection lifecycle</class>
+            </affected-classes>
+            <implementation-details>
+                <detail>Implement close() method to terminate Chrome processes</detail>
+                <detail>Add shutdown hooks for graceful cleanup on JVM exit</detail>
+                <detail>Track all spawned processes to prevent zombies</detail>
+                <detail>Support try-with-resources pattern for automatic cleanup</detail>
+            </implementation-details>
+        </suggestion>
+        <suggestion priority="HIGH">
+            <title>Support Both Sync and Async APIs</title>
+            <rationale>Provide CompletableFuture-based async methods for non-blocking operations</rationale>
+            <implementation>
+                <method>byte[] generate() - synchronous</method>
+                <method>CompletableFuture&lt;byte[]&gt; generateAsync() - asynchronous</method>
+            </implementation>
+        </suggestion>
+        <suggestion priority="MEDIUM">
+            <title>Externalize Configuration</title>
+            <rationale>Allow configuration via properties file or environment variables</rationale>
+            <properties>
+                <property>headless.chrome.path</property>
+                <property>headless.chrome.timeout</property>
+                <property>headless.chrome.pool.size</property>
+            </properties>
+        </suggestion>
+        <suggestion priority="MEDIUM">
+            <title>Add Metrics/Monitoring</title>
+            <rationale>Expose metrics for PDF generation time, failures, browser pool stats</rationale>
+            <approach>Micrometer integration (optional dependency)</approach>
+        </suggestion>
+        <suggestion priority="LOW">
+            <title>Consider Docker Image</title>
+            <rationale>Provide Docker image with Chrome pre-installed for easy deployment</rationale>
+            <benefit>Eliminates Chrome installation requirements in production</benefit>
+        </suggestion>
+        <suggestion priority="MEDIUM">
+            <title>Implement Circuit Breaker</title>
+            <rationale>Prevent cascading failures if Chrome becomes unresponsive</rationale>
+            <library>Resilience4j (optional)</library>
+        </suggestion>
+        <suggestion priority="HIGH">
+            <title>Thread Safety</title>
+            <rationale>Ensure all public APIs are thread-safe for concurrent usage</rationale>
+            <consideration>Browser instances should be isolated per thread or use connection pool</consideration>
+        </suggestion>
+        <suggestion priority="MEDIUM">
+            <title>Content Security</title>
+            <rationale>Sanitize HTML input to prevent script injection in untrusted content</rationale>
+            <library>OWASP Java HTML Sanitizer (optional feature)</library>
+        </suggestion>
+        <suggestion priority="LOW">
+            <title>Browser Pool for Performance</title>
+            <rationale>Reusing browser instances can significantly improve throughput</rationale>
+            <trade-off>Adds complexity, should be optional feature</trade-off>
+            <implementation-note>Consider for v2.0 after basic functionality is stable</implementation-note>
+        </suggestion>
+    </design-suggestions>
+
+    <potential-challenges>
+        <challenge>
+            <name>Chrome Binary Distribution</name>
+            <issue>Users need Chrome/Chromium installed</issue>
+            <solutions>
+                <solution>Auto-detect installed Chrome</solution>
+                <solution>Document installation instructions per platform</solution>
+                <solution>Consider bundling Chromium (increases artifact size significantly)</solution>
+                <solution>Recommend using official Chrome Docker image in production</solution>
+            </solutions>
+        </challenge>
+        <challenge>
+            <name>Browser Process Management</name>
+            <issue>Zombie processes if not cleaned up properly</issue>
+            <solutions>
+                <solution>Use shutdown hooks</solution>
+                <solution>Implement AutoCloseable</solution>
+                <solution>Track all spawned processes</solution>
+                <solution>Add timeout for hung processes</solution>
+            </solutions>
+        </challenge>
+        <challenge>
+            <name>Platform Differences</name>
+            <issue>Different behavior on Windows/Linux/macOS</issue>
+            <solutions>
+                <solution>Extensive testing on all platforms</solution>
+                <solution>Platform-specific code paths where necessary</solution>
+                <solution>Use CI/CD matrix builds</solution>
+            </solutions>
+        </challenge>
+        <challenge>
+            <name>Memory Usage</name>
+            <issue>Chrome can be memory-intensive</issue>
+            <solutions>
+                <solution>Allow configuring Chrome flags (--disable-dev-shm-usage, etc.)</solution>
+                <solution>Implement timeout and cleanup mechanisms</solution>
+                <solution>Document memory requirements</solution>
+            </solutions>
+        </challenge>
+        <challenge>
+            <name>Network Resources in PDFs</name>
+            <issue>External resources (images, CSS) may fail to load</issue>
+            <solutions>
+                <solution>Configurable timeout for resource loading</solution>
+                <solution>Option to embed resources as data URIs</solution>
+                <solution>Network wait strategies</solution>
+            </solutions>
+        </challenge>
+    </potential-challenges>
+
+    <future-enhancements>
+        <enhancement>
+            <name>Template Engine Integration</name>
+            <description>Built-in support for popular template engines (Thymeleaf, Freemarker)</description>
+        </enhancement>
+        <enhancement>
+            <name>Batch PDF Generation</name>
+            <description>Generate multiple PDFs in parallel with thread pool</description>
+        </enhancement>
+        <enhancement>
+            <name>PDF Manipulation</name>
+            <description>Merge, split, or watermark generated PDFs</description>
+            <library>Apache PDFBox</library>
+        </enhancement>
+        <enhancement>
+            <name>Screenshot Capability</name>
+            <description>Generate PNG/JPEG screenshots in addition to PDFs</description>
+        </enhancement>
+        <enhancement>
+            <name>Spring Boot Starter</name>
+            <description>Auto-configuration for Spring Boot applications</description>
+        </enhancement>
+        <enhancement>
+            <name>Cloud-Native Features</name>
+            <description>Health checks, graceful shutdown, cloud config support</description>
+        </enhancement>
+    </future-enhancements>
+
+    <quality-gates>
+        <gate>
+            <name>Code Coverage</name>
+            <threshold>80% line coverage</threshold>
+            <tool>JaCoCo</tool>
+        </gate>
+        <gate>
+            <name>Static Analysis</name>
+            <tools>
+                <tool>SpotBugs</tool>
+                <tool>Checkstyle</tool>
+                <tool>PMD</tool>
+            </tools>
+        </gate>
+        <gate>
+            <name>Security Scanning</name>
+            <tools>
+                <tool>OWASP Dependency Check</tool>
+                <tool>Snyk (optional)</tool>
+            </tools>
+        </gate>
+        <gate>
+            <name>License Compliance</name>
+            <check>All dependencies compatible with Apache 2.0</check>
+        </gate>
+    </quality-gates>
+
+    <delivery-artifacts>
+        <artifact>
+            <name>headless-chrome-pdf-core-{version}.jar</name>
+            <description>Main library JAR</description>
+        </artifact>
+        <artifact>
+            <name>headless-chrome-pdf-core-{version}-sources.jar</name>
+            <description>Source code JAR</description>
+        </artifact>
+        <artifact>
+            <name>headless-chrome-pdf-core-{version}-javadoc.jar</name>
+            <description>Javadoc JAR</description>
+        </artifact>
+        <artifact>
+            <name>headless-chrome-pdf-test-app-{version}.jar</name>
+            <description>Executable test application</description>
+        </artifact>
+    </delivery-artifacts>
+</project-specification>

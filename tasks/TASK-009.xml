@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-009</task-id>
+    <task-name>Setup CDP Client Initialization</task-name>
+    <phase>Phase 2: Core Infrastructure and Design Patterns</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-008: Implement CdpSession with AutoCloseable</dependency>
+    </dependencies>
+
+    <description>
+        Create PageController class that initializes and configures CDP client for
+        PDF generation operations. This class orchestrates Page domain operations
+        like navigation, waiting for page load, and PDF generation.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>PageController class created in cdp package</criterion>
+        <criterion>Can navigate to URL using CDP Page.navigate()</criterion>
+        <criterion>Can load HTML content using data URI or Page.setDocumentContent()</criterion>
+        <criterion>Can trigger PDF generation using Page.printToPDF()</criterion>
+        <criterion>Returns PDF as byte array</criterion>
+        <criterion>Handles navigation failures and timeouts</criterion>
+        <criterion>Unit tests with mocked CDP Page service</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Key CDP Page domain methods to use:
+            - navigate(url): Navigate to URL
+            - setDocumentContent(frameId, html): Load HTML content
+            - printToPDF(params): Generate PDF with options
+            - getFrameTree(): Get frame information
+        </note>
+        <note>
+            For HTML content, use data URI: "data:text/html," + html
+            Or use Page.navigate() to "about:blank" then setDocumentContent()
+        </note>
+        <note>
+            printToPDF() returns PrintToPDFResponse with base64-encoded PDF data
+        </note>
+        <note>
+            Decode base64 PDF data to byte array using java.util.Base64
+        </note>
+        <note>
+            Handle CDP command exceptions and wrap in PdfGenerationException
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/cdp/PageController.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/cdp/PageControllerTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit tests with mocked Page domain</requirement>
+        <requirement>Test URL navigation success and failure</requirement>
+        <requirement>Test HTML content loading</requirement>
+        <requirement>Test PDF generation and base64 decoding</requirement>
+        <requirement>Integration test with real Chrome instance</requirement>
+    </testing-requirements>
+
+    <estimated-effort>6-8 hours</estimated-effort>
+</task>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-042</task-id>
+    <task-name>Security Review</task-name>
+    <phase>Phase 7: Documentation and Polish</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-038: Write Comprehensive Javadocs</dependency>
+    </dependencies>
+
+    <description>
+        Conduct security review of the library to identify and address potential
+        vulnerabilities. Ensure safe handling of untrusted HTML/URLs and proper
+        resource cleanup to prevent DoS attacks.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>OWASP Dependency Check scan passes</criterion>
+        <criterion>No critical or high severity vulnerabilities</criterion>
+        <criterion>HTML sanitization for untrusted content (optional feature)</criterion>
+        <criterion>URL validation to prevent SSRF attacks</criterion>
+        <criterion>Resource limits to prevent DoS</criterion>
+        <criterion>Security best practices documented</criterion>
+        <criterion>Chrome sandbox mode recommendations</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Security considerations:
+            1. Dependency vulnerabilities
+               - Run OWASP Dependency Check
+               - Update vulnerable dependencies
+               - Document known issues
+
+            2. HTML injection
+               - Warning about executing untrusted HTML
+               - Optional: Add HTML sanitization with OWASP Java HTML Sanitizer
+               - Disable JavaScript for untrusted content
+
+            3. SSRF (Server-Side Request Forgery)
+               - Validate URL format
+               - Optional: Whitelist/blacklist domains
+               - Block internal/private IPs
+               - Document security considerations
+
+            4. Resource exhaustion (DoS)
+               - Timeout for PDF generation
+               - Memory limits for Chrome
+               - Limit concurrent Chrome instances
+               - File size limits
+
+            5. Process isolation
+               - Chrome runs in separate process
+               - Recommend using --sandbox flag (enabled by default)
+               - Document --no-sandbox risks
+
+            6. Temporary file cleanup
+               - Ensure temp files are deleted
+               - Use secure temp directory permissions
+        </note>
+        <note>
+            Add maven plugin:
+            org.owasp:dependency-check-maven
+        </note>
+        <note>
+            Create SECURITY.md with:
+            - Security considerations for users
+            - Reporting vulnerabilities
+            - Security best practices
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>pom.xml (add OWASP dependency-check plugin)</file>
+        <file>SECURITY.md</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/UrlValidator.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/HtmlSanitizer.java (optional)</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run 'mvn dependency-check:check'</requirement>
+        <requirement>Review and address all high/critical vulnerabilities</requirement>
+        <requirement>Test URL validation blocks internal IPs</requirement>
+        <requirement>Test resource limits prevent DoS</requirement>
+        <requirement>Manual security review of code</requirement>
+    </testing-requirements>
+
+    <estimated-effort>6-8 hours</estimated-effort>
+</task>

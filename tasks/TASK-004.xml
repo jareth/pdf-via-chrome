@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-004</task-id>
+    <task-name>Setup .gitignore</task-name>
+    <phase>Phase 1: Project Bootstrap</phase>
+    <priority>HIGH</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-001: Create Maven Multi-Module Structure</dependency>
+    </dependencies>
+
+    <description>
+        Create comprehensive .gitignore file to exclude build artifacts, IDE files,
+        OS files, and other generated content from version control.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>.gitignore file created at project root</criterion>
+        <criterion>Maven build directories excluded (target/)</criterion>
+        <criterion>IDE files excluded (IntelliJ, Eclipse, VSCode)</criterion>
+        <criterion>OS files excluded (.DS_Store, Thumbs.db)</criterion>
+        <criterion>Temporary and log files excluded</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Essential entries:
+            - target/
+            - *.class
+            - *.jar
+            - *.war
+            - .idea/
+            - *.iml
+            - .eclipse/
+            - .settings/
+            - .classpath
+            - .project
+            - .vscode/
+            - .DS_Store
+            - Thumbs.db
+            - hs_err_pid*
+            - *.log
+        </note>
+        <note>
+            Include Chrome-specific temporary files if needed
+        </note>
+        <note>
+            Consider using github.com/github/gitignore templates as reference
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>.gitignore</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run 'git status' after build to verify artifacts are ignored</requirement>
+        <requirement>Open project in IDE and verify IDE files are ignored</requirement>
+    </testing-requirements>
+
+    <estimated-effort>30 minutes</estimated-effort>
+</task>

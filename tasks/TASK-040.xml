@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-040</task-id>
+    <task-name>Add Code Coverage Reporting</task-name>
+    <phase>Phase 7: Documentation and Polish</phase>
+    <priority>MEDIUM</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-020: Add Unit Tests for Builders</dependency>
+        <dependency>TASK-021: Create Integration Tests with Testcontainers</dependency>
+    </dependencies>
+
+    <description>
+        Configure JaCoCo for code coverage reporting and ensure coverage meets
+        the 80% threshold. Set up coverage reports that can be viewed locally
+        and integrated with CI/CD.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>JaCoCo plugin configured in parent POM</criterion>
+        <criterion>Coverage reports generated with 'mvn verify'</criterion>
+        <criterion>HTML report viewable in browser</criterion>
+        <criterion>XML report for CI/CD integration</criterion>
+        <criterion>Coverage threshold enforced (80% line coverage)</criterion>
+        <criterion>Build fails if coverage below threshold</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Configure jacoco-maven-plugin in parent POM:
+            - prepare-agent goal for test instrumentation
+            - report goal for HTML/XML reports
+            - check goal for threshold enforcement
+        </note>
+        <note>
+            Coverage threshold: 80% line coverage minimum
+        </note>
+        <note>
+            Exclude generated code and DTOs from coverage
+        </note>
+        <note>
+            Report location: target/site/jacoco/index.html
+        </note>
+        <note>
+            Consider separate coverage for unit vs integration tests
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>pom.xml (parent POM jacoco configuration)</file>
+        <file>.gitignore (add jacoco.exec)</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run 'mvn clean verify' and verify coverage report generated</requirement>
+        <requirement>Open target/site/jacoco/index.html and review coverage</requirement>
+        <requirement>Verify coverage meets 80% threshold</requirement>
+        <requirement>Test build fails if coverage drops below threshold</requirement>
+    </testing-requirements>
+
+    <estimated-effort>2-3 hours</estimated-effort>
+</task>

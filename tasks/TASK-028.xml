@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-028</task-id>
+    <task-name>Implement CSS Injection Support</task-name>
+    <phase>Phase 5: Advanced Features</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-019: Implement URL-to-PDF Converter</dependency>
+    </dependencies>
+
+    <description>
+        Add capability to inject custom CSS into pages before PDF generation.
+        This allows users to override styles specifically for printing, such as
+        hiding navigation, adjusting layouts, or applying print-specific styles.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>PdfGenerator API supports CSS injection</criterion>
+        <criterion>Can inject CSS string</criterion>
+        <criterion>Can inject CSS from file</criterion>
+        <criterion>CSS applied before PDF generation</criterion>
+        <criterion>Works with both HTML and URL sources</criterion>
+        <criterion>Integration tests validate CSS is applied</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Add method to PdfGenerator builder:
+            .withCustomCss(String css)
+            .withCustomCssFromFile(Path cssFile)
+        </note>
+        <note>
+            Use CDP CSS.addStyleSheetText() or
+            Runtime.evaluate() to inject &lt;style&gt; tag:
+            var style = document.createElement('style');
+            style.textContent = cssContent;
+            document.head.appendChild(style);
+        </note>
+        <note>
+            Inject CSS after page load, before PDF generation
+        </note>
+        <note>
+            Handle CSS syntax errors gracefully
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfGenerator.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/HtmlToPdfConverter.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/UrlToPdfConverter.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/CssInjectionTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit test CSS injection logic</requirement>
+        <requirement>Integration test with custom CSS that hides an element</requirement>
+        <requirement>Integration test with CSS from file</requirement>
+        <requirement>Verify injected CSS is present in generated PDF</requirement>
+    </testing-requirements>
+
+    <estimated-effort>4-5 hours</estimated-effort>
+</task>

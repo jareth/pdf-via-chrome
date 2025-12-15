@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-019</task-id>
+    <task-name>Implement URL-to-PDF Converter</task-name>
+    <phase>Phase 3: API Design with Builder Pattern</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-009: Setup CDP Client Initialization</dependency>
+        <dependency>TASK-014: Implement PdfOptions.Builder</dependency>
+    </dependencies>
+
+    <description>
+        Implement UrlToPdfConverter that navigates to a URL and generates PDF.
+        This is more complex than HTML conversion due to external resources,
+        network timing, and navigation events.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>UrlToPdfConverter class created</criterion>
+        <criterion>Accepts URL string and PdfOptions</criterion>
+        <criterion>Navigates to URL using CDP</criterion>
+        <criterion>Waits for page load completion</criterion>
+        <criterion>Applies PdfOptions and generates PDF</criterion>
+        <criterion>Returns byte array with PDF data</criterion>
+        <criterion>Handles navigation failures (404, timeout, etc.)</criterion>
+        <criterion>Integration tests with real URLs</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Implementation approach:
+            1. Call Page.navigate(url)
+            2. Wait for Page.loadEventFired or Page.frameStoppedLoading
+            3. Optional: Wait for network idle
+            4. Call Page.printToPDF() with options
+            5. Decode base64 PDF data
+            6. Return byte array
+        </note>
+        <note>
+            Handle Page.navigate response:
+            - Check for navigation errors
+            - Handle redirects
+            - Timeout if page doesn't load
+        </note>
+        <note>
+            Add configurable page load timeout (default 30 seconds)
+        </note>
+        <note>
+            Handle network errors and wrap in PageLoadException
+        </note>
+        <note>
+            Support basic authentication in URL (if needed)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/UrlToPdfConverter.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/converter/UrlToPdfConverterTest.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/converter/UrlToPdfConverterIT.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit tests with mocked CDP client</requirement>
+        <requirement>Integration test with real URL (e.g., example.com)</requirement>
+        <requirement>Test navigation failure handling (404, timeout)</requirement>
+        <requirement>Test with various PdfOptions</requirement>
+        <requirement>Test redirect handling</requirement>
+    </testing-requirements>
+
+    <estimated-effort>6-8 hours</estimated-effort>
+</task>

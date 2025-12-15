@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-006</task-id>
+    <task-name>Implement Chrome Path Detection</task-name>
+    <phase>Phase 2: Core Infrastructure and Design Patterns</phase>
+    <priority>HIGH</priority>
+    <complexity>COMPLEX</complexity>
+
+    <dependencies>
+        <dependency>TASK-002: Setup Parent POM with Dependency Management</dependency>
+    </dependencies>
+
+    <description>
+        Create ChromePathDetector utility class that automatically detects Chrome/Chromium
+        installation on Windows, Linux, and macOS. This is critical for user experience
+        as it allows the library to work out-of-the-box without configuration.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>ChromePathDetector class created in util package</criterion>
+        <criterion>Detects Chrome on Windows (Program Files, Registry)</criterion>
+        <criterion>Detects Chrome/Chromium on Linux (standard paths, which command)</criterion>
+        <criterion>Detects Chrome on macOS (Applications folder)</criterion>
+        <criterion>Returns Optional&lt;Path&gt; with found Chrome path</criterion>
+        <criterion>Validates that found executable is actually Chrome/Chromium</criterion>
+        <criterion>Unit tests cover all platforms (use mocking for platform-specific code)</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Windows paths to check:
+            - C:\Program Files\Google\Chrome\Application\chrome.exe
+            - C:\Program Files (x86)\Google\Chrome\Application\chrome.exe
+            - Registry: HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\App Paths\chrome.exe
+        </note>
+        <note>
+            Linux paths to check:
+            - /usr/bin/google-chrome
+            - /usr/bin/chromium
+            - /usr/bin/chromium-browser
+            - /snap/bin/chromium
+            - Execute 'which google-chrome' and 'which chromium'
+        </note>
+        <note>
+            macOS paths to check:
+            - /Applications/Google Chrome.app/Contents/MacOS/Google Chrome
+            - /Applications/Chromium.app/Contents/MacOS/Chromium
+        </note>
+        <note>
+            Use java.nio.file.Files.exists() to check paths
+        </note>
+        <note>
+            Consider checking executable permissions on Unix systems
+        </note>
+        <note>
+            Validate by running 'chrome --version' if possible
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/ChromePathDetector.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/util/ChromePathDetectorTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit tests with mocked file system</requirement>
+        <requirement>Test each platform detection logic separately</requirement>
+        <requirement>Test case when Chrome is not found</requirement>
+        <requirement>Test case when multiple Chrome installations exist (prefer stable over beta)</requirement>
+    </testing-requirements>
+
+    <estimated-effort>6-8 hours</estimated-effort>
+</task>

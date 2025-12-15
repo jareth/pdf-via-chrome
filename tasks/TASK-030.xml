@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-030</task-id>
+    <task-name>Implement Custom Headers and Footers</task-name>
+    <phase>Phase 5: Advanced Features</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-014: Implement PdfOptions.Builder</dependency>
+    </dependencies>
+
+    <description>
+        Implement support for custom HTML headers and footers in generated PDFs.
+        Chrome CDP supports HTML templates for headers/footers with special
+        variables for page numbers, dates, etc.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>PdfOptions.Builder supports headerTemplate and footerTemplate</criterion>
+        <criterion>Templates support CDP variables (pageNumber, totalPages, date, etc.)</criterion>
+        <criterion>displayHeaderFooter option must be true to show headers/footers</criterion>
+        <criterion>Templates support HTML and CSS styling</criterion>
+        <criterion>Helper methods for common header/footer patterns</criterion>
+        <criterion>Integration tests validate headers/footers in PDF</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            CDP supported template variables:
+            - &lt;span class="pageNumber"&gt;&lt;/span&gt; - current page number
+            - &lt;span class="totalPages"&gt;&lt;/span&gt; - total page count
+            - &lt;span class="date"&gt;&lt;/span&gt; - formatted date
+            - &lt;span class="title"&gt;&lt;/span&gt; - document title
+            - &lt;span class="url"&gt;&lt;/span&gt; - document URL
+        </note>
+        <note>
+            Template must be valid HTML with inline CSS
+        </note>
+        <note>
+            Default font size is 10px for headers/footers
+        </note>
+        <note>
+            Add convenience methods in PdfOptions.Builder:
+            - .simplePageNumbers() - "Page X of Y"
+            - .headerWithTitle()
+            - .footerWithDate()
+        </note>
+        <note>
+            displayHeaderFooter must be set to true in printToPDF
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfOptions.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/HeaderFooterTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit test template construction</requirement>
+        <requirement>Integration test with custom header and footer</requirement>
+        <requirement>Integration test with page numbers</requirement>
+        <requirement>Test convenience methods</requirement>
+        <requirement>Verify headers/footers appear in generated PDF</requirement>
+    </testing-requirements>
+
+    <estimated-effort>5-6 hours</estimated-effort>
+</task>

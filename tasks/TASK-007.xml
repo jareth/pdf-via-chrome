@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-007</task-id>
+    <task-name>Create ChromeManager with AutoCloseable</task-name>
+    <phase>Phase 2: Core Infrastructure and Design Patterns</phase>
+    <priority>HIGH</priority>
+    <complexity>COMPLEX</complexity>
+
+    <dependencies>
+        <dependency>TASK-006: Implement Chrome Path Detection</dependency>
+    </dependencies>
+
+    <description>
+        Implement ChromeManager class that manages Chrome browser process lifecycle.
+        This class MUST implement AutoCloseable to ensure proper cleanup of browser
+        processes using try-with-resources pattern (Design Suggestion #2).
+    </description>
+
+    <acceptance-criteria>
+        <criterion>ChromeManager class implements AutoCloseable</criterion>
+        <criterion>Can launch Chrome with specified options</criterion>
+        <criterion>Tracks spawned Chrome process</criterion>
+        <criterion>close() method terminates Chrome process gracefully</criterion>
+        <criterion>Handles process termination timeout (force kill if necessary)</criterion>
+        <criterion>Returns CDP endpoint URL (WebSocket URL)</criterion>
+        <criterion>Can use custom Chrome path or auto-detected path</criterion>
+        <criterion>Configurable headless mode and Chrome flags</criterion>
+        <criterion>Unit and integration tests validate lifecycle management</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Key methods:
+            - start(): Launch Chrome and return CDP endpoint
+            - close(): Terminate Chrome process (implements AutoCloseable)
+            - isRunning(): Check if Chrome is still running
+        </note>
+        <note>
+            Chrome launch flags to support:
+            - --headless
+            - --disable-gpu
+            - --remote-debugging-port=0 (random port)
+            - --user-data-dir (temporary directory)
+            - --disable-dev-shm-usage (Docker support)
+            - --no-sandbox (Docker support, security consideration)
+        </note>
+        <note>
+            Use ProcessBuilder to launch Chrome
+        </note>
+        <note>
+            Parse Chrome's stderr to extract WebSocket debugger URL
+        </note>
+        <note>
+            Implement timeout for Chrome startup (e.g., 30 seconds)
+        </note>
+        <note>
+            In close(), wait for graceful shutdown, then destroyForcibly() if needed
+        </note>
+        <note>
+            Clean up temporary user data directory on close
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeManager.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeOptions.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeProcess.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/chrome/ChromeManagerTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit tests with mocked ProcessBuilder</requirement>
+        <requirement>Integration test that actually launches Chrome (using Testcontainers)</requirement>
+        <requirement>Test try-with-resources cleanup</requirement>
+        <requirement>Test forced termination when graceful shutdown fails</requirement>
+        <requirement>Test error handling when Chrome executable not found</requirement>
+    </testing-requirements>
+
+    <estimated-effort>10-12 hours</estimated-effort>
+</task>

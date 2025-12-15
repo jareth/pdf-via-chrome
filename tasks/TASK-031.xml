@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-031</task-id>
+    <task-name>Implement Page Range Selection</task-name>
+    <phase>Phase 5: Advanced Features</phase>
+    <priority>LOW</priority>
+    <complexity>SIMPLE</complexity>
+
+    <dependencies>
+        <dependency>TASK-014: Implement PdfOptions.Builder</dependency>
+    </dependencies>
+
+    <description>
+        Add support for generating only specific pages of a multi-page document
+        using the pageRanges option. This is useful for extracting specific
+        pages from long documents.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>PdfOptions.Builder supports pageRanges parameter</criterion>
+        <criterion>Supports format: "1-5, 8, 11-13"</criterion>
+        <criterion>Validates page range format</criterion>
+        <criterion>CDP printToPDF receives correct pageRanges parameter</criterion>
+        <criterion>Integration tests validate only specified pages are generated</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Page ranges format (Chrome CDP):
+            - Single pages: "1, 3, 5"
+            - Ranges: "1-5"
+            - Mixed: "1-5, 8, 11-13"
+            - Empty string means all pages
+        </note>
+        <note>
+            Add method in PdfOptions.Builder:
+            .pageRanges(String ranges)
+        </note>
+        <note>
+            Validate format with regex: ^(\d+(-\d+)?(,\s*\d+(-\d+)?)*)?$
+        </note>
+        <note>
+            Page numbers are 1-indexed
+        </note>
+        <note>
+            CDP will handle actual page extraction
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfOptions.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/PageRangeTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit test page range format validation</requirement>
+        <requirement>Test valid formats: "1", "1-5", "1,3,5", "1-3,7-9"</requirement>
+        <requirement>Test invalid formats throw exception</requirement>
+        <requirement>Integration test generating specific pages from multi-page document</requirement>
+    </testing-requirements>
+
+    <estimated-effort>2-3 hours</estimated-effort>
+</task>

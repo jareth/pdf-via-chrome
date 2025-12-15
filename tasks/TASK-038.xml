@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-038</task-id>
+    <task-name>Write Comprehensive Javadocs</task-name>
+    <phase>Phase 7: Documentation and Polish</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-032: Integration Tests for Advanced Features</dependency>
+    </dependencies>
+
+    <description>
+        Write comprehensive Javadoc documentation for all public APIs, classes,
+        and methods. Documentation should include descriptions, parameters,
+        return values, exceptions, and usage examples.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>All public classes have class-level Javadoc</criterion>
+        <criterion>All public methods have method-level Javadoc</criterion>
+        <criterion>Javadoc includes @param, @return, @throws tags</criterion>
+        <criterion>Code examples in Javadoc for main API classes</criterion>
+        <criterion>Javadoc generates without warnings</criterion>
+        <criterion>Generated Javadoc is readable and well-formatted</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Focus on public API classes:
+            - PdfGenerator and Builder
+            - PdfOptions and Builder
+            - ChromeOptions and Builder
+            - PageOptions and Builder
+            - WaitStrategy and implementations
+            - All exception classes
+        </note>
+        <note>
+            Include usage examples in class-level Javadoc:
+            &lt;pre&gt;{@code
+            try (PdfGenerator generator = PdfGenerator.create().build()) {
+                byte[] pdf = generator.fromHtml("&lt;html&gt;...&lt;/html&gt;")
+                    .withOptions(PdfOptions.builder().landscape(true).build())
+                    .generate();
+            }
+            }&lt;/pre&gt;
+        </note>
+        <note>
+            Document thread safety guarantees
+        </note>
+        <note>
+            Document resource management (AutoCloseable usage)
+        </note>
+        <note>
+            Use {@link} tags for cross-references
+        </note>
+        <note>
+            Configure maven-javadoc-plugin to fail on warnings
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>All public classes in headless-chrome-pdf-core/src/main/java/**/*.java</file>
+        <file>pom.xml (maven-javadoc-plugin configuration)</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Run 'mvn javadoc:javadoc' without warnings</requirement>
+        <requirement>Review generated HTML documentation</requirement>
+        <requirement>Verify code examples are correct</requirement>
+        <requirement>Check cross-references work</requirement>
+    </testing-requirements>
+
+    <estimated-effort>8-10 hours</estimated-effort>
+</task>

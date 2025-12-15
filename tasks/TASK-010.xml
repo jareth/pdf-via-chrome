@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-010</task-id>
+    <task-name>Implement Shutdown Hooks</task-name>
+    <phase>Phase 2: Core Infrastructure and Design Patterns</phase>
+    <priority>HIGH</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-007: Create ChromeManager with AutoCloseable</dependency>
+    </dependencies>
+
+    <description>
+        Add JVM shutdown hooks to ensure Chrome processes are terminated when the
+        JVM exits, even if AutoCloseable.close() is not called. This prevents zombie
+        Chrome processes from accumulating.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>Shutdown hook registered when Chrome process is started</criterion>
+        <criterion>Shutdown hook terminates Chrome process on JVM exit</criterion>
+        <criterion>Shutdown hook is removed when process is properly closed</criterion>
+        <criterion>Works correctly with multiple Chrome instances</criterion>
+        <criterion>Test validates processes are cleaned up on abnormal termination</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Use Runtime.getRuntime().addShutdownHook(Thread) to register hooks
+        </note>
+        <note>
+            Store shutdown hook Thread reference in ChromeManager
+        </note>
+        <note>
+            In shutdown hook, call Process.destroyForcibly() on Chrome process
+        </note>
+        <note>
+            In ChromeManager.close(), remove shutdown hook using removeShutdownHook()
+        </note>
+        <note>
+            Handle case where shutdown hook is already running (isShuttingDown)
+        </note>
+        <note>
+            Consider using a global registry to track all Chrome processes
+        </note>
+        <note>
+            Cleanup temporary directories in shutdown hook
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeManager.java</file>
+        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/ResourceCleanup.java</file>
+        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/chrome/ChromeManagerShutdownTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Test shutdown hook is registered on Chrome start</requirement>
+        <requirement>Test shutdown hook is removed on normal close</requirement>
+        <requirement>Test Chrome is terminated when JVM exits abnormally (simulate with System.exit in test)</requirement>
+        <requirement>Test multiple Chrome instances are all cleaned up</requirement>
+    </testing-requirements>
+
+    <estimated-effort>4-5 hours</estimated-effort>
+</task>

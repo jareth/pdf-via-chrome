@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<task>
+    <task-id>TASK-034</task-id>
+    <task-name>Implement REST Endpoints</task-name>
+    <phase>Phase 6: Test Application</phase>
+    <priority>MEDIUM</priority>
+    <complexity>MODERATE</complexity>
+
+    <dependencies>
+        <dependency>TASK-033: Create Spring Boot Application Structure</dependency>
+    </dependencies>
+
+    <description>
+        Implement REST API endpoints for PDF generation. These endpoints allow
+        testing the library via HTTP requests and serve as API examples.
+    </description>
+
+    <acceptance-criteria>
+        <criterion>POST /api/pdf/from-html endpoint accepts HTML and generates PDF</criterion>
+        <criterion>POST /api/pdf/from-url endpoint accepts URL and generates PDF</criterion>
+        <criterion>Endpoints accept PdfOptions as JSON</criterion>
+        <criterion>Endpoints return PDF file with correct Content-Type</criterion>
+        <criterion>Error handling returns appropriate HTTP status codes</criterion>
+        <criterion>Request validation implemented</criterion>
+    </acceptance-criteria>
+
+    <implementation-notes>
+        <note>
+            Create PdfController with endpoints:
+
+            @PostMapping("/api/pdf/from-html")
+            public ResponseEntity&lt;byte[]&gt; generateFromHtml(@RequestBody HtmlRequest request)
+
+            @PostMapping("/api/pdf/from-url")
+            public ResponseEntity&lt;byte[]&gt; generateFromUrl(@RequestBody UrlRequest request)
+        </note>
+        <note>
+            Request DTOs should include:
+            - content (HTML or URL)
+            - options (PdfOptions as JSON)
+            - waitStrategy (optional)
+        </note>
+        <note>
+            Response headers:
+            - Content-Type: application/pdf
+            - Content-Disposition: attachment; filename="generated.pdf"
+        </note>
+        <note>
+            Use @Valid and @NotBlank for validation
+        </note>
+        <note>
+            Inject PdfGenerator as @Bean (singleton or prototype)
+        </note>
+    </implementation-notes>
+
+    <affected-files>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/HtmlRequest.java</file>
+        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/UrlRequest.java</file>
+        <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerTest.java</file>
+    </affected-files>
+
+    <testing-requirements>
+        <requirement>Unit tests for controller with mocked PdfGenerator</requirement>
+        <requirement>Integration test with actual PDF generation</requirement>
+        <requirement>Test validation errors return 400 status</requirement>
+        <requirement>Test successful PDF generation returns 200 status</requirement>
+        <requirement>Manual test with curl or Postman</requirement>
+    </testing-requirements>
+
+    <estimated-effort>5-6 hours</estimated-effort>
+</task>
