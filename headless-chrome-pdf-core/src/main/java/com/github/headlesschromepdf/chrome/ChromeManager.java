@@ -1,6 +1,7 @@
 package com.github.headlesschromepdf.chrome;
 
 import com.github.headlesschromepdf.util.ChromePathDetector;
+import com.github.headlesschromepdf.util.ResourceCleanup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ public class ChromeManager implements AutoCloseable {
 
     private final ChromeOptions options;
     private ChromeProcess chromeProcess;
+    private Thread shutdownHook;
     private volatile boolean closed = false;
 
     /**
@@ -88,6 +90,9 @@ public class ChromeManager implements AutoCloseable {
             logger.info("Chrome started successfully. PID: {}, WebSocket URL: {}",
                        chromeProcess.getPid(), chromeProcess.getWebSocketDebuggerUrl());
 
+            // Register shutdown hook to ensure cleanup on abnormal JVM termination
+            shutdownHook = ResourceCleanup.registerShutdownHook(chromeProcess);
+
             return chromeProcess;
 
         } catch (IOException e) {
@@ -139,6 +144,12 @@ public class ChromeManager implements AutoCloseable {
         }
 
         logger.info("Closing Chrome process (PID: {})", chromeProcess.getPid());
+
+        // Remove shutdown hook since we're doing proper cleanup
+        if (shutdownHook != null) {
+            ResourceCleanup.removeShutdownHook(chromeProcess);
+            shutdownHook = null;
+        }
 
         Process process = chromeProcess.getProcess();
 
