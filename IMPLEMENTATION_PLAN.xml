@@ -43,7 +43,7 @@
                 <task-ref id="TASK-009" file="tasks/TASK-009.xml"/>
                 <task-ref id="TASK-010" file="tasks/TASK-010.xml" status="Completed"/>
                 <task-ref id="TASK-011" file="tasks/TASK-011.xml" status="Completed"/>
-                <task-ref id="TASK-012" file="tasks/TASK-012.xml"/>
+                <task-ref id="TASK-012" file="tasks/TASK-012.xml" status="Completed"/>
             </tasks>
         </phase>
 

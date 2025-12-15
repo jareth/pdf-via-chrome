@@ -4,6 +4,7 @@ import com.github.headlesschromepdf.exception.BrowserTimeoutException;
 import com.github.headlesschromepdf.exception.ChromeNotFoundException;
 import com.github.headlesschromepdf.exception.PdfGenerationException;
 import com.github.headlesschromepdf.util.ChromePathDetector;
+import com.github.headlesschromepdf.util.ProcessRegistry;
 import com.github.headlesschromepdf.util.ResourceCleanup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,6 +96,9 @@ public class ChromeManager implements AutoCloseable {
             logger.info("Chrome started successfully. PID: {}, WebSocket URL: {}",
                        chromeProcess.getPid(), chromeProcess.getWebSocketDebuggerUrl());
 
+            // Register process in global registry for tracking
+            ProcessRegistry.getInstance().register(process);
+
             // Register shutdown hook to ensure cleanup on abnormal JVM termination
             shutdownHook = ResourceCleanup.registerShutdownHook(chromeProcess);
 
@@ -150,13 +154,16 @@ public class ChromeManager implements AutoCloseable {
 
         logger.info("Closing Chrome process (PID: {})", chromeProcess.getPid());
 
+        Process process = chromeProcess.getProcess();
+
+        // Unregister from process registry
+        ProcessRegistry.getInstance().unregister(process);
+
         // Remove shutdown hook since we're doing proper cleanup
         if (shutdownHook != null) {
             ResourceCleanup.removeShutdownHook(chromeProcess);
             shutdownHook = null;
         }
-
-        Process process = chromeProcess.getProcess();
 
         // Try graceful shutdown first
         if (process.isAlive()) {
