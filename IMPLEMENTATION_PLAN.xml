@@ -51,7 +51,7 @@
             <name>API Design with Builder Pattern</name>
             <description>Implement fluent builder API for PDF generation and configuration</description>
             <tasks>
-                <task-ref id="TASK-013" file="tasks/TASK-013.xml"/>
+                <task-ref id="TASK-013" file="tasks/TASK-013.xml" status="Completed"/>
                 <task-ref id="TASK-014" file="tasks/TASK-014.xml"/>
                 <task-ref id="TASK-015" file="tasks/TASK-015.xml"/>
                 <task-ref id="TASK-016" file="tasks/TASK-016.xml"/>
