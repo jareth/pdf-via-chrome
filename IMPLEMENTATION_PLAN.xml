@@ -54,7 +54,7 @@
                 <task-ref id="TASK-013" file="tasks/TASK-013.xml" status="Completed"/>
                 <task-ref id="TASK-014" file="tasks/TASK-014.xml" status="Completed"/>
                 <task-ref id="TASK-015" file="tasks/TASK-015.xml" status="Completed"/>
-                <task-ref id="TASK-016" file="tasks/TASK-016.xml"/>
+                <task-ref id="TASK-016" file="tasks/TASK-016.xml" status="Completed"/>
                 <task-ref id="TASK-017" file="tasks/TASK-017.xml"/>
                 <task-ref id="TASK-018" file="tasks/TASK-018.xml"/>
                 <task-ref id="TASK-019" file="tasks/TASK-019.xml"/>
