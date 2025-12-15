@@ -23,6 +23,12 @@
     </properties>
 
     <dependencies>
+        <!-- Chrome DevTools Java Client -->
+        <dependency>
+            <groupId>com.github.kklisura.cdt</groupId>
+            <artifactId>cdt-java-client</artifactId>
+        </dependency>
+
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>
