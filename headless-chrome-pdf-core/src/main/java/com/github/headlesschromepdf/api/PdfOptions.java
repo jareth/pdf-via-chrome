@@ -135,6 +135,50 @@ public class PdfOptions {
         private boolean preferCssPageSize = false;
 
         /**
+         * Parses a margin string with unit (e.g., "1cm", "0.5in", "10px") and converts to inches.
+         *
+         * @param marginStr the margin string with unit
+         * @return the margin value in inches
+         * @throws IllegalArgumentException if the format is invalid or unit is not supported
+         */
+        private double parseMargin(String marginStr) {
+            if (marginStr == null || marginStr.trim().isEmpty()) {
+                throw new IllegalArgumentException("Margin string cannot be null or empty");
+            }
+
+            String trimmed = marginStr.trim();
+
+            // Extract number and unit using regex (allow optional minus sign for better error messages)
+            java.util.regex.Pattern pattern = java.util.regex.Pattern.compile("^(-?[0-9]*\\.?[0-9]+)\\s*(cm|in|px)$");
+            java.util.regex.Matcher matcher = pattern.matcher(trimmed);
+
+            if (!matcher.matches()) {
+                throw new IllegalArgumentException(
+                    "Invalid margin format: '" + marginStr + "'. Expected format: number + unit (e.g., '1cm', '0.5in', '10px')"
+                );
+            }
+
+            double value = Double.parseDouble(matcher.group(1));
+            String unit = matcher.group(2);
+
+            if (value < 0) {
+                throw new IllegalArgumentException("Margin value cannot be negative");
+            }
+
+            // Convert to inches based on unit
+            switch (unit) {
+                case "in":
+                    return value;
+                case "cm":
+                    return value / 2.54; // 1 inch = 2.54 cm
+                case "px":
+                    return value / 96.0; // 1 inch = 96 pixels (CSS standard)
+                default:
+                    throw new IllegalArgumentException("Unsupported margin unit: " + unit);
+            }
+        }
+
+        /**
          * Sets the page orientation.
          *
          * @param landscape true for landscape orientation, false for portrait
@@ -242,6 +286,18 @@ public class PdfOptions {
         }
 
         /**
+         * Sets the top margin with unit (e.g., "1cm", "0.5in", "10px").
+         *
+         * @param marginWithUnit the margin string with unit
+         * @return this builder
+         * @throws IllegalArgumentException if format is invalid or unit is not supported
+         */
+        public Builder marginTop(String marginWithUnit) {
+            this.marginTop = parseMargin(marginWithUnit);
+            return this;
+        }
+
+        /**
          * Sets the bottom margin in inches.
          *
          * @param margin the bottom margin in inches
@@ -253,6 +309,18 @@ public class PdfOptions {
                 throw new IllegalArgumentException("Margin cannot be negative");
             }
             this.marginBottom = margin;
+            return this;
+        }
+
+        /**
+         * Sets the bottom margin with unit (e.g., "1cm", "0.5in", "10px").
+         *
+         * @param marginWithUnit the margin string with unit
+         * @return this builder
+         * @throws IllegalArgumentException if format is invalid or unit is not supported
+         */
+        public Builder marginBottom(String marginWithUnit) {
+            this.marginBottom = parseMargin(marginWithUnit);
             return this;
         }
 
@@ -272,6 +340,18 @@ public class PdfOptions {
         }
 
         /**
+         * Sets the left margin with unit (e.g., "1cm", "0.5in", "10px").
+         *
+         * @param marginWithUnit the margin string with unit
+         * @return this builder
+         * @throws IllegalArgumentException if format is invalid or unit is not supported
+         */
+        public Builder marginLeft(String marginWithUnit) {
+            this.marginLeft = parseMargin(marginWithUnit);
+            return this;
+        }
+
+        /**
          * Sets the right margin in inches.
          *
          * @param margin the right margin in inches
@@ -287,7 +367,19 @@ public class PdfOptions {
         }
 
         /**
-         * Sets all margins to the same value.
+         * Sets the right margin with unit (e.g., "1cm", "0.5in", "10px").
+         *
+         * @param marginWithUnit the margin string with unit
+         * @return this builder
+         * @throws IllegalArgumentException if format is invalid or unit is not supported
+         */
+        public Builder marginRight(String marginWithUnit) {
+            this.marginRight = parseMargin(marginWithUnit);
+            return this;
+        }
+
+        /**
+         * Sets all margins to the same value in inches.
          *
          * @param margin the margin in inches for all sides
          * @return this builder
@@ -298,6 +390,21 @@ public class PdfOptions {
                 .marginBottom(margin)
                 .marginLeft(margin)
                 .marginRight(margin);
+        }
+
+        /**
+         * Sets all margins to the same value with unit (e.g., "1cm", "0.5in", "10px").
+         *
+         * @param marginWithUnit the margin string with unit for all sides
+         * @return this builder
+         * @throws IllegalArgumentException if format is invalid or unit is not supported
+         */
+        public Builder margins(String marginWithUnit) {
+            double marginInInches = parseMargin(marginWithUnit);
+            return marginTop(marginInInches)
+                .marginBottom(marginInInches)
+                .marginLeft(marginInInches)
+                .marginRight(marginInInches);
         }
 
         /**

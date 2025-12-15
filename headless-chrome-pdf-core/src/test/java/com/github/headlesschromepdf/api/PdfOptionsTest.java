@@ -3,6 +3,7 @@ package com.github.headlesschromepdf.api;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.data.Offset.offset;
 
 /**
  * Unit tests for PdfOptions and its builder.
@@ -376,5 +377,191 @@ class PdfOptionsTest {
             assertThat(format.getWidth()).isPositive();
             assertThat(format.getHeight()).isPositive();
         }
+    }
+
+    // String-based margin tests
+
+    @Test
+    void testBuilder_marginTop_withInches() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("0.5in")
+            .build();
+
+        assertThat(options.getMarginTop()).isEqualTo(0.5);
+    }
+
+    @Test
+    void testBuilder_marginTop_withCentimeters() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("2.54cm")
+            .build();
+
+        assertThat(options.getMarginTop()).isCloseTo(1.0, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_marginTop_withPixels() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("96px")
+            .build();
+
+        assertThat(options.getMarginTop()).isCloseTo(1.0, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_marginBottom_withCentimeters() {
+        PdfOptions options = PdfOptions.builder()
+            .marginBottom("1cm")
+            .build();
+
+        assertThat(options.getMarginBottom()).isCloseTo(0.3937, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_marginLeft_withPixels() {
+        PdfOptions options = PdfOptions.builder()
+            .marginLeft("48px")
+            .build();
+
+        assertThat(options.getMarginLeft()).isCloseTo(0.5, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_marginRight_withInches() {
+        PdfOptions options = PdfOptions.builder()
+            .marginRight("0.75in")
+            .build();
+
+        assertThat(options.getMarginRight()).isEqualTo(0.75);
+    }
+
+    @Test
+    void testBuilder_margins_withStringUnit() {
+        PdfOptions options = PdfOptions.builder()
+            .margins("1.27cm")
+            .build();
+
+        assertThat(options.getMarginTop()).isCloseTo(0.5, offset(0.001));
+        assertThat(options.getMarginBottom()).isCloseTo(0.5, offset(0.001));
+        assertThat(options.getMarginLeft()).isCloseTo(0.5, offset(0.001));
+        assertThat(options.getMarginRight()).isCloseTo(0.5, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_marginString_withSpaces() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("  1.5  in  ")
+            .build();
+
+        assertThat(options.getMarginTop()).isEqualTo(1.5);
+    }
+
+    @Test
+    void testBuilder_marginString_decimalValue() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("0.25in")
+            .build();
+
+        assertThat(options.getMarginTop()).isEqualTo(0.25);
+    }
+
+    @Test
+    void testBuilder_marginString_integerValue() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("2cm")
+            .build();
+
+        assertThat(options.getMarginTop()).isCloseTo(0.787, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_marginString_invalidFormat_noUnit() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop("1.5").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid margin format");
+    }
+
+    @Test
+    void testBuilder_marginString_invalidFormat_invalidUnit() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop("1.5mm").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid margin format");
+    }
+
+    @Test
+    void testBuilder_marginString_invalidFormat_noNumber() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop("in").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid margin format");
+    }
+
+    @Test
+    void testBuilder_marginString_invalidFormat_negativeValue() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop("-1in").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Margin value cannot be negative");
+    }
+
+    @Test
+    void testBuilder_marginString_null() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop((String) null).build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Margin string cannot be null or empty");
+    }
+
+    @Test
+    void testBuilder_marginString_empty() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop("").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Margin string cannot be null or empty");
+    }
+
+    @Test
+    void testBuilder_marginString_whitespaceOnly() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().marginTop("   ").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Margin string cannot be null or empty");
+    }
+
+    @Test
+    void testBuilder_marginString_allSidesWithDifferentUnits() {
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("1in")
+            .marginBottom("2.54cm")
+            .marginLeft("96px")
+            .marginRight("0.5in")
+            .build();
+
+        assertThat(options.getMarginTop()).isEqualTo(1.0);
+        assertThat(options.getMarginBottom()).isCloseTo(1.0, offset(0.001));
+        assertThat(options.getMarginLeft()).isCloseTo(1.0, offset(0.001));
+        assertThat(options.getMarginRight()).isEqualTo(0.5);
+    }
+
+    @Test
+    void testBuilder_conversionAccuracy_centimetersToInches() {
+        // 1 inch = 2.54 cm
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("5.08cm")  // Should be 2 inches
+            .build();
+
+        assertThat(options.getMarginTop()).isCloseTo(2.0, offset(0.001));
+    }
+
+    @Test
+    void testBuilder_conversionAccuracy_pixelsToInches() {
+        // 1 inch = 96 pixels (CSS standard)
+        PdfOptions options = PdfOptions.builder()
+            .marginTop("192px")  // Should be 2 inches
+            .build();
+
+        assertThat(options.getMarginTop()).isEqualTo(2.0);
     }
 }
