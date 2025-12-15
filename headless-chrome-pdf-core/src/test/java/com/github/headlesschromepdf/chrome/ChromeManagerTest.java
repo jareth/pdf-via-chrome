@@ -11,6 +11,8 @@ import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.attribute.PosixFilePermission;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -64,8 +66,8 @@ class ChromeManagerTest {
     }
 
     @Test
-    void testChromeOptionsWithCustomPath() {
-        Path chromePath = Path.of("/custom/path/to/chrome");
+    void testChromeOptionsWithCustomPath() throws Exception {
+        Path chromePath = createExecutableFile("chrome");
         ChromeOptions options = ChromeOptions.builder()
             .chromePath(chromePath)
             .build();
@@ -163,17 +165,16 @@ class ChromeManagerTest {
     }
 
     @Test
-    void testChromeManagerStartFailsWithNonExistentChrome() {
+    void testChromeOptionsBuilderFailsWithNonExistentChrome() {
         Path nonExistentPath = Path.of("/non/existent/chrome");
-        ChromeOptions options = ChromeOptions.builder()
-            .chromePath(nonExistentPath)
-            .build();
 
-        ChromeManager manager = new ChromeManager(options);
-
-        assertThatThrownBy(manager::start)
-            .isInstanceOf(ChromeNotFoundException.class)
-            .hasMessageContaining("Chrome executable not found");
+        assertThatThrownBy(() -> {
+            ChromeOptions.builder()
+                .chromePath(nonExistentPath)
+                .build();
+        })
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("Chrome path does not exist");
     }
 
     @Test
@@ -281,5 +282,27 @@ class ChromeManagerTest {
                 return 12345L;
             }
         };
+    }
+
+    /**
+     * Helper method to create an executable file for testing.
+     * On Unix-like systems, sets the executable permission.
+     * On Windows, files are executable by default.
+     */
+    private Path createExecutableFile(String filename) throws IOException {
+        Path file = tempDir.resolve(filename);
+        Files.createFile(file);
+
+        // On Unix-like systems, set executable permission
+        String os = System.getProperty("os.name").toLowerCase();
+        if (!os.contains("win")) {
+            Files.setPosixFilePermissions(file, Set.of(
+                PosixFilePermission.OWNER_READ,
+                PosixFilePermission.OWNER_WRITE,
+                PosixFilePermission.OWNER_EXECUTE
+            ));
+        }
+
+        return file;
     }
 }

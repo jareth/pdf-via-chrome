@@ -21,6 +21,7 @@ public class ChromeOptions {
     private final boolean disableGpu;
     private final boolean disableDevShmUsage;
     private final boolean noSandbox;
+    private final String windowSize;
     private final int startupTimeoutSeconds;
     private final int shutdownTimeoutSeconds;
 
@@ -33,6 +34,7 @@ public class ChromeOptions {
         this.disableGpu = builder.disableGpu;
         this.disableDevShmUsage = builder.disableDevShmUsage;
         this.noSandbox = builder.noSandbox;
+        this.windowSize = builder.windowSize;
         this.startupTimeoutSeconds = builder.startupTimeoutSeconds;
         this.shutdownTimeoutSeconds = builder.shutdownTimeoutSeconds;
     }
@@ -69,6 +71,10 @@ public class ChromeOptions {
         return noSandbox;
     }
 
+    public String getWindowSize() {
+        return windowSize;
+    }
+
     public int getStartupTimeoutSeconds() {
         return startupTimeoutSeconds;
     }
@@ -98,6 +104,7 @@ public class ChromeOptions {
         private boolean disableGpu = true;
         private boolean disableDevShmUsage = false;
         private boolean noSandbox = false;
+        private String windowSize;
         private int startupTimeoutSeconds = 30;
         private int shutdownTimeoutSeconds = 5;
 
@@ -211,6 +218,44 @@ public class ChromeOptions {
         }
 
         /**
+         * Sets the window size for Chrome.
+         * This is useful for controlling the viewport size when generating PDFs.
+         *
+         * @param windowSize the window size in format "width,height" (e.g., "1920,1080")
+         * @return this builder
+         */
+        public Builder windowSize(String windowSize) {
+            this.windowSize = windowSize;
+            return this;
+        }
+
+        /**
+         * Sets the window size for Chrome using width and height.
+         * This is a convenience method for windowSize(String).
+         *
+         * @param width the window width in pixels
+         * @param height the window height in pixels
+         * @return this builder
+         */
+        public Builder withWindowSize(int width, int height) {
+            this.windowSize = width + "," + height;
+            return this;
+        }
+
+        /**
+         * Applies Docker-optimized defaults.
+         * Enables noSandbox and disableDevShmUsage flags which are typically
+         * required for running Chrome in Docker containers.
+         *
+         * @return this builder
+         */
+        public Builder dockerDefaults() {
+            this.noSandbox = true;
+            this.disableDevShmUsage = true;
+            return this;
+        }
+
+        /**
          * Sets the timeout in seconds for Chrome startup.
          * Default is 30 seconds.
          *
@@ -237,10 +282,22 @@ public class ChromeOptions {
 
         /**
          * Builds the ChromeOptions instance.
+         * Validates the Chrome path if provided.
          *
          * @return a new ChromeOptions instance
+         * @throws IllegalArgumentException if chromePath is provided but doesn't exist or isn't executable
          */
         public ChromeOptions build() {
+            // Validate chromePath if provided
+            if (chromePath != null) {
+                if (!java.nio.file.Files.exists(chromePath)) {
+                    throw new IllegalArgumentException("Chrome path does not exist: " + chromePath);
+                }
+                if (!java.nio.file.Files.isExecutable(chromePath)) {
+                    throw new IllegalArgumentException("Chrome path is not executable: " + chromePath);
+                }
+            }
+
             return new ChromeOptions(this);
         }
     }

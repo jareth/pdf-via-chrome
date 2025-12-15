@@ -283,6 +283,11 @@ public class ChromeManager implements AutoCloseable {
             command.add("--no-sandbox");
         }
 
+        // Window size
+        if (options.getWindowSize() != null) {
+            command.add("--window-size=" + options.getWindowSize());
+        }
+
         // Additional common flags for stability
         command.add("--disable-background-networking");
         command.add("--disable-background-timer-throttling");

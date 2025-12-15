@@ -1,10 +1,15 @@
 package com.github.headlesschromepdf.api;
 
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.io.TempDir;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.PosixFilePermission;
 import java.time.Duration;
+import java.util.Set;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -12,6 +17,9 @@ import static org.assertj.core.api.Assertions.*;
  * Unit tests for PdfGenerator fluent API and builder.
  */
 class PdfGeneratorTest {
+
+    @TempDir
+    Path tempDir;
 
     @Test
     void testCreate_returnsBuilder() {
@@ -29,8 +37,8 @@ class PdfGeneratorTest {
     }
 
     @Test
-    void testBuilder_withChromePath() {
-        Path chromePath = Paths.get("/usr/bin/chromium");
+    void testBuilder_withChromePath() throws IOException {
+        Path chromePath = createExecutableFile("chromium");
 
         PdfGenerator generator = PdfGenerator.create()
             .withChromePath(chromePath)
@@ -131,9 +139,11 @@ class PdfGeneratorTest {
     }
 
     @Test
-    void testBuilder_methodChaining() {
+    void testBuilder_methodChaining() throws IOException {
+        Path chromePath = createExecutableFile("chrome");
+
         PdfGenerator generator = PdfGenerator.create()
-            .withChromePath(Paths.get("/usr/bin/chrome"))
+            .withChromePath(chromePath)
             .withTimeout(Duration.ofSeconds(45))
             .withHeadless(true)
             .withRemoteDebuggingPort(9222)
@@ -344,5 +354,27 @@ class PdfGeneratorTest {
 
             assertThat(builder).isNotNull();
         }
+    }
+
+    /**
+     * Helper method to create an executable file for testing.
+     * On Unix-like systems, sets the executable permission.
+     * On Windows, files are executable by default.
+     */
+    private Path createExecutableFile(String filename) throws IOException {
+        Path file = tempDir.resolve(filename);
+        Files.createFile(file);
+
+        // On Unix-like systems, set executable permission
+        String os = System.getProperty("os.name").toLowerCase();
+        if (!os.contains("win")) {
+            Files.setPosixFilePermissions(file, Set.of(
+                PosixFilePermission.OWNER_READ,
+                PosixFilePermission.OWNER_WRITE,
+                PosixFilePermission.OWNER_EXECUTE
+            ));
+        }
+
+        return file;
     }
 }
