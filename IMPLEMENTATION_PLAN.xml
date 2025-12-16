@@ -72,13 +72,11 @@
             <name>Wait Strategies</name>
             <description>Implement page load wait strategies for determining page readiness</description>
             <tasks>
-                <task-ref id="TASK-022" file="tasks/TASK-022.xml"/>
-                <task-ref id="TASK-023" file="tasks/TASK-023.xml"/>
-                <task-ref id="TASK-024" file="tasks/TASK-024.xml"/>
-                <task-ref id="TASK-025" file="tasks/TASK-025.xml"/>
-                <task-ref id="TASK-026" file="tasks/TASK-026.xml"/>
-                <task-ref id="TASK-027" file="tasks/TASK-027.xml"/>
+                <task-ref id="TASK-022" file="tasks/TASK-022.xml" status="Completed"/>
+                <task-ref id="TASK-025" file="tasks/TASK-025.xml" status="Completed"/>
+                <task-ref id="TASK-027" file="tasks/TASK-027.xml" status="Completed"/>
             </tasks>
+            <note>TASK-023 (NetworkIdleWait), TASK-024 (ElementWait), and TASK-026 (CustomConditionWait) moved to Phase 8 (Version 2)</note>
         </phase>
 
         <phase id="phase-5" number="5">
@@ -122,6 +120,9 @@
             <description>Add URL-to-PDF conversion with web navigation, network handling, and advanced web features</description>
             <tasks>
                 <task-ref id="TASK-019" file="tasks/TASK-019.xml" note="Moved from Phase 3"/>
+                <task-ref id="TASK-023" file="tasks/TASK-023.xml" note="Moved from Phase 4 - NetworkIdleWait Strategy"/>
+                <task-ref id="TASK-024" file="tasks/TASK-024.xml" note="Moved from Phase 4 - ElementWait Strategy"/>
+                <task-ref id="TASK-026" file="tasks/TASK-026.xml" note="Moved from Phase 4 - CustomConditionWait Strategy"/>
                 <task-ref id="TASK-043" file="tasks/TASK-043.xml" note="URL-to-PDF integration tests (split from TASK-021)"/>
                 <task-ref id="TASK-044" file="tasks/TASK-044.xml" note="Update TASK-029 to support URL sources"/>
                 <task-ref id="TASK-045" file="tasks/TASK-045.xml" note="Add URL-to-PDF REST endpoint (from TASK-034)"/>

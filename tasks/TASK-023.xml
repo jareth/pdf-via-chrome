@@ -2,12 +2,13 @@
 <task>
     <task-id>TASK-023</task-id>
     <task-name>Implement NetworkIdleWait Strategy</task-name>
-    <phase>Phase 4: Wait Strategies</phase>
+    <phase>Phase 8: Version 2: URL-to-PDF Features</phase>
     <priority>HIGH</priority>
     <complexity>COMPLEX</complexity>
 
     <dependencies>
         <dependency>TASK-022: Design WaitStrategy Interface</dependency>
+        <dependency>TASK-019: Implement URL-to-PDF Converter</dependency>
     </dependencies>
 
     <description>
