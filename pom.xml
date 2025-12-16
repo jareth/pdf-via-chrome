@@ -40,6 +40,7 @@
         <maven-source-plugin.version>3.3.0</maven-source-plugin.version>
         <maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
+        <spotless-maven-plugin.version>2.41.1</spotless-maven-plugin.version>
     </properties>
 
     <modules>
@@ -262,6 +263,40 @@
                             </manifest>
                         </archive>
                     </configuration>
+                </plugin>
+
+                <!-- Code Formatting Plugin -->
+                <plugin>
+                    <groupId>com.diffplug.spotless</groupId>
+                    <artifactId>spotless-maven-plugin</artifactId>
+                    <version>${spotless-maven-plugin.version}</version>
+                    <configuration>
+                        <java>
+                            <googleJavaFormat>
+                                <version>1.17.0</version>
+                                <style>GOOGLE</style>
+                            </googleJavaFormat>
+                            <removeUnusedImports/>
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                        </java>
+                        <pom>
+                            <sortPom>
+                                <expandEmptyElements>false</expandEmptyElements>
+                            </sortPom>
+                            <trimTrailingWhitespace/>
+                            <endWithNewline/>
+                        </pom>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>spotless-check</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
