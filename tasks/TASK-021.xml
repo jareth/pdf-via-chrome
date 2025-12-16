@@ -1,27 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <task>
     <task-id>TASK-021</task-id>
-    <task-name>Create Integration Tests with Testcontainers</task-name>
+    <task-name>Create Integration Tests with Testcontainers (HTML-to-PDF)</task-name>
     <phase>Phase 3: API Design with Builder Pattern</phase>
     <priority>HIGH</priority>
     <complexity>COMPLEX</complexity>
 
     <dependencies>
         <dependency>TASK-018: Create HTML-to-PDF Converter</dependency>
-        <dependency>TASK-019: Implement URL-to-PDF Converter</dependency>
     </dependencies>
 
     <description>
         Create integration test suite using Testcontainers with Chrome Docker image.
-        These tests validate end-to-end PDF generation with real Chrome instances
-        in isolated containers.
+        These tests validate end-to-end HTML-to-PDF generation with real Chrome instances
+        in isolated containers. URL-to-PDF tests are deferred to Version 2 (Phase 8).
     </description>
 
     <acceptance-criteria>
         <criterion>Integration tests using Testcontainers</criterion>
         <criterion>Uses selenium/standalone-chrome Docker image</criterion>
         <criterion>Tests HTML to PDF conversion end-to-end</criterion>
-        <criterion>Tests URL to PDF conversion end-to-end</criterion>
         <criterion>Validates generated PDF content</criterion>
         <criterion>Tests run with 'mvn verify' (failsafe plugin)</criterion>
         <criterion>Docker available check (skip tests if Docker unavailable)</criterion>
@@ -45,8 +43,8 @@
             - Simple HTML to PDF
             - HTML with CSS to PDF
             - HTML with images to PDF
-            - URL to PDF (use httpbin or example.com)
             - Various PdfOptions (landscape, margins, etc.)
+            - Custom page sizes and margins
         </note>
         <note>
             Validate PDF: Check file signature (%PDF-1.4) and size &gt; 0
@@ -62,9 +60,9 @@
     <affected-files>
         <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/PdfGenerationIT.java</file>
         <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/HtmlToPdfIT.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/UrlToPdfIT.java</file>
         <file>headless-chrome-pdf-core/pom.xml (add Testcontainers dependency)</file>
     </affected-files>
+    <note>UrlToPdfIT.java moved to Version 2 (Phase 8, TASK-043)</note>
 
     <testing-requirements>
         <requirement>Tests run with 'mvn verify'</requirement>

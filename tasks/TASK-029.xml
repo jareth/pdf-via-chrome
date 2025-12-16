@@ -7,13 +7,14 @@
     <complexity>MODERATE</complexity>
 
     <dependencies>
-        <dependency>TASK-019: Implement URL-to-PDF Converter</dependency>
+        <dependency>TASK-018: Create HTML-to-PDF Converter</dependency>
     </dependencies>
 
     <description>
         Add capability to execute custom JavaScript before PDF generation.
         This allows users to manipulate the page, trigger actions, or wait for
-        dynamic content before capturing the PDF.
+        dynamic content before capturing the PDF. Works with HTML-to-PDF in Version 1.
+        Support for URL sources will be added in Version 2 (Phase 8).
     </description>
 
     <acceptance-criteria>
@@ -22,7 +23,7 @@
         <criterion>Can execute JavaScript from file</criterion>
         <criterion>JavaScript executed after page load, before PDF generation</criterion>
         <criterion>Can access return values from JavaScript</criterion>
-        <criterion>Works with both HTML and URL sources</criterion>
+        <criterion>Works with HTML-to-PDF conversion</criterion>
         <criterion>Integration tests validate JavaScript execution</criterion>
     </acceptance-criteria>
 
@@ -55,9 +56,9 @@
     <affected-files>
         <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfGenerator.java</file>
         <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/HtmlToPdfConverter.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/UrlToPdfConverter.java</file>
         <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/JavaScriptExecutionTest.java</file>
     </affected-files>
+    <note>UrlToPdfConverter.java integration will be added in Version 2 (Phase 8, TASK-044)</note>
 
     <testing-requirements>
         <requirement>Unit test JavaScript execution logic</requirement>

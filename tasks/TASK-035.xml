@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <task>
     <task-id>TASK-035</task-id>
-    <task-name>Create Thymeleaf UI</task-name>
+    <task-name>Create Thymeleaf UI (HTML-to-PDF)</task-name>
     <phase>Phase 6: Test Application</phase>
     <priority>MEDIUM</priority>
     <complexity>MODERATE</complexity>
@@ -11,19 +11,20 @@
     </dependencies>
 
     <description>
-        Create web UI using Thymeleaf for interactive PDF generation testing.
-        Provides forms for HTML and URL input with PDF options configuration.
+        Create web UI using Thymeleaf for interactive HTML-to-PDF generation testing.
+        Provides form for HTML input with PDF options configuration.
+        URL-to-PDF form will be added in Version 2 (Phase 8).
     </description>
 
     <acceptance-criteria>
         <criterion>Main page accessible at GET /ui or /</criterion>
         <criterion>Form for HTML to PDF conversion with textarea</criterion>
-        <criterion>Form for URL to PDF conversion with URL input</criterion>
         <criterion>UI elements for common PDF options (landscape, margins, etc.)</criterion>
-        <criterion>Preview and Download buttons</criterion>
+        <criterion>Download button for generated PDF</criterion>
         <criterion>Error messages displayed for failures</criterion>
         <criterion>Responsive design (works on desktop and mobile)</criterion>
     </acceptance-criteria>
+    <note>URL to PDF form moved to Version 2 (Phase 8, TASK-046)</note>
 
     <implementation-notes>
         <note>
@@ -33,12 +34,10 @@
         </note>
         <note>
             Thymeleaf template features:
-            - Tabbed interface for HTML vs URL input
             - Textarea for HTML input (with syntax highlighting if possible)
-            - URL input field with validation
             - Checkboxes for boolean options (landscape, printBackground, etc.)
             - Input fields for margins, scale, etc.
-            - Submit button that calls REST API via JavaScript
+            - Generate PDF button that calls REST API via JavaScript
             - Display area for errors and success messages
         </note>
         <note>
@@ -62,9 +61,10 @@
     <testing-requirements>
         <requirement>Manual testing in browser</requirement>
         <requirement>Test HTML to PDF conversion via UI</requirement>
-        <requirement>Test URL to PDF conversion via UI</requirement>
-        <requirement>Test various PDF options</requirement>
+        <requirement>Test various PDF options (landscape, margins, scale, etc.)</requirement>
+        <requirement>Test sample HTML templates</requirement>
         <requirement>Verify PDF downloads correctly</requirement>
+        <requirement>Test error handling and display</requirement>
     </testing-requirements>
 
     <estimated-effort>6-8 hours</estimated-effort>

@@ -4,15 +4,20 @@
         <project>headless-chrome-pdf</project>
         <version>1.0.0-SNAPSHOT</version>
         <created>2025-12-15</created>
-        <total-phases>7</total-phases>
+        <updated>2025-12-16</updated>
+        <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
+        <note>URL-to-PDF features moved to Phase 8 (Version 2)</note>
     </metadata>
 
     <overview>
         <description>
             This implementation plan breaks down the headless-chrome-pdf library development
-            into 7 phases with 42 individual tasks. Each task is defined in a separate XML
+            into 8 phases with 42 individual tasks. Each task is defined in a separate XML
             file in the tasks/ directory.
+
+            Version 1 (Phases 1-7): HTML-to-PDF functionality with all core features
+            Version 2 (Phase 8): URL-to-PDF functionality and advanced web page features
         </description>
         <key-design-patterns>
             <pattern>Builder Pattern - fluent API design</pattern>
@@ -49,7 +54,7 @@
 
         <phase id="phase-3" number="3">
             <name>API Design with Builder Pattern</name>
-            <description>Implement fluent builder API for PDF generation and configuration</description>
+            <description>Implement fluent builder API for HTML-to-PDF generation and configuration</description>
             <tasks>
                 <task-ref id="TASK-013" file="tasks/TASK-013.xml" status="Completed"/>
                 <task-ref id="TASK-014" file="tasks/TASK-014.xml" status="Completed"/>
@@ -57,10 +62,10 @@
                 <task-ref id="TASK-016" file="tasks/TASK-016.xml" status="Completed"/>
                 <task-ref id="TASK-017" file="tasks/TASK-017.xml"/>
                 <task-ref id="TASK-018" file="tasks/TASK-018.xml" status="Completed"/>
-                <task-ref id="TASK-019" file="tasks/TASK-019.xml"/>
                 <task-ref id="TASK-020" file="tasks/TASK-020.xml"/>
-                <task-ref id="TASK-021" file="tasks/TASK-021.xml"/>
+                <task-ref id="TASK-021" file="tasks/TASK-021.xml" note="HTML-to-PDF integration tests only"/>
             </tasks>
+            <note>TASK-019 (URL-to-PDF Converter) moved to Phase 8 (Version 2)</note>
         </phase>
 
         <phase id="phase-4" number="4">
@@ -81,7 +86,7 @@
             <description>Add CSS injection, JavaScript execution, headers/footers, and page ranges</description>
             <tasks>
                 <task-ref id="TASK-028" file="tasks/TASK-028.xml"/>
-                <task-ref id="TASK-029" file="tasks/TASK-029.xml"/>
+                <task-ref id="TASK-029" file="tasks/TASK-029.xml" note="Modified to work with HTML-to-PDF; dependency on TASK-019 removed"/>
                 <task-ref id="TASK-030" file="tasks/TASK-030.xml"/>
                 <task-ref id="TASK-031" file="tasks/TASK-031.xml"/>
                 <task-ref id="TASK-032" file="tasks/TASK-032.xml"/>
@@ -90,11 +95,11 @@
 
         <phase id="phase-6" number="6">
             <name>Test Application</name>
-            <description>Create Spring Boot test application with REST API and web UI</description>
+            <description>Create Spring Boot test application with REST API and web UI for HTML-to-PDF</description>
             <tasks>
                 <task-ref id="TASK-033" file="tasks/TASK-033.xml"/>
-                <task-ref id="TASK-034" file="tasks/TASK-034.xml"/>
-                <task-ref id="TASK-035" file="tasks/TASK-035.xml"/>
+                <task-ref id="TASK-034" file="tasks/TASK-034.xml" note="HTML-to-PDF endpoint only; URL endpoint in Version 2"/>
+                <task-ref id="TASK-035" file="tasks/TASK-035.xml" note="HTML-to-PDF UI only; URL form in Version 2"/>
                 <task-ref id="TASK-036" file="tasks/TASK-036.xml"/>
                 <task-ref id="TASK-037" file="tasks/TASK-037.xml"/>
             </tasks>
@@ -102,7 +107,7 @@
 
         <phase id="phase-7" number="7">
             <name>Documentation and Polish</name>
-            <description>Write documentation, add code coverage, perform security review</description>
+            <description>Write documentation, add code coverage, perform security review for Version 1</description>
             <tasks>
                 <task-ref id="TASK-038" file="tasks/TASK-038.xml"/>
                 <task-ref id="TASK-039" file="tasks/TASK-039.xml"/>
@@ -111,19 +116,42 @@
                 <task-ref id="TASK-042" file="tasks/TASK-042.xml"/>
             </tasks>
         </phase>
+
+        <phase id="phase-8" number="8">
+            <name>Version 2: URL-to-PDF Features</name>
+            <description>Add URL-to-PDF conversion with web navigation, network handling, and advanced web features</description>
+            <tasks>
+                <task-ref id="TASK-019" file="tasks/TASK-019.xml" note="Moved from Phase 3"/>
+                <task-ref id="TASK-043" file="tasks/TASK-043.xml" note="URL-to-PDF integration tests (split from TASK-021)"/>
+                <task-ref id="TASK-044" file="tasks/TASK-044.xml" note="Update TASK-029 to support URL sources"/>
+                <task-ref id="TASK-045" file="tasks/TASK-045.xml" note="Add URL-to-PDF REST endpoint (from TASK-034)"/>
+                <task-ref id="TASK-046" file="tasks/TASK-046.xml" note="Add URL-to-PDF UI form (from TASK-035)"/>
+                <task-ref id="TASK-047" file="tasks/TASK-047.xml" note="Network request interception and custom headers"/>
+                <task-ref id="TASK-048" file="tasks/TASK-048.xml" note="Authentication support for URLs"/>
+                <task-ref id="TASK-049" file="tasks/TASK-049.xml" note="Cookie management"/>
+            </tasks>
+            <note>This phase represents Version 2.0 features and should be started after Version 1.0 release</note>
+        </phase>
     </phases>
 
     <dependencies>
         <note>Phase dependencies are sequential - each phase should be completed before starting the next</note>
-        <critical-path>
-            <step>Phase 1: Bootstrap → Phase 2: Infrastructure → Phase 3: API → Phase 4: Wait Strategies</step>
+        <version-1-critical-path>
+            <step>Phase 1: Bootstrap → Phase 2: Infrastructure → Phase 3: API (HTML-to-PDF only)</step>
+            <step>Phase 4: Wait Strategies (can work with HTML-to-PDF)</step>
             <step>Phase 5: Advanced Features can be developed in parallel with Phase 4</step>
-            <step>Phase 6: Test App requires Phases 3, 4, 5 complete</step>
-            <step>Phase 7: Documentation is final phase</step>
-        </critical-path>
+            <step>Phase 6: Test App (HTML-to-PDF endpoints and UI) requires Phases 3, 4, 5 complete</step>
+            <step>Phase 7: Documentation is final phase for Version 1.0</step>
+        </version-1-critical-path>
+        <version-2-critical-path>
+            <step>Phase 8: URL-to-PDF Features - starts after Version 1.0 release (Phase 7 complete)</step>
+            <step>TASK-019 must be completed before other Phase 8 tasks</step>
+            <step>All Phase 8 tasks build upon Version 1 infrastructure</step>
+        </version-2-critical-path>
     </dependencies>
 
     <milestones>
+        <version>Version 1.0 Milestones</version>
         <milestone id="M1">
             <name>Project Foundation</name>
             <completion-criteria>Phase 1 complete - project builds successfully</completion-criteria>
@@ -133,20 +161,30 @@
             <completion-criteria>Phase 2 complete - Chrome can be launched and managed</completion-criteria>
         </milestone>
         <milestone id="M3">
-            <name>Basic PDF Generation</name>
-            <completion-criteria>Phase 3 complete - HTML to PDF and URL to PDF working</completion-criteria>
+            <name>HTML-to-PDF Generation Working</name>
+            <completion-criteria>Phase 3 complete - HTML to PDF working with full configuration options</completion-criteria>
         </milestone>
         <milestone id="M4">
-            <name>Production Ready</name>
-            <completion-criteria>Phases 4-5 complete - all features implemented</completion-criteria>
+            <name>Production Ready Features</name>
+            <completion-criteria>Phases 4-5 complete - wait strategies and advanced features (CSS, JS, headers/footers) implemented</completion-criteria>
         </milestone>
         <milestone id="M5">
-            <name>Fully Tested</name>
-            <completion-criteria>Phase 6 complete - test app validates all functionality</completion-criteria>
+            <name>Fully Tested with Demo App</name>
+            <completion-criteria>Phase 6 complete - test app validates HTML-to-PDF functionality</completion-criteria>
         </milestone>
         <milestone id="M6">
-            <name>Release Ready</name>
-            <completion-criteria>Phase 7 complete - documented, tested, ready for distribution</completion-criteria>
+            <name>Version 1.0 Release Ready</name>
+            <completion-criteria>Phase 7 complete - documented, tested, ready for 1.0 release</completion-criteria>
+        </milestone>
+
+        <version>Version 2.0 Milestones</version>
+        <milestone id="M7">
+            <name>URL-to-PDF Core Functionality</name>
+            <completion-criteria>TASK-019 complete - URL navigation and PDF generation working</completion-criteria>
+        </milestone>
+        <milestone id="M8">
+            <name>Version 2.0 Release Ready</name>
+            <completion-criteria>Phase 8 complete - URL-to-PDF with advanced web features, ready for 2.0 release</completion-criteria>
         </milestone>
     </milestones>
 

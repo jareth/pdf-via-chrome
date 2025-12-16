@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <task>
     <task-id>TASK-034</task-id>
-    <task-name>Implement REST Endpoints</task-name>
+    <task-name>Implement REST Endpoints (HTML-to-PDF)</task-name>
     <phase>Phase 6: Test Application</phase>
     <priority>MEDIUM</priority>
     <complexity>MODERATE</complexity>
@@ -11,32 +11,30 @@
     </dependencies>
 
     <description>
-        Implement REST API endpoints for PDF generation. These endpoints allow
-        testing the library via HTTP requests and serve as API examples.
+        Implement REST API endpoint for HTML-to-PDF generation. This endpoint allows
+        testing the library via HTTP requests and serves as an API example.
+        URL-to-PDF endpoint will be added in Version 2 (Phase 8).
     </description>
 
     <acceptance-criteria>
         <criterion>POST /api/pdf/from-html endpoint accepts HTML and generates PDF</criterion>
-        <criterion>POST /api/pdf/from-url endpoint accepts URL and generates PDF</criterion>
-        <criterion>Endpoints accept PdfOptions as JSON</criterion>
-        <criterion>Endpoints return PDF file with correct Content-Type</criterion>
+        <criterion>Endpoint accepts PdfOptions as JSON</criterion>
+        <criterion>Endpoint returns PDF file with correct Content-Type</criterion>
         <criterion>Error handling returns appropriate HTTP status codes</criterion>
         <criterion>Request validation implemented</criterion>
     </acceptance-criteria>
+    <note>POST /api/pdf/from-url endpoint moved to Version 2 (Phase 8, TASK-045)</note>
 
     <implementation-notes>
         <note>
-            Create PdfController with endpoints:
+            Create PdfController with endpoint:
 
             @PostMapping("/api/pdf/from-html")
             public ResponseEntity&lt;byte[]&gt; generateFromHtml(@RequestBody HtmlRequest request)
-
-            @PostMapping("/api/pdf/from-url")
-            public ResponseEntity&lt;byte[]&gt; generateFromUrl(@RequestBody UrlRequest request)
         </note>
         <note>
-            Request DTOs should include:
-            - content (HTML or URL)
+            HtmlRequest DTO should include:
+            - content (HTML string)
             - options (PdfOptions as JSON)
             - waitStrategy (optional)
         </note>
@@ -56,9 +54,9 @@
     <affected-files>
         <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
         <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/HtmlRequest.java</file>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/UrlRequest.java</file>
         <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerTest.java</file>
     </affected-files>
+    <note>UrlRequest.java moved to Version 2 (Phase 8, TASK-045)</note>
 
     <testing-requirements>
         <requirement>Unit tests for controller with mocked PdfGenerator</requirement>
