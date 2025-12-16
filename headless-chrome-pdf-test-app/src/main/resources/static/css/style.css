@@ -1,0 +1,256 @@
+/* Custom styles for Headless Chrome PDF Test Application */
+
+/* Body and Layout */
+body {
+    background-color: #f8f9fa;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background-color: white;
+}
+
+header h1 {
+    font-weight: 600;
+}
+
+/* Cards */
+.card {
+    border: none;
+    border-radius: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+}
+
+.card-header {
+    border-bottom: none;
+    font-weight: 600;
+    border-radius: 8px 8px 0 0 !important;
+}
+
+/* Textarea */
+#htmlContent {
+    font-size: 0.9em;
+    line-height: 1.5;
+    resize: vertical;
+    border: 2px solid #dee2e6;
+    border-radius: 6px;
+    transition: border-color 0.2s;
+}
+
+#htmlContent:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+/* Form Controls */
+.form-control:focus,
+.form-select:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+.form-check-input:checked {
+    background-color: #667eea;
+    border-color: #667eea;
+}
+
+.form-check-input:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.15);
+}
+
+/* Range Slider */
+.form-range::-webkit-slider-thumb {
+    background-color: #667eea;
+}
+
+.form-range::-moz-range-thumb {
+    background-color: #667eea;
+}
+
+.form-range::-webkit-slider-thumb:hover {
+    background-color: #5568d3;
+}
+
+.form-range::-moz-range-thumb:hover {
+    background-color: #5568d3;
+}
+
+/* Buttons */
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    font-weight: 500;
+    padding: 12px 24px;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(135deg, #5568d3 0%, #66388f 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-outline-secondary {
+    font-weight: 500;
+    transition: transform 0.2s;
+}
+
+.btn-outline-secondary:hover {
+    transform: translateY(-1px);
+}
+
+/* Accordion */
+.accordion-button:not(.collapsed) {
+    background-color: #f8f9fa;
+    color: #667eea;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: #dee2e6;
+}
+
+/* Alert Container */
+#alertContainer {
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    margin-bottom: 20px;
+}
+
+.alert {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.alert-warning {
+    background-color: #fff3cd;
+    color: #856404;
+}
+
+/* Loading Spinner */
+#loadingSpinner .spinner-border {
+    width: 3rem;
+    height: 3rem;
+}
+
+/* Character Count */
+#charCount {
+    font-weight: 600;
+    color: #667eea;
+}
+
+/* Footer */
+footer {
+    margin-top: auto;
+    background-color: white;
+}
+
+footer p {
+    font-size: 0.9em;
+}
+
+/* Responsive Design */
+@media (max-width: 991px) {
+    .card {
+        margin-bottom: 20px;
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+
+    #htmlContent {
+        rows: 15;
+    }
+}
+
+@media (max-width: 576px) {
+    header {
+        padding: 20px 0 !important;
+    }
+
+    header h1 {
+        font-size: 1.25rem;
+    }
+
+    .btn-lg {
+        font-size: 1rem;
+        padding: 10px 20px;
+    }
+
+    #htmlContent {
+        font-size: 0.85em;
+        rows: 12;
+    }
+}
+
+/* Animation for cards */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.3s ease-in;
+}
+
+/* Tooltip Styling */
+.tooltip-inner {
+    background-color: #667eea;
+}
+
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #667eea;
+}
+
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: #667eea;
+}
+
+.tooltip.bs-tooltip-start .tooltip-arrow::before {
+    border-left-color: #667eea;
+}
+
+.tooltip.bs-tooltip-end .tooltip-arrow::before {
+    border-right-color: #667eea;
+}
+
+/* Utility Classes */
+.font-monospace {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}

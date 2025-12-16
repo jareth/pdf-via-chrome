@@ -21,7 +21,7 @@ public class HealthCheckController {
      *
      * @return health status with uptime information
      */
-    @GetMapping("/")
+    @GetMapping("/api/health")
     public ResponseEntity<Map<String, Object>> healthCheck() {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "UP");
