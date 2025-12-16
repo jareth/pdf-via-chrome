@@ -2,6 +2,7 @@
 <task>
     <task-id>TASK-034</task-id>
     <task-name>Implement REST Endpoints (HTML-to-PDF)</task-name>
+    <status>COMPLETED</status>
     <phase>Phase 6: Test Application</phase>
     <priority>MEDIUM</priority>
     <complexity>MODERATE</complexity>
@@ -67,4 +68,57 @@
     </testing-requirements>
 
     <estimated-effort>5-6 hours</estimated-effort>
+
+    <implementation-summary>
+        <completed-items>
+            <item>Created HtmlRequest DTO with validation (@NotBlank on content field)</item>
+            <item>Created PdfOptionsDto with full mapping to PdfOptions (all fields supported)</item>
+            <item>Configured PdfGenerator as singleton Spring Bean with destroyMethod</item>
+            <item>Implemented PdfController with POST /api/pdf/from-html endpoint</item>
+            <item>Created GlobalExceptionHandler with specific handlers for all exception types:
+                - MethodArgumentNotValidException (400)
+                - IllegalArgumentException (400)
+                - ChromeNotFoundException (503)
+                - BrowserTimeoutException (504)
+                - PageLoadException (422)
+                - CdpConnectionException (503)
+                - PdfGenerationException (500)
+                - Generic Exception (500)
+            </item>
+            <item>Added spring-boot-starter-validation dependency</item>
+            <item>Added spring-boot-starter-test dependency</item>
+            <item>Created comprehensive unit tests (8 tests, all passing):
+                - Successful PDF generation
+                - PDF generation with custom options
+                - Validation error for empty content
+                - Validation error for null content
+                - Invalid paper format error
+                - Chrome not found exception
+                - Browser timeout exception
+                - PDF generation exception
+            </item>
+            <item>Created integration tests (5 tests):
+                - Actual PDF generation with default options
+                - PDF generation with custom options
+                - Complex HTML with CSS styling
+                - Validation error handling
+                - Invalid scale handling
+            </item>
+            <item>Created MANUAL_TESTING.md with curl and PowerShell examples</item>
+        </completed-items>
+        <files-created>
+            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/HtmlRequest.java</file>
+            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/PdfOptionsDto.java</file>
+            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/config/PdfGeneratorConfig.java</file>
+            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
+            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/GlobalExceptionHandler.java</file>
+            <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerTest.java</file>
+            <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerIntegrationTest.java</file>
+            <file>headless-chrome-pdf-test-app/src/test/resources/application-test.properties</file>
+            <file>headless-chrome-pdf-test-app/MANUAL_TESTING.md</file>
+        </files-created>
+        <files-modified>
+            <file>headless-chrome-pdf-test-app/pom.xml (added validation and test dependencies, configured surefire plugin)</file>
+        </files-modified>
+    </implementation-summary>
 </task>

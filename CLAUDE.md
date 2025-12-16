@@ -36,7 +36,7 @@ mvn test -Dtest=ChromeManagerTest#testStartChrome
 This is a Maven multi-module project with two modules:
 
 - **headless-chrome-pdf-core**: The main library containing all PDF generation functionality. All core implementation happens here.
-- **headless-chrome-pdf-test-app**: A Spring Boot application for manual testing (not yet implemented).
+- **headless-chrome-pdf-test-app**: A Spring Boot application for manual testing and demonstrating the library. Includes REST API endpoints for HTML-to-PDF generation.
 
 ## Core Architecture
 
@@ -118,9 +118,28 @@ Base package: `com.github.headlesschromepdf`
 - **wait/**: Wait strategies for page readiness (NOT YET IMPLEMENTED)
   - Planned: `WaitStrategy`, `NetworkIdleWait`, `ElementWait`, `TimeoutWait`
 
+### Package Structure (headless-chrome-pdf-test-app)
+
+Base package: `com.github.headlesschromepdf.testapp`
+
+- **controller/**: REST controllers (PARTIALLY IMPLEMENTED)
+  - `PdfController` - REST endpoint for HTML-to-PDF generation
+  - `HealthCheckController` - Health check endpoint
+  - `GlobalExceptionHandler` - Global exception handling with appropriate HTTP status codes
+
+- **dto/**: Data Transfer Objects (IMPLEMENTED)
+  - `HtmlRequest` - Request DTO for HTML-to-PDF endpoint with validation
+  - `PdfOptionsDto` - PDF options mapping for JSON requests
+
+- **config/**: Spring configuration (IMPLEMENTED)
+  - `PdfGeneratorConfig` - Bean configuration for PdfGenerator
+
+- **ui/**: Web UI controllers (NOT YET IMPLEMENTED)
+  - Planned: Thymeleaf-based UI for manual testing
+
 ## Implementation Status
 
-Currently in **Phase 3-4** (Public API and Conversion Logic). The project has core PDF generation functionality working.
+Currently in **Phase 4-6** (Conversion Logic and Test Application). The project has core PDF generation functionality working and a Spring Boot test application with REST API endpoints.
 
 ### Completed Components
 
@@ -142,11 +161,22 @@ Currently in **Phase 3-4** (Public API and Conversion Logic). The project has co
 - ConversionContext - Supporting context for conversions
 - PdfGenerator.fromHtml() - Integrated HTML to PDF generation
 
+**Test Application (Phase 6 - Partial):**
+- Spring Boot application structure with health check endpoint
+- PdfController - REST endpoint POST /api/pdf/from-html for HTML-to-PDF generation
+- PdfOptionsDto - Complete JSON mapping for all PDF options
+- HtmlRequest DTO with validation (@NotBlank)
+- GlobalExceptionHandler - Comprehensive error handling with appropriate HTTP status codes
+- PdfGenerator configured as Spring Bean with automatic resource cleanup
+- Unit tests (8 tests, all passing) and integration tests (5 tests) for REST endpoints
+- Manual testing documentation with curl and PowerShell examples
+
 ### Not Yet Implemented
 
 - **Wait strategies (wait/ package)**: NetworkIdleWait, ElementWait, TimeoutWait, custom conditions
 - **URL converter**: Dedicated UrlToPdfConverter (currently handled via PdfGenerator.fromUrl() with basic implementation)
-- **Test application**: Spring Boot demo app (module exists but not implemented)
+- **Test application UI**: Thymeleaf-based web UI for manual testing (REST API endpoints completed)
+- **Test application URL endpoint**: POST /api/pdf/from-url endpoint (moved to Version 2, Phase 8)
 - **Advanced features**: Browser pooling, request interception, custom headers, authentication
 
 ### Working Features
@@ -162,6 +192,14 @@ The library can currently:
 8. Enable/disable background graphics
 9. Set custom headers and footers
 10. Handle thread-safe concurrent PDF generation
+
+The test application provides:
+1. REST API endpoint: POST /api/pdf/from-html - Generate PDFs from HTML via HTTP
+2. Complete PDF options support via JSON (all PdfOptions fields)
+3. Request validation and comprehensive error handling
+4. Appropriate HTTP status codes for different error types
+5. Health check endpoint for application monitoring
+6. Manual testing examples (curl, PowerShell) in MANUAL_TESTING.md
 
 Refer to PROJECT_SPEC.xml for the complete implementation roadmap (7 phases total).
 
@@ -302,6 +340,92 @@ try (ChromeManager chromeManager = new ChromeManager(chromeOptions)) {
     }
 }
 ```
+
+## Test Application REST API
+
+The test application provides a REST endpoint for testing the library via HTTP requests.
+
+### Starting the Test Application
+
+```bash
+# Run from project root
+mvn spring-boot:run -pl headless-chrome-pdf-test-app
+
+# Or build and run the JAR
+mvn clean package -pl headless-chrome-pdf-test-app
+java -jar headless-chrome-pdf-test-app/target/headless-chrome-pdf-test-app-1.0.0-SNAPSHOT.jar
+```
+
+Application runs on `http://localhost:8080`
+
+### Generate PDF from HTML
+
+```bash
+# Basic request
+curl -X POST http://localhost:8080/api/pdf/from-html \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "<html><body><h1>Hello World</h1></body></html>"
+  }' \
+  --output test.pdf
+
+# With custom options
+curl -X POST http://localhost:8080/api/pdf/from-html \
+  -H "Content-Type: application/json" \
+  -d '{
+    "content": "<html><body><h1>Custom PDF</h1></body></html>",
+    "options": {
+      "paperFormat": "A4",
+      "landscape": true,
+      "printBackground": true,
+      "margins": "1cm"
+    }
+  }' \
+  --output custom.pdf
+```
+
+### PowerShell Example
+
+```powershell
+$body = @{
+    content = "<html><body><h1>Hello World</h1></body></html>"
+    options = @{
+        paperFormat = "A4"
+        printBackground = $true
+    }
+} | ConvertTo-Json
+
+Invoke-RestMethod -Uri "http://localhost:8080/api/pdf/from-html" `
+    -Method Post `
+    -ContentType "application/json" `
+    -Body $body `
+    -OutFile "output.pdf"
+```
+
+### Available Options
+
+All PdfOptions fields are supported via JSON:
+- `paperFormat`: "LETTER", "A4", "LEGAL", "A3", etc.
+- `landscape`: true/false
+- `printBackground`: true/false
+- `scale`: 0.1 to 2.0
+- `margins`: "1cm" or individual margins (marginTop, marginBottom, marginLeft, marginRight)
+- `displayHeaderFooter`: true/false
+- `headerTemplate`, `footerTemplate`: HTML strings
+- `pageRanges`: "1-5, 8, 11-13"
+- `preferCssPageSize`: true/false
+
+### Error Responses
+
+The API returns appropriate HTTP status codes:
+- `200 OK` - PDF generated successfully
+- `400 Bad Request` - Validation errors or invalid options
+- `422 Unprocessable Entity` - Page load failures
+- `500 Internal Server Error` - PDF generation failures
+- `503 Service Unavailable` - Chrome not found or CDP connection issues
+- `504 Gateway Timeout` - Browser operation timeout
+
+See `headless-chrome-pdf-test-app/MANUAL_TESTING.md` for more examples.
 
 ## Development Notes
 
