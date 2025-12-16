@@ -63,7 +63,7 @@
                 <task-ref id="TASK-017" file="tasks/TASK-017.xml"/>
                 <task-ref id="TASK-018" file="tasks/TASK-018.xml" status="Completed"/>
                 <task-ref id="TASK-020" file="tasks/TASK-020.xml"/>
-                <task-ref id="TASK-021" file="tasks/TASK-021.xml" note="HTML-to-PDF integration tests only"/>
+                <task-ref id="TASK-021" file="tasks/TASK-021.xml" status="Completed" note="HTML-to-PDF integration tests only"/>
             </tasks>
             <note>TASK-019 (URL-to-PDF Converter) moved to Phase 8 (Version 2)</note>
         </phase>

@@ -9,6 +9,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Utility class for automatically detecting Chrome/Chromium installation paths
@@ -213,8 +214,9 @@ public class ChromePathDetector {
             return false;
         }
 
+        Process process = null;
         try {
-            Process process = new ProcessBuilder(chromePath.toString(), "--version")
+            process = new ProcessBuilder(chromePath.toString(), "--version")
                 .redirectErrorStream(true)
                 .start();
 
@@ -224,7 +226,7 @@ public class ChromePathDetector {
                     .orElse("");
 
                 // Wait for process to complete
-                process.waitFor();
+                process.waitFor(10, TimeUnit.SECONDS);
 
                 // Check if output contains "Chrome" or "Chromium"
                 String lowerOutput = output.toLowerCase();
@@ -233,6 +235,11 @@ public class ChromePathDetector {
         } catch (IOException | InterruptedException e) {
             Thread.currentThread().interrupt();
             return false;
+        } finally {
+            // Ensure the process is destroyed to prevent resource leaks
+            if (process != null && process.isAlive()) {
+                process.destroy();
+            }
         }
     }
 
