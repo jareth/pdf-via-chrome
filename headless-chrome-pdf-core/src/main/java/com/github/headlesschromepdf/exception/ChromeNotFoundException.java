@@ -4,20 +4,20 @@ package com.github.headlesschromepdf.exception;
  * Exception thrown when the Chrome/Chromium executable cannot be found on the system.
  * <p>
  * This exception is typically thrown during Chrome browser startup when:
+ * </p>
  * <ul>
  *   <li>No Chrome path is explicitly configured in {@link com.github.headlesschromepdf.chrome.ChromeOptions}</li>
  *   <li>Auto-detection fails to find Chrome in standard installation locations</li>
  *   <li>The specified Chrome executable path does not exist or is not executable</li>
  * </ul>
- * </p>
  * <p>
  * To resolve this exception:
+ * </p>
  * <ul>
  *   <li>Install Chrome or Chromium on the system</li>
  *   <li>Explicitly set the Chrome path using {@code ChromeOptions.Builder.chromePath(String)}</li>
  *   <li>Ensure the Chrome executable has proper permissions</li>
  * </ul>
- * </p>
  *
  * @see com.github.headlesschromepdf.chrome.ChromeManager
  * @see com.github.headlesschromepdf.chrome.ChromeOptions

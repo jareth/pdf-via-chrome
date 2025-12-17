@@ -30,26 +30,56 @@ public class PageOptions {
         this.deviceScaleFactor = builder.deviceScaleFactor;
     }
 
+    /**
+     * Returns the viewport width in pixels.
+     *
+     * @return the viewport width in pixels
+     */
     public int getViewportWidth() {
         return viewportWidth;
     }
 
+    /**
+     * Returns the viewport height in pixels.
+     *
+     * @return the viewport height in pixels
+     */
     public int getViewportHeight() {
         return viewportHeight;
     }
 
+    /**
+     * Returns the custom user agent string.
+     *
+     * @return the user agent string, or null if using Chrome's default
+     */
     public String getUserAgent() {
         return userAgent;
     }
 
+    /**
+     * Returns the page load timeout.
+     *
+     * @return the page load timeout duration
+     */
     public Duration getPageLoadTimeout() {
         return pageLoadTimeout;
     }
 
+    /**
+     * Returns whether JavaScript is enabled for the page.
+     *
+     * @return true if JavaScript is enabled, false otherwise
+     */
     public boolean isJavascriptEnabled() {
         return javascriptEnabled;
     }
 
+    /**
+     * Returns the device scale factor (pixel ratio).
+     *
+     * @return the device scale factor
+     */
     public double getDeviceScaleFactor() {
         return deviceScaleFactor;
     }

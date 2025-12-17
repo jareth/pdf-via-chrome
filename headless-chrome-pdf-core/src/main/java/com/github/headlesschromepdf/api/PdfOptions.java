@@ -41,58 +41,129 @@ public class PdfOptions {
         this.preferCssPageSize = builder.preferCssPageSize;
     }
 
+    /**
+     * Returns whether the PDF should be printed in landscape orientation.
+     *
+     * @return true if landscape orientation, false for portrait
+     */
     public boolean isLandscape() {
         return landscape;
     }
 
+    /**
+     * Returns whether to display header and footer in the PDF.
+     *
+     * @return true if header/footer should be displayed, false otherwise
+     */
     public boolean isDisplayHeaderFooter() {
         return displayHeaderFooter;
     }
 
+    /**
+     * Returns whether to print background graphics in the PDF.
+     *
+     * @return true if background graphics should be printed, false otherwise
+     */
     public boolean isPrintBackground() {
         return printBackground;
     }
 
+    /**
+     * Returns the scale factor for webpage rendering.
+     *
+     * @return the scale factor (between 0.1 and 2.0)
+     */
     public double getScale() {
         return scale;
     }
 
+    /**
+     * Returns the paper width in inches.
+     *
+     * @return the paper width in inches
+     */
     public double getPaperWidth() {
         return paperWidth;
     }
 
+    /**
+     * Returns the paper height in inches.
+     *
+     * @return the paper height in inches
+     */
     public double getPaperHeight() {
         return paperHeight;
     }
 
+    /**
+     * Returns the top margin in inches.
+     *
+     * @return the top margin in inches
+     */
     public double getMarginTop() {
         return marginTop;
     }
 
+    /**
+     * Returns the bottom margin in inches.
+     *
+     * @return the bottom margin in inches
+     */
     public double getMarginBottom() {
         return marginBottom;
     }
 
+    /**
+     * Returns the left margin in inches.
+     *
+     * @return the left margin in inches
+     */
     public double getMarginLeft() {
         return marginLeft;
     }
 
+    /**
+     * Returns the right margin in inches.
+     *
+     * @return the right margin in inches
+     */
     public double getMarginRight() {
         return marginRight;
     }
 
+    /**
+     * Returns the page ranges to print (e.g., "1-5, 8, 11-13").
+     * Empty string means all pages.
+     *
+     * @return the page ranges string
+     */
     public String getPageRanges() {
         return pageRanges;
     }
 
+    /**
+     * Returns the HTML template for the header.
+     *
+     * @return the header HTML template, or empty string if not set
+     */
     public String getHeaderTemplate() {
         return headerTemplate;
     }
 
+    /**
+     * Returns the HTML template for the footer.
+     *
+     * @return the footer HTML template, or empty string if not set
+     */
     public String getFooterTemplate() {
         return footerTemplate;
     }
 
+    /**
+     * Returns whether to prefer CSS-defined page size over the provided paper size.
+     *
+     * @return true if CSS page size should be preferred, false otherwise
+     */
     public boolean isPreferCssPageSize() {
         return preferCssPageSize;
     }
@@ -594,16 +665,37 @@ public class PdfOptions {
      * Common paper formats with dimensions in inches.
      */
     public enum PaperFormat {
+        /** US Letter paper (8.5 x 11 inches). */
         LETTER(8.5, 11.0),
+
+        /** US Legal paper (8.5 x 14 inches). */
         LEGAL(8.5, 14.0),
+
+        /** Tabloid paper (11 x 17 inches). */
         TABLOID(11.0, 17.0),
+
+        /** Ledger paper (17 x 11 inches). */
         LEDGER(17.0, 11.0),
+
+        /** ISO A0 paper (33.1 x 46.8 inches). */
         A0(33.1, 46.8),
+
+        /** ISO A1 paper (23.4 x 33.1 inches). */
         A1(23.4, 33.1),
+
+        /** ISO A2 paper (16.5 x 23.4 inches). */
         A2(16.5, 23.4),
+
+        /** ISO A3 paper (11.7 x 16.5 inches). */
         A3(11.7, 16.5),
+
+        /** ISO A4 paper (8.27 x 11.7 inches). */
         A4(8.27, 11.7),
+
+        /** ISO A5 paper (5.83 x 8.27 inches). */
         A5(5.83, 8.27),
+
+        /** ISO A6 paper (4.13 x 5.83 inches). */
         A6(4.13, 5.83);
 
         private final double width;
@@ -614,10 +706,20 @@ public class PdfOptions {
             this.height = height;
         }
 
+        /**
+         * Returns the width of the paper format in inches.
+         *
+         * @return the width in inches
+         */
         public double getWidth() {
             return width;
         }
 
+        /**
+         * Returns the height of the paper format in inches.
+         *
+         * @return the height in inches
+         */
         public double getHeight() {
             return height;
         }

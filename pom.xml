@@ -238,7 +238,10 @@
                     <configuration>
                         <source>${java.version}</source>
                         <encoding>${project.build.sourceEncoding}</encoding>
-                        <doclint>none</doclint>
+                        <doclint>all</doclint>
+                        <failOnWarnings>true</failOnWarnings>
+                        <show>public</show>
+                        <quiet>false</quiet>
                     </configuration>
                     <executions>
                         <execution>

@@ -4,6 +4,7 @@ package com.github.headlesschromepdf.exception;
  * Exception thrown when a browser operation exceeds its configured timeout.
  * <p>
  * This exception is thrown in various timeout scenarios:
+ * </p>
  * <ul>
  *   <li>Chrome browser startup takes longer than the configured startup timeout</li>
  *   <li>WebSocket connection to Chrome DevTools Protocol cannot be established within the timeout</li>
@@ -12,16 +13,15 @@ package com.github.headlesschromepdf.exception;
  *   <li>PDF rendering operation exceeds its timeout</li>
  *   <li>Wait strategies (e.g., network idle, element presence) time out</li>
  * </ul>
- * </p>
  * <p>
  * To resolve this exception:
+ * </p>
  * <ul>
  *   <li>Increase timeout values in {@link com.github.headlesschromepdf.chrome.ChromeOptions}</li>
  *   <li>Optimize the page being rendered (reduce resource loading, scripts, etc.)</li>
  *   <li>Ensure adequate system resources (CPU, memory) are available</li>
  *   <li>Check for network connectivity issues if loading remote URLs</li>
  * </ul>
- * </p>
  *
  * @see com.github.headlesschromepdf.chrome.ChromeOptions
  * @see com.github.headlesschromepdf.chrome.ChromeManager

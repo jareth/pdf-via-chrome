@@ -22,13 +22,13 @@ import java.util.concurrent.atomic.AtomicReference;
  * for PDF generation.
  * <p>
  * This class provides high-level methods for:
+ * </p>
  * <ul>
  *   <li>Navigating to URLs</li>
  *   <li>Loading HTML content directly</li>
  *   <li>Generating PDFs from loaded pages</li>
  *   <li>Handling page load events and timeouts</li>
  * </ul>
- * </p>
  * <p>
  * PageController handles the complexity of CDP event-driven operations and provides
  * synchronous methods that wait for page load completion before returning.

@@ -5,6 +5,7 @@ package com.github.headlesschromepdf.exception;
  * <p>
  * This exception is thrown when the library cannot establish or maintain a WebSocket
  * connection to the Chrome browser's DevTools Protocol interface. Common scenarios include:
+ * </p>
  * <ul>
  *   <li>Chrome browser did not start properly or crashed before connection</li>
  *   <li>WebSocket URL could not be extracted from Chrome's debugging output</li>
@@ -14,7 +15,6 @@ package com.github.headlesschromepdf.exception;
  *   <li>Network or firewall issues blocking WebSocket connection</li>
  *   <li>Browser debugging port is already in use or inaccessible</li>
  * </ul>
- * </p>
  * <p>
  * The Chrome DevTools Protocol is essential for all browser control operations including
  * navigation, JavaScript execution, and PDF generation. If this connection cannot be
@@ -22,6 +22,7 @@ package com.github.headlesschromepdf.exception;
  * </p>
  * <p>
  * To resolve this exception:
+ * </p>
  * <ul>
  *   <li>Ensure Chrome started successfully without errors</li>
  *   <li>Verify the debugging port is not blocked by firewall</li>
@@ -29,7 +30,6 @@ package com.github.headlesschromepdf.exception;
  *   <li>Increase connection timeout if network latency is high</li>
  *   <li>Review Chrome startup logs for errors</li>
  * </ul>
- * </p>
  *
  * @see com.github.headlesschromepdf.cdp.CdpSession
  * @see com.github.headlesschromepdf.cdp.CdpClient

@@ -4,6 +4,7 @@ package com.github.headlesschromepdf.exception;
  * Exception thrown when page navigation or loading fails.
  * <p>
  * This exception is thrown in various page loading failure scenarios:
+ * </p>
  * <ul>
  *   <li>HTTP errors (404, 500, etc.) when navigating to a URL</li>
  *   <li>Network errors preventing page access (DNS resolution, connection refused, etc.)</li>
@@ -13,7 +14,6 @@ package com.github.headlesschromepdf.exception;
  *   <li>JavaScript errors that prevent page rendering</li>
  *   <li>Content Security Policy violations blocking resources</li>
  * </ul>
- * </p>
  * <p>
  * Note: This exception is distinct from {@link BrowserTimeoutException}. PageLoadException
  * indicates the page failed to load due to an error, while BrowserTimeoutException indicates
@@ -21,6 +21,7 @@ package com.github.headlesschromepdf.exception;
  * </p>
  * <p>
  * To resolve this exception:
+ * </p>
  * <ul>
  *   <li>Verify the URL is correct and accessible</li>
  *   <li>Check network connectivity and DNS resolution</li>
@@ -28,7 +29,6 @@ package com.github.headlesschromepdf.exception;
  *   <li>Review browser console errors for JavaScript issues</li>
  *   <li>Configure Chrome options to ignore certificate errors if needed (not recommended for production)</li>
  * </ul>
- * </p>
  *
  * @see BrowserTimeoutException
  * @see com.github.headlesschromepdf.chrome.ChromeOptions

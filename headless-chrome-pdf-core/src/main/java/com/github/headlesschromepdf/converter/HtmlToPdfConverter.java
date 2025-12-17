@@ -21,6 +21,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  * </p>
  * <p>
  * Usage example:
+ * </p>
  * <pre>
  * String html = "&lt;html&gt;&lt;body&gt;&lt;h1&gt;Hello World&lt;/h1&gt;&lt;/body&gt;&lt;/html&gt;";
  * PdfOptions options = PdfOptions.builder()
@@ -34,7 +35,6 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *     // Save or process PDF data
  * }
  * </pre>
- * </p>
  */
 public class HtmlToPdfConverter {
 

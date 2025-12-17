@@ -9,6 +9,7 @@ package com.github.headlesschromepdf.exception;
  * </p>
  * <p>
  * Common scenarios where this exception or its subclasses may be thrown:
+ * </p>
  * <ul>
  *   <li>Chrome browser cannot be found or started</li>
  *   <li>Chrome DevTools Protocol connection fails</li>
@@ -16,7 +17,6 @@ package com.github.headlesschromepdf.exception;
  *   <li>Page navigation or loading fails</li>
  *   <li>PDF rendering encounters errors</li>
  * </ul>
- * </p>
  *
  * @see ChromeNotFoundException
  * @see BrowserTimeoutException

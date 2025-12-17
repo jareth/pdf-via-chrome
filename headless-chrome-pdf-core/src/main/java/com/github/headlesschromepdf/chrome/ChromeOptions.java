@@ -39,46 +39,101 @@ public class ChromeOptions {
         this.shutdownTimeoutSeconds = builder.shutdownTimeoutSeconds;
     }
 
+    /**
+     * Returns the path to the Chrome executable.
+     *
+     * @return the Chrome executable path, or null if using auto-detection
+     */
     public Path getChromePath() {
         return chromePath;
     }
 
+    /**
+     * Returns whether Chrome should run in headless mode.
+     *
+     * @return true if headless mode is enabled, false otherwise
+     */
     public boolean isHeadless() {
         return headless;
     }
 
+    /**
+     * Returns the remote debugging port number.
+     *
+     * @return the debugging port number, or 0 for a random available port
+     */
     public int getRemoteDebuggingPort() {
         return remoteDebuggingPort;
     }
 
+    /**
+     * Returns the user data directory for Chrome.
+     *
+     * @return the user data directory path, or null if using a temporary directory
+     */
     public Path getUserDataDir() {
         return userDataDir;
     }
 
+    /**
+     * Returns the list of additional Chrome command-line flags.
+     *
+     * @return an unmodifiable list of additional flags
+     */
     public List<String> getAdditionalFlags() {
         return additionalFlags;
     }
 
+    /**
+     * Returns whether GPU acceleration is disabled.
+     *
+     * @return true if GPU is disabled, false otherwise
+     */
     public boolean isDisableGpu() {
         return disableGpu;
     }
 
+    /**
+     * Returns whether /dev/shm usage is disabled.
+     *
+     * @return true if /dev/shm usage is disabled, false otherwise
+     */
     public boolean isDisableDevShmUsage() {
         return disableDevShmUsage;
     }
 
+    /**
+     * Returns whether Chrome sandbox is disabled.
+     *
+     * @return true if sandbox is disabled, false otherwise
+     */
     public boolean isNoSandbox() {
         return noSandbox;
     }
 
+    /**
+     * Returns the Chrome window size specification.
+     *
+     * @return the window size string (e.g., "1920,1080"), or null if not set
+     */
     public String getWindowSize() {
         return windowSize;
     }
 
+    /**
+     * Returns the Chrome startup timeout in seconds.
+     *
+     * @return the startup timeout in seconds
+     */
     public int getStartupTimeoutSeconds() {
         return startupTimeoutSeconds;
     }
 
+    /**
+     * Returns the Chrome shutdown timeout in seconds.
+     *
+     * @return the shutdown timeout in seconds
+     */
     public int getShutdownTimeoutSeconds() {
         return shutdownTimeoutSeconds;
     }
