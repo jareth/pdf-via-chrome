@@ -136,10 +136,16 @@ public class ChromeOptions {
          * Sets the remote debugging port.
          * Use 0 (default) for a random available port.
          *
-         * @param port the port number, or 0 for random
+         * @param port the port number, or 0 for random (must be 0-65535)
          * @return this builder
+         * @throws IllegalArgumentException if port is not in valid range
          */
         public Builder remoteDebuggingPort(int port) {
+            if (port < 0 || port > 65535) {
+                throw new IllegalArgumentException(
+                    "Remote debugging port must be between 0 and 65535, got: " + port
+                );
+            }
             this.remoteDebuggingPort = port;
             return this;
         }
@@ -161,8 +167,12 @@ public class ChromeOptions {
          *
          * @param flag the flag to add
          * @return this builder
+         * @throws IllegalArgumentException if flag is null
          */
         public Builder addFlag(String flag) {
+            if (flag == null) {
+                throw new IllegalArgumentException("Flag cannot be null");
+            }
             this.additionalFlags.add(flag);
             return this;
         }
@@ -172,8 +182,18 @@ public class ChromeOptions {
          *
          * @param flags the flags to add
          * @return this builder
+         * @throws IllegalArgumentException if flags is null or contains null elements
          */
         public Builder addFlags(List<String> flags) {
+            if (flags == null) {
+                throw new IllegalArgumentException("Flags list cannot be null");
+            }
+            // Check for null elements safely
+            for (String flag : flags) {
+                if (flag == null) {
+                    throw new IllegalArgumentException("Flags list cannot contain null elements");
+                }
+            }
             this.additionalFlags.addAll(flags);
             return this;
         }
@@ -259,10 +279,16 @@ public class ChromeOptions {
          * Sets the timeout in seconds for Chrome startup.
          * Default is 30 seconds.
          *
-         * @param timeoutSeconds the timeout in seconds
+         * @param timeoutSeconds the timeout in seconds (must be positive)
          * @return this builder
+         * @throws IllegalArgumentException if timeoutSeconds is not positive
          */
         public Builder startupTimeout(int timeoutSeconds) {
+            if (timeoutSeconds <= 0) {
+                throw new IllegalArgumentException(
+                    "Startup timeout must be positive, got: " + timeoutSeconds
+                );
+            }
             this.startupTimeoutSeconds = timeoutSeconds;
             return this;
         }
@@ -272,10 +298,16 @@ public class ChromeOptions {
          * If the process doesn't terminate within this time, it will be forcibly killed.
          * Default is 5 seconds.
          *
-         * @param timeoutSeconds the timeout in seconds
+         * @param timeoutSeconds the timeout in seconds (must be positive)
          * @return this builder
+         * @throws IllegalArgumentException if timeoutSeconds is not positive
          */
         public Builder shutdownTimeout(int timeoutSeconds) {
+            if (timeoutSeconds <= 0) {
+                throw new IllegalArgumentException(
+                    "Shutdown timeout must be positive, got: " + timeoutSeconds
+                );
+            }
             this.shutdownTimeoutSeconds = timeoutSeconds;
             return this;
         }

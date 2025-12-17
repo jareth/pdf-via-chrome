@@ -212,7 +212,10 @@ Refer to PROJECT_SPEC.xml for the complete implementation roadmap (7 phases tota
 
 ## Key Technologies
 
-- **Chrome DevTools Protocol**: Using `chrome-devtools-java-client` (com.github.kklisura.cdt:cdt-java-client:4.0.0)
+- **Chrome DevTools Protocol**: Using `cdt-java-client` (io.fluidsonic.mirror:cdt-java-client:4.0.0-fluidsonic-1)
+  - Note: Uses the fluidsonic fork instead of the original com.github.kklisura.cdt library
+  - The fork fixes a bug where `createTab()` incorrectly uses HTTP GET instead of PUT for the /json/new endpoint
+  - Chrome requires PUT for tab creation, the original library would fail with HTTP 405 Method Not Allowed
 - **Logging**: SLF4J API (implementation chosen by library users)
 - **Testing**: JUnit 5, Mockito, AssertJ, Testcontainers (for integration tests with containerized Chrome)
 
@@ -223,9 +226,12 @@ The ChromeManager handles Chrome with these important considerations:
 1. **Auto-detection**: If no Chrome path is specified, ChromePathDetector will search standard locations
 2. **User data directory**: Creates temporary directory by default, cleaned up on close
 3. **Stability flags**: Automatically adds ~30 Chrome flags for stability (disable extensions, background tasks, etc.)
-4. **Docker support**: Options for `--no-sandbox` and `--disable-dev-shm-usage` for container environments
-5. **Graceful shutdown**: Attempts destroy() first, then destroyForcibly() after timeout
-6. **WebSocket URL extraction**: Parses Chrome stdout to find debugging WebSocket URL
+4. **Chrome 98+ compatibility**: Includes `--remote-allow-origins=*` flag required for Chrome 98+ to allow WebSocket connections to CDP
+   - Without this flag, Chrome will reject CDP WebSocket connections with HTTP 403 Forbidden
+   - This flag is automatically added by ChromeManager for all Chrome instances
+5. **Docker support**: Options for `--no-sandbox` and `--disable-dev-shm-usage` for container environments
+6. **Graceful shutdown**: Attempts destroy() first, then destroyForcibly() after timeout
+7. **WebSocket URL extraction**: Parses Chrome stdout to find debugging WebSocket URL
 
 ## CDP Session Management
 

@@ -53,7 +53,7 @@
             <completion-date>2025-12-16</completion-date>
         </phase>
 
-        <phase id="phase-3" number="3">
+        <phase id="phase-3" number="3" status="COMPLETED">
             <name>API Design with Builder Pattern</name>
             <description>Implement fluent builder API for HTML-to-PDF generation and configuration</description>
             <tasks>
@@ -61,12 +61,13 @@
                 <task-ref id="TASK-014" file="tasks/TASK-014.xml" status="Completed"/>
                 <task-ref id="TASK-015" file="tasks/TASK-015.xml" status="Completed"/>
                 <task-ref id="TASK-016" file="tasks/TASK-016.xml" status="Completed"/>
-                <task-ref id="TASK-017" file="tasks/TASK-017.xml"/>
+                <task-ref id="TASK-017" file="tasks/TASK-017.xml" status="Completed"/>
                 <task-ref id="TASK-018" file="tasks/TASK-018.xml" status="Completed"/>
-                <task-ref id="TASK-020" file="tasks/TASK-020.xml"/>
+                <task-ref id="TASK-020" file="tasks/TASK-020.xml" status="Completed"/>
                 <task-ref id="TASK-021" file="tasks/TASK-021.xml" status="Completed" note="HTML-to-PDF integration tests only"/>
             </tasks>
             <note>TASK-019 (URL-to-PDF Converter) moved to Phase 8 (Version 2)</note>
+            <completion-date>2025-12-16</completion-date>
         </phase>
 
         <phase id="phase-4" number="4">
@@ -98,7 +99,7 @@
             <tasks>
                 <task-ref id="TASK-033" file="tasks/TASK-033.xml" status="Completed"/>
                 <task-ref id="TASK-034" file="tasks/TASK-034.xml" status="Completed" note="HTML-to-PDF endpoint only; URL endpoint in Version 2"/>
-                <task-ref id="TASK-035" file="tasks/TASK-035.xml" note="HTML-to-PDF UI only; URL form in Version 2"/>
+                <task-ref id="TASK-035" file="tasks/TASK-035.xml" status="Completed" note="HTML-to-PDF UI only; URL form in Version 2"/>
                 <task-ref id="TASK-036" file="tasks/TASK-036.xml"/>
                 <task-ref id="TASK-037" file="tasks/TASK-037.xml"/>
             </tasks>

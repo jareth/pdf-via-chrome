@@ -272,6 +272,7 @@ public class ChromeManager implements AutoCloseable {
         }
 
         command.add("--remote-debugging-port=" + options.getRemoteDebuggingPort());
+        command.add("--remote-allow-origins=*");  // Required for Chrome 98+ to allow CDP WebSocket connections
         command.add("--user-data-dir=" + userDataDir.toString());
 
         // Docker/container support flags
@@ -312,6 +313,10 @@ public class ChromeManager implements AutoCloseable {
 
         // Add any additional custom flags
         command.addAll(options.getAdditionalFlags());
+
+        // Add initial URL to ensure Chrome creates a fresh tab on startup
+        // This is critical for CDP connections to work reliably
+        command.add("about:blank");
 
         return command;
     }

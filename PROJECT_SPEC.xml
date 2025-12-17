@@ -14,10 +14,17 @@
         </build-system>
         <java-version>17</java-version>
         <cdp-client>
-            <library>chrome-devtools-java-client</library>
-            <group-id>com.github.kklisura.cdt</group-id>
+            <library>cdt-java-client (fluidsonic fork)</library>
+            <group-id>io.fluidsonic.mirror</group-id>
             <artifact-id>cdt-java-client</artifact-id>
-            <rationale>Native CDP implementation, lightweight, actively maintained, comprehensive API coverage</rationale>
+            <version>4.0.0-fluidsonic-1</version>
+            <rationale>Native CDP implementation, lightweight, comprehensive API coverage. Uses fluidsonic fork to fix HTTP 405 error in createTab() method (original library incorrectly uses GET instead of PUT for /json/new endpoint)</rationale>
+            <original-library>
+                <group-id>com.github.kklisura.cdt</group-id>
+                <artifact-id>cdt-java-client</artifact-id>
+                <version>4.0.0</version>
+                <issue>createTab() uses HTTP GET instead of PUT, causing HTTP 405 Method Not Allowed from Chrome</issue>
+            </original-library>
             <alternative>
                 <name>playwright-java</name>
                 <note>More features but heavier dependency, includes bundled browsers</note>
@@ -389,21 +396,21 @@
             </autocloseable-classes>
             <completion-date>2025-12-16</completion-date>
         </phase>
-        <phase number="3">
+        <phase number="3" status="COMPLETED">
             <name>API Design with Builder Pattern</name>
             <design-pattern-implementation>
                 <pattern>Builder Pattern (Suggestion #1)</pattern>
             </design-pattern-implementation>
             <tasks>
-                <task priority="HIGH">Design and implement PdfGenerator fluent API with builder pattern</task>
-                <task priority="HIGH">Implement PdfOptions.Builder with all CDP parameters (landscape, margins, headers, footers, etc.)</task>
-                <task priority="HIGH">Implement ChromeOptions.Builder for browser configuration (headless mode, flags, user data dir)</task>
-                <task priority="HIGH">Implement PageOptions.Builder for page-specific settings</task>
-                <task priority="MEDIUM">Add validation logic in builders (e.g., scale between 0.1-2.0, valid margin units)</task>
-                <task priority="HIGH">Create basic HTML-to-PDF converter using the builder API</task>
-                <task priority="HIGH">Implement URL-to-PDF converter using the builder API</task>
-                <task priority="HIGH">Add unit tests for all builders and option validators</task>
-                <task priority="HIGH">Create integration tests with Testcontainers</task>
+                <task priority="HIGH" status="COMPLETED">Design and implement PdfGenerator fluent API with builder pattern</task>
+                <task priority="HIGH" status="COMPLETED">Implement PdfOptions.Builder with all CDP parameters (landscape, margins, headers, footers, etc.)</task>
+                <task priority="HIGH" status="COMPLETED">Implement ChromeOptions.Builder for browser configuration (headless mode, flags, user data dir)</task>
+                <task priority="HIGH" status="COMPLETED">Implement PageOptions.Builder for page-specific settings</task>
+                <task priority="MEDIUM" status="COMPLETED">Add validation logic in builders (e.g., scale between 0.1-2.0, valid margin units)</task>
+                <task priority="HIGH" status="COMPLETED">Create basic HTML-to-PDF converter using the builder API</task>
+                <task priority="HIGH" status="MOVED_TO_PHASE_8">Implement URL-to-PDF converter using the builder API</task>
+                <task priority="HIGH" status="COMPLETED">Add unit tests for all builders and option validators</task>
+                <task priority="HIGH" status="COMPLETED">Create integration tests with Testcontainers</task>
             </tasks>
             <builder-classes>
                 <class>PdfGenerator.Builder - main entry point for fluent API</class>
@@ -411,6 +418,17 @@
                 <class>ChromeOptions.Builder - browser configuration</class>
                 <class>PageOptions.Builder - page-specific settings</class>
             </builder-classes>
+            <completion-date>2025-12-16</completion-date>
+            <validation-summary>
+                <item>PdfOptions.Builder: Validates scale (0.1-2.0), paper dimensions (positive), margins (non-negative), margin formats (with units), page ranges format</item>
+                <item>ChromeOptions.Builder: Validates chrome path (exists, executable), remote debugging port (0-65535), timeout values (positive), flags (non-null)</item>
+                <item>PageOptions.Builder: Validates viewport dimensions (positive), device scale factor (positive), page load timeout (not null, not negative)</item>
+            </validation-summary>
+            <test-coverage>
+                <item>PdfOptionsBuilderTest: 40 tests covering all validation rules, convenience methods, and immutability</item>
+                <item>ChromeOptionsBuilderTest: 38 tests covering all validation rules, docker defaults, and immutability</item>
+                <item>PageOptionsBuilderTest: 33 tests covering all validation rules, common viewport sizes, and immutability</item>
+            </test-coverage>
             <api-examples>
                 <example>
                     // Example 1: Simple HTML to PDF with builder pattern
@@ -715,17 +733,23 @@
     <current-status>
         <implementation-progress>
             <overall-status>Phase 6 COMPLETED (Test Application)</overall-status>
-            <last-updated>2025-12-16</last-updated>
+            <last-updated>2025-12-17</last-updated>
             <summary>
                 Core library is functional with HTML-to-PDF and basic URL-to-PDF conversion.
                 Test application COMPLETE with REST API endpoint and Thymeleaf web UI for HTML-to-PDF generation,
                 comprehensive error handling, validation, and interactive user interface with sample templates.
                 URL endpoint and advanced wait strategies planned for future phases.
+                Phase 3 completed with comprehensive builder validation and 111 unit tests.
+
+                Recent fixes (2025-12-17):
+                - Switched to fluidsonic fork of cdt-java-client to fix HTTP 405 error in tab creation
+                - Added --remote-allow-origins=* flag for Chrome 98+ compatibility (fixes HTTP 403 WebSocket errors)
+                - Implemented explicit tab creation strategy in CdpSession for reliable CDP connections
             </summary>
             <phase-status>
                 <phase number="1" status="COMPLETED" completion-date="2025-12-15">Project Bootstrap</phase>
                 <phase number="2" status="COMPLETED" completion-date="2025-12-16">Core Infrastructure and Design Patterns (All 7 tasks completed including PageController)</phase>
-                <phase number="3" status="COMPLETED">API Design with Builder Pattern</phase>
+                <phase number="3" status="COMPLETED" completion-date="2025-12-16">API Design with Builder Pattern (All 8 tasks completed including comprehensive validation and tests)</phase>
                 <phase number="4" status="PARTIALLY_COMPLETED">Wait Strategies (basic timeout implemented, advanced strategies pending)</phase>
                 <phase number="5" status="NOT_STARTED">Advanced Features</phase>
                 <phase number="6" status="COMPLETED">Test Application (REST API and Thymeleaf UI completed)</phase>
@@ -735,6 +759,8 @@
                 <task>TASK-001 through TASK-033: Core library implementation</task>
                 <task>TASK-034: REST endpoints for HTML-to-PDF generation</task>
                 <task>TASK-035: Thymeleaf web UI with interactive HTML-to-PDF form</task>
+                <task>TASK-017: Comprehensive validation logic in all builders</task>
+                <task>TASK-020: Extensive unit tests for all builders (111 tests: PdfOptions=40, ChromeOptions=38, PageOptions=33)</task>
             </completed-tasks>
             <next-tasks>
                 <task>Implement wait strategies (NetworkIdleWait, ElementWait, etc.)</task>
@@ -743,4 +769,31 @@
             </next-tasks>
         </implementation-progress>
     </current-status>
+
+    <technical-notes>
+        <note>
+            <title>Chrome 98+ Compatibility</title>
+            <issue>Chrome 98 and later require the --remote-allow-origins flag for CDP WebSocket connections</issue>
+            <symptom>HTTP 403 Forbidden error when connecting to CDP WebSocket endpoint</symptom>
+            <solution>ChromeManager automatically adds --remote-allow-origins=* flag to all Chrome instances</solution>
+            <implementation>See ChromeManager.buildChromeCommand() line 275</implementation>
+            <date-added>2025-12-17</date-added>
+        </note>
+        <note>
+            <title>CDP Library Fork Usage</title>
+            <issue>Original chrome-devtools-java-client library has a bug where createTab() uses HTTP GET instead of PUT</issue>
+            <symptom>HTTP 405 Method Not Allowed error when creating tabs via /json/new endpoint</symptom>
+            <solution>Using fluidsonic fork (io.fluidsonic.mirror:cdt-java-client:4.0.0-fluidsonic-1) which fixes the HTTP verb issue</solution>
+            <implementation>See pom.xml dependency declarations</implementation>
+            <date-added>2025-12-17</date-added>
+        </note>
+        <note>
+            <title>Explicit Tab Creation Strategy</title>
+            <rationale>CdpSession explicitly creates a fresh tab on connect() to ensure consistent behavior across platforms</rationale>
+            <approach>Uses ChromeService.createTab("about:blank") to guarantee a ready-to-use page target</approach>
+            <benefit>Eliminates race conditions and timing issues with default tabs in headless mode</benefit>
+            <implementation>See CdpSession.connect() lines 96-106</implementation>
+            <date-added>2025-12-17</date-added>
+        </note>
+    </technical-notes>
 </project-specification>

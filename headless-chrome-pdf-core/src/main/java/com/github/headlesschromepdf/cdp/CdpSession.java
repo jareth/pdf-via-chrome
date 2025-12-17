@@ -29,6 +29,8 @@ public class CdpSession implements AutoCloseable {
     private final String webSocketUrl;
     private final int connectionTimeoutMs;
     private ChromeDevToolsService devToolsService;
+    private ChromeService chromeService;  // Store for cleanup
+    private ChromeTab createdTab;         // Track tab we created
     private volatile boolean closed = false;
     private final ReentrantLock lock = new ReentrantLock();
 
@@ -91,32 +93,17 @@ public class CdpSession implements AutoCloseable {
                     throw new CdpConnectionException("WebSocket URL must contain host and port: " + webSocketUrl);
                 }
 
-                // Create ChromeService to connect to the running Chrome instance
-                ChromeService chromeService = new ChromeServiceImpl(host, port);
+                // Create ChromeService to manage tabs
+                chromeService = new ChromeServiceImpl(host, port);
 
-                // Get the list of tabs and find the one matching our WebSocket URL
-                List<ChromeTab> tabs = chromeService.getTabs();
-                ChromeTab targetTab = null;
+                // Create a fresh page target explicitly
+                // This ensures we have a ready-to-use page
+                logger.debug("Creating new page target for CDP connection");
+                createdTab = chromeService.createTab("about:blank");
+                logger.debug("New page created successfully");
 
-                for (ChromeTab tab : tabs) {
-                    if (webSocketUrl.equals(tab.getWebSocketDebuggerUrl())) {
-                        targetTab = tab;
-                        break;
-                    }
-                }
-
-                if (targetTab == null) {
-                    // If exact match not found, try to use the first available tab
-                    if (!tabs.isEmpty()) {
-                        logger.warn("Exact tab not found for WebSocket URL: {}, using first available tab", webSocketUrl);
-                        targetTab = tabs.get(0);
-                    } else {
-                        throw new CdpConnectionException("No tabs found in Chrome instance");
-                    }
-                }
-
-                // Create DevTools service for the tab
-                devToolsService = chromeService.createDevToolsService(targetTab);
+                // Create DevTools service for the newly created tab
+                devToolsService = chromeService.createDevToolsService(createdTab);
 
                 logger.info("Successfully connected to Chrome DevTools");
 
@@ -261,6 +248,22 @@ public class CdpSession implements AutoCloseable {
                 } finally {
                     devToolsService = null;
                 }
+            }
+
+            // Close the tab we created
+            if (createdTab != null && chromeService != null) {
+                try {
+                    logger.debug("Closing created tab");
+                    chromeService.closeTab(createdTab);
+                } catch (Exception e) {
+                    logger.debug("Failed to close tab", e);
+                }
+                createdTab = null;
+            }
+
+            // Clear ChromeService reference
+            if (chromeService != null) {
+                chromeService = null;
             }
 
         } finally {

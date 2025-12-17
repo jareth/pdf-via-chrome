@@ -22,7 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependency Versions -->
-        <chrome-devtools.version>4.0.0</chrome-devtools.version>
+        <chrome-devtools.version>4.0.0-fluidsonic-1</chrome-devtools.version>
         <slf4j.version>2.0.9</slf4j.version>
         <logback.version>1.4.11</logback.version>
         <commons-io.version>2.15.0</commons-io.version>
@@ -76,7 +76,7 @@
 
             <!-- Chrome DevTools Java Client -->
             <dependency>
-                <groupId>com.github.kklisura.cdt</groupId>
+                <groupId>io.fluidsonic.mirror</groupId>
                 <artifactId>cdt-java-client</artifactId>
                 <version>${chrome-devtools.version}</version>
             </dependency>

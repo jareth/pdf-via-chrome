@@ -25,7 +25,7 @@
     <dependencies>
         <!-- Chrome DevTools Java Client -->
         <dependency>
-            <groupId>com.github.kklisura.cdt</groupId>
+            <groupId>io.fluidsonic.mirror</groupId>
             <artifactId>cdt-java-client</artifactId>
         </dependency>
 

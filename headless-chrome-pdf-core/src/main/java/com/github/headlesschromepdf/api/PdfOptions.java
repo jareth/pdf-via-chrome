@@ -456,11 +456,72 @@ public class PdfOptions {
 
         /**
          * Builds the PdfOptions instance.
+         * Performs validation on complex fields.
          *
          * @return a new PdfOptions instance
+         * @throws IllegalArgumentException if pageRanges format is invalid
          */
         public PdfOptions build() {
+            // Validate page ranges format if provided
+            if (pageRanges != null && !pageRanges.trim().isEmpty()) {
+                validatePageRanges(pageRanges);
+            }
+
             return new PdfOptions(this);
+        }
+
+        /**
+         * Validates the page ranges format.
+         * Expected format: "1-5, 8, 11-13" or individual page numbers/ranges separated by commas.
+         *
+         * @param ranges the page ranges string
+         * @throws IllegalArgumentException if the format is invalid
+         */
+        private void validatePageRanges(String ranges) {
+            // Pattern: comma-separated list of numbers or ranges (e.g., "1-5, 8, 11-13")
+            // Each part can be: a number (e.g., "8") or a range (e.g., "1-5")
+            String trimmed = ranges.trim();
+
+            // Allow empty string
+            if (trimmed.isEmpty()) {
+                return;
+            }
+
+            // Check overall pattern
+            if (!trimmed.matches("^\\d+(-\\d+)?(\\s*,\\s*\\d+(-\\d+)?)*$")) {
+                throw new IllegalArgumentException(
+                    "Invalid page ranges format: '" + ranges + "'. " +
+                    "Expected format: '1-5, 8, 11-13' (comma-separated page numbers or ranges)"
+                );
+            }
+
+            // Validate individual ranges
+            String[] parts = trimmed.split("\\s*,\\s*");
+            for (String part : parts) {
+                if (part.contains("-")) {
+                    String[] range = part.split("-");
+                    int start = Integer.parseInt(range[0]);
+                    int end = Integer.parseInt(range[1]);
+
+                    if (start < 1) {
+                        throw new IllegalArgumentException(
+                            "Page numbers must start from 1, got: " + start
+                        );
+                    }
+                    if (end < start) {
+                        throw new IllegalArgumentException(
+                            "Invalid page range '" + part + "': end page must be >= start page"
+                        );
+                    }
+                } else {
+                    int page = Integer.parseInt(part);
+                    if (page < 1) {
+                        throw new IllegalArgumentException(
+                            "Page numbers must start from 1, got: " + page
+                        );
+                    }
+                }
+            }
         }
     }
 
