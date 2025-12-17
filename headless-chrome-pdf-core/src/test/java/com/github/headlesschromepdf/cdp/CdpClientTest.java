@@ -91,20 +91,9 @@ class CdpClientTest {
     }
 
     @Test
-    void builder_withCustomTimeout_shouldApplyTimeout() {
-        CdpClient.Builder builder = CdpClient.builder()
-            .webSocketUrl(VALID_WS_URL)
-            .connectionTimeout(5000);
-
-        assertThatThrownBy(() -> builder.build())
-            .isInstanceOf(CdpConnectionException.class);
-    }
-
-    @Test
     void builder_fluentApi_shouldWork() {
         CdpClient.Builder builder = CdpClient.builder()
-            .webSocketUrl(VALID_WS_URL)
-            .connectionTimeout(10000);
+            .webSocketUrl(VALID_WS_URL);
 
         assertThat(builder).isNotNull();
     }

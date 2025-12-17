@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 public class CdpClient {
 
     private static final Logger logger = LoggerFactory.getLogger(CdpClient.class);
-    private static final int DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
 
     /**
      * Creates and connects a new CDP session from a Chrome process.
@@ -25,19 +24,6 @@ public class CdpClient {
      * @throws IllegalArgumentException if chromeProcess is null or not alive
      */
     public static CdpSession createSession(ChromeProcess chromeProcess) {
-        return createSession(chromeProcess, DEFAULT_CONNECTION_TIMEOUT_MS);
-    }
-
-    /**
-     * Creates and connects a new CDP session from a Chrome process with custom timeout.
-     *
-     * @param chromeProcess the Chrome process containing the WebSocket URL
-     * @param connectionTimeoutMs the connection timeout in milliseconds
-     * @return a connected CdpSession
-     * @throws CdpConnectionException if connection fails
-     * @throws IllegalArgumentException if chromeProcess is null or not alive
-     */
-    public static CdpSession createSession(ChromeProcess chromeProcess, int connectionTimeoutMs) {
         if (chromeProcess == null) {
             throw new IllegalArgumentException("ChromeProcess cannot be null");
         }
@@ -46,8 +32,9 @@ public class CdpClient {
         }
 
         String webSocketUrl = chromeProcess.getWebSocketDebuggerUrl();
-        return createSession(webSocketUrl, connectionTimeoutMs);
+        return createSession(webSocketUrl);
     }
+
 
     /**
      * Creates and connects a new CDP session from a WebSocket URL.
@@ -58,22 +45,9 @@ public class CdpClient {
      * @throws IllegalArgumentException if webSocketUrl is null or empty
      */
     public static CdpSession createSession(String webSocketUrl) {
-        return createSession(webSocketUrl, DEFAULT_CONNECTION_TIMEOUT_MS);
-    }
-
-    /**
-     * Creates and connects a new CDP session from a WebSocket URL with custom timeout.
-     *
-     * @param webSocketUrl the WebSocket debugger URL
-     * @param connectionTimeoutMs the connection timeout in milliseconds
-     * @return a connected CdpSession
-     * @throws CdpConnectionException if connection fails
-     * @throws IllegalArgumentException if webSocketUrl is null or empty
-     */
-    public static CdpSession createSession(String webSocketUrl, int connectionTimeoutMs) {
         logger.debug("Creating CDP session for WebSocket URL: {}", webSocketUrl);
 
-        CdpSession session = new CdpSession(webSocketUrl, connectionTimeoutMs);
+        CdpSession session = new CdpSession(webSocketUrl);
         session.connect();
 
         return session;
@@ -85,7 +59,6 @@ public class CdpClient {
     public static class Builder {
         private String webSocketUrl;
         private ChromeProcess chromeProcess;
-        private int connectionTimeoutMs = DEFAULT_CONNECTION_TIMEOUT_MS;
 
         /**
          * Sets the WebSocket URL for the CDP session.
@@ -110,17 +83,6 @@ public class CdpClient {
         }
 
         /**
-         * Sets the connection timeout in milliseconds.
-         *
-         * @param timeoutMs the timeout in milliseconds
-         * @return this builder
-         */
-        public Builder connectionTimeout(int timeoutMs) {
-            this.connectionTimeoutMs = timeoutMs;
-            return this;
-        }
-
-        /**
          * Builds and connects the CDP session.
          *
          * @return a connected CdpSession
@@ -129,9 +91,9 @@ public class CdpClient {
          */
         public CdpSession build() {
             if (chromeProcess != null) {
-                return createSession(chromeProcess, connectionTimeoutMs);
+                return createSession(chromeProcess);
             } else if (webSocketUrl != null) {
-                return createSession(webSocketUrl, connectionTimeoutMs);
+                return createSession(webSocketUrl);
             } else {
                 throw new IllegalStateException(
                     "Either webSocketUrl or chromeProcess must be set");

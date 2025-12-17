@@ -346,21 +346,16 @@ public class PageController {
      * @return the encoded HTML suitable for a data URI
      */
     private String encodeForDataUri(String html) {
-        try {
-            // URL encode the HTML for data URI
-            // We use UTF-8 encoding
-            return URLEncoder.encode(html, StandardCharsets.UTF_8.toString())
-                // Restore some characters that don't need encoding for better readability
-                .replace("+", "%20")
-                .replace("%21", "!")
-                .replace("%27", "'")
-                .replace("%28", "(")
-                .replace("%29", ")")
-                .replace("%7E", "~");
-        } catch (UnsupportedEncodingException e) {
-            // This should never happen with UTF-8
-            throw new PdfGenerationException("Failed to encode HTML content", e);
-        }
+        // URL encode the HTML for data URI
+        // We use UTF-8 encoding
+        return URLEncoder.encode(html, StandardCharsets.UTF_8)
+            // Restore some characters that don't need encoding for better readability
+            .replace("+", "%20")
+            .replace("%21", "!")
+            .replace("%27", "'")
+            .replace("%28", "(")
+            .replace("%29", ")")
+            .replace("%7E", "~");
     }
 
     /**

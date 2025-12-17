@@ -24,10 +24,8 @@ import java.util.concurrent.locks.ReentrantLock;
 public class CdpSession implements AutoCloseable {
 
     private static final Logger logger = LoggerFactory.getLogger(CdpSession.class);
-    private static final int DEFAULT_CONNECTION_TIMEOUT_MS = 30000;
 
     private final String webSocketUrl;
-    private final int connectionTimeoutMs;
     private ChromeDevToolsService devToolsService;
     private ChromeService chromeService;  // Store for cleanup
     private ChromeTab createdTab;         // Track tab we created
@@ -40,25 +38,11 @@ public class CdpSession implements AutoCloseable {
      * @param webSocketUrl the WebSocket debugger URL obtained from Chrome
      */
     public CdpSession(String webSocketUrl) {
-        this(webSocketUrl, DEFAULT_CONNECTION_TIMEOUT_MS);
-    }
-
-    /**
-     * Creates a new CDP session with the specified WebSocket URL and timeout.
-     *
-     * @param webSocketUrl the WebSocket debugger URL obtained from Chrome
-     * @param connectionTimeoutMs the connection timeout in milliseconds
-     */
-    public CdpSession(String webSocketUrl, int connectionTimeoutMs) {
         if (webSocketUrl == null || webSocketUrl.trim().isEmpty()) {
             throw new IllegalArgumentException("WebSocket URL cannot be null or empty");
         }
-        if (connectionTimeoutMs <= 0) {
-            throw new IllegalArgumentException("Connection timeout must be positive");
-        }
 
         this.webSocketUrl = webSocketUrl;
-        this.connectionTimeoutMs = connectionTimeoutMs;
     }
 
     /**

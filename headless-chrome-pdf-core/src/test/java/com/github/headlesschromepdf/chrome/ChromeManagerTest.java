@@ -234,7 +234,7 @@ class ChromeManagerTest {
     private Process createMockProcess() {
         return new Process() {
             private boolean alive = true;
-            private int exitValue = 0;
+            private final int exitValue = 0;
 
             @Override
             public OutputStream getOutputStream() {

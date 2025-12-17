@@ -90,7 +90,6 @@
                     <classes>
                         <class>HtmlToPdfConverter</class>
                         <class>UrlToPdfConverter</class>
-                        <class>ConversionContext</class>
                     </classes>
                 </package>
                 <package name="wait">

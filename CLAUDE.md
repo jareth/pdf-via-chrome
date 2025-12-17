@@ -100,7 +100,6 @@ Base package: `com.github.headlesschromepdf`
 
 - **converter/**: Conversion implementations (PARTIALLY IMPLEMENTED)
   - `HtmlToPdfConverter` - Converts HTML strings to PDF with DOMContentLoaded event handling
-  - `ConversionContext` - Context object for conversion operations
   - Not yet implemented: `UrlToPdfConverter`
 
 - **exception/**: Custom exceptions (FULLY IMPLEMENTED)
@@ -158,7 +157,6 @@ Currently in **Phase 4-6** (Conversion Logic and Test Application). The project 
 
 **Conversion Logic (Phase 4 - Partial):**
 - HtmlToPdfConverter - Full HTML to PDF conversion with event-based page loading
-- ConversionContext - Supporting context for conversions
 - PdfGenerator.fromHtml() - Integrated HTML to PDF generation
 
 **Test Application (Phase 6 - Partial):**

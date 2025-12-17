@@ -166,16 +166,12 @@ public class PdfOptions {
             }
 
             // Convert to inches based on unit
-            switch (unit) {
-                case "in":
-                    return value;
-                case "cm":
-                    return value / 2.54; // 1 inch = 2.54 cm
-                case "px":
-                    return value / 96.0; // 1 inch = 96 pixels (CSS standard)
-                default:
-                    throw new IllegalArgumentException("Unsupported margin unit: " + unit);
-            }
+            return switch (unit) {
+                case "in" -> value;
+                case "cm" -> value / 2.54; // 1 inch = 2.54 cm
+                case "px" -> value / 96.0; // 1 inch = 96 pixels (CSS standard)
+                default -> throw new IllegalArgumentException("Unsupported margin unit: " + unit);
+            };
         }
 
         /**

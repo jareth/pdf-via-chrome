@@ -100,7 +100,7 @@ public class ChromeOptions {
         private boolean headless = true;
         private int remoteDebuggingPort = 0; // 0 means random port
         private Path userDataDir;
-        private List<String> additionalFlags = new ArrayList<>();
+        private final List<String> additionalFlags = new ArrayList<>();
         private boolean disableGpu = true;
         private boolean disableDevShmUsage = false;
         private boolean noSandbox = false;

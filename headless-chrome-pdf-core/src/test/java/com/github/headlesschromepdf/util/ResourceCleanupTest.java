@@ -172,7 +172,7 @@ class ResourceCleanupTest {
         Thread hook = ResourceCleanup.registerShutdownHook(chromeProcess);
 
         // Manually run the shutdown hook to test its behavior
-        hook.run();
+        hook.start();
 
         // Verify the process was forcibly destroyed
         verify(mockProcess).destroyForcibly();
@@ -195,7 +195,7 @@ class ResourceCleanupTest {
         Thread hook = ResourceCleanup.registerShutdownHook(chromeProcess);
 
         // Manually run the shutdown hook
-        hook.run();
+        hook.start();
 
         // Verify destroyForcibly was NOT called since process is already dead
         verify(mockProcess, never()).destroyForcibly();

@@ -174,7 +174,6 @@ class CdpSessionIntegrationTest {
 
             try (CdpSession session = CdpClient.builder()
                     .chromeProcess(chromeProcess)
-                    .connectionTimeout(30000)
                     .build()) {
                 assertThat(session.isConnected()).isTrue();
                 assertThat(session.getPage()).isNotNull();

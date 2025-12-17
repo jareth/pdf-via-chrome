@@ -88,20 +88,6 @@ class CdpSessionTest {
     }
 
     @Test
-    void constructor_withNegativeTimeout_shouldThrowException() {
-        assertThatThrownBy(() -> new CdpSession(VALID_WS_URL, -1))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Connection timeout must be positive");
-    }
-
-    @Test
-    void constructor_withZeroTimeout_shouldThrowException() {
-        assertThatThrownBy(() -> new CdpSession(VALID_WS_URL, 0))
-            .isInstanceOf(IllegalArgumentException.class)
-            .hasMessageContaining("Connection timeout must be positive");
-    }
-
-    @Test
     void isConnected_beforeConnect_shouldReturnFalse() {
         assertThat(session.isConnected()).isFalse();
     }
