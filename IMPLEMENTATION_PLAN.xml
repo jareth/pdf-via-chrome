@@ -7,6 +7,8 @@
         <updated>2025-12-17</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
+        <completed-tasks>30</completed-tasks>
+        <completion-percentage>71%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -91,16 +93,17 @@
             <completion-date>2025-12-17</completion-date>
         </phase>
 
-        <phase id="phase-6" number="6">
+        <phase id="phase-6" number="6" status="COMPLETED">
             <name>Test Application</name>
             <description>Create Spring Boot test application with REST API and web UI for HTML-to-PDF</description>
             <tasks>
                 <task-ref id="TASK-033" file="tasks/TASK-033.xml" status="Completed"/>
                 <task-ref id="TASK-034" file="tasks/TASK-034.xml" status="Completed" note="HTML-to-PDF endpoint only; URL endpoint in Version 2"/>
                 <task-ref id="TASK-035" file="tasks/TASK-035.xml" status="Completed" note="HTML-to-PDF UI only; URL form in Version 2"/>
-                <task-ref id="TASK-036" file="tasks/TASK-036.xml"/>
-                <task-ref id="TASK-037" file="tasks/TASK-037.xml"/>
+                <task-ref id="TASK-036" file="tasks/TASK-036.xml" status="Completed"/>
+                <task-ref id="TASK-037" file="tasks/TASK-037.xml" status="Completed"/>
             </tasks>
+            <completion-date>2025-12-17</completion-date>
         </phase>
 
         <phase id="phase-7" number="7">

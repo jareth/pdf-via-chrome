@@ -1,6 +1,8 @@
 package com.github.headlesschromepdf.testapp.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 
 /**
  * Request DTO for HTML-to-PDF conversion endpoint.
@@ -9,13 +11,17 @@ public class HtmlRequest {
 
     /**
      * HTML content to convert to PDF.
+     * Maximum size is 10MB (approximately 10 million characters).
      */
     @NotBlank(message = "HTML content is required")
+    @Size(max = 10_000_000, message = "HTML content cannot exceed 10,000,000 characters")
     private String content;
 
     /**
      * Optional PDF generation options.
+     * Will be validated if provided.
      */
+    @Valid
     private PdfOptionsDto options;
 
     /**

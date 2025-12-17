@@ -130,8 +130,8 @@ class PdfControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error").value("Bad Request"))
-            .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("Invalid paper format")));
+            .andExpect(jsonPath("$.error").value("Validation Failed"))
+            .andExpect(jsonPath("$.errors['options.paperFormat']").value(org.hamcrest.Matchers.containsString("Paper format must be one of")));
     }
 
     @Test

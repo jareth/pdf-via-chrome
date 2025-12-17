@@ -38,27 +38,49 @@ public class PdfController {
      */
     @PostMapping("/from-html")
     public ResponseEntity<byte[]> generateFromHtml(@Valid @RequestBody HtmlRequest request) {
+        long startTime = System.currentTimeMillis();
+
         logger.info("Received HTML-to-PDF generation request (content length: {} chars)",
             request.getContent().length());
+        logger.debug("Request details - Options present: {}, Wait strategy: {}",
+            request.getOptions() != null, request.getWaitStrategy());
 
-        // Build PDF options from DTO (or use defaults)
-        PdfOptions options = request.getOptions() != null
-            ? request.getOptions().toPdfOptions()
-            : PdfOptions.defaults();
+        try {
+            // Build PDF options from DTO (or use defaults)
+            PdfOptions options = request.getOptions() != null
+                ? request.getOptions().toPdfOptions()
+                : PdfOptions.defaults();
 
-        // Generate PDF
-        byte[] pdfBytes = pdfGenerator.fromHtml(request.getContent())
-            .withOptions(options)
-            .generate();
+            logger.debug("Starting PDF generation with options: landscape={}, scale={}, printBackground={}",
+                options.isLandscape(), options.getScale(), options.isPrintBackground());
 
-        logger.info("Successfully generated PDF (size: {} bytes)", pdfBytes.length);
+            // Generate PDF
+            byte[] pdfBytes = pdfGenerator.fromHtml(request.getContent())
+                .withOptions(options)
+                .generate();
 
-        // Build response with appropriate headers
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_PDF);
-        headers.setContentDispositionFormData("attachment", "generated.pdf");
-        headers.setContentLength(pdfBytes.length);
+            long duration = System.currentTimeMillis() - startTime;
 
-        return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+            logger.info("Successfully generated PDF (size: {} bytes, duration: {} ms)",
+                pdfBytes.length, duration);
+
+            // Log performance metrics
+            org.slf4j.LoggerFactory.getLogger("com.github.headlesschromepdf.testapp.performance")
+                .info("PDF_GENERATION,html_length={},pdf_size={},duration_ms={},has_options={}",
+                    request.getContent().length(), pdfBytes.length, duration,
+                    request.getOptions() != null);
+
+            // Build response with appropriate headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "generated.pdf");
+            headers.setContentLength(pdfBytes.length);
+
+            return new ResponseEntity<>(pdfBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            long duration = System.currentTimeMillis() - startTime;
+            logger.error("PDF generation failed after {} ms: {}", duration, e.getMessage(), e);
+            throw e; // Re-throw to let GlobalExceptionHandler handle it
+        }
     }
 }

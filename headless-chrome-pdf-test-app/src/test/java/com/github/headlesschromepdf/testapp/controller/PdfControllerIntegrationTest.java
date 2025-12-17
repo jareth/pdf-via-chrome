@@ -170,7 +170,7 @@ class PdfControllerIntegrationTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
             .andExpect(status().isBadRequest())
-            .andExpect(jsonPath("$.error").value("Bad Request"))
-            .andExpect(jsonPath("$.message").value(org.hamcrest.Matchers.containsString("Scale must be between")));
+            .andExpect(jsonPath("$.error").value("Validation Failed"))
+            .andExpect(jsonPath("$.errors['options.scale']").value(org.hamcrest.Matchers.containsString("Scale must")));
     }
 }

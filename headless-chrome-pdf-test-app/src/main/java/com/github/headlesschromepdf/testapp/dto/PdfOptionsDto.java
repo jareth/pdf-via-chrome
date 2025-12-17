@@ -1,6 +1,10 @@
 package com.github.headlesschromepdf.testapp.dto;
 
 import com.github.headlesschromepdf.api.PdfOptions;
+import jakarta.validation.constraints.DecimalMax;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Positive;
 
 /**
  * DTO for PDF generation options, used in REST API requests.
@@ -11,16 +15,39 @@ public class PdfOptionsDto {
     private Boolean landscape;
     private Boolean displayHeaderFooter;
     private Boolean printBackground;
+
+    @DecimalMin(value = "0.1", message = "Scale must be at least 0.1")
+    @DecimalMax(value = "2.0", message = "Scale must not exceed 2.0")
     private Double scale;
+
+    @Pattern(regexp = "LETTER|LEGAL|TABLOID|LEDGER|A0|A1|A2|A3|A4|A5|A6",
+        message = "Paper format must be one of: LETTER, LEGAL, TABLOID, LEDGER, A0, A1, A2, A3, A4, A5, A6")
     private String paperFormat; // e.g., "A4", "LETTER", "LEGAL"
+
+    @Positive(message = "Paper width must be positive")
     private Double paperWidth; // in inches
+
+    @Positive(message = "Paper height must be positive")
     private Double paperHeight; // in inches
+
+    @Pattern(regexp = "\\d+(\\.\\d+)?(cm|in|px|mm)", message = "Margin must be a valid size (e.g., '1cm', '0.5in', '10px')")
     private String marginTop; // e.g., "1cm", "0.5in", "10px"
+
+    @Pattern(regexp = "\\d+(\\.\\d+)?(cm|in|px|mm)", message = "Margin must be a valid size (e.g., '1cm', '0.5in', '10px')")
     private String marginBottom;
+
+    @Pattern(regexp = "\\d+(\\.\\d+)?(cm|in|px|mm)", message = "Margin must be a valid size (e.g., '1cm', '0.5in', '10px')")
     private String marginLeft;
+
+    @Pattern(regexp = "\\d+(\\.\\d+)?(cm|in|px|mm)", message = "Margin must be a valid size (e.g., '1cm', '0.5in', '10px')")
     private String marginRight;
+
+    @Pattern(regexp = "\\d+(\\.\\d+)?(cm|in|px|mm)", message = "Margin must be a valid size (e.g., '1cm', '0.5in', '10px')")
     private String margins; // set all margins at once
+
+    @Pattern(regexp = "^(\\d+(-\\d+)?,?\\s*)+$", message = "Page ranges must be in format: '1-5, 8, 11-13'")
     private String pageRanges;
+
     private String headerTemplate;
     private String footerTemplate;
     private Boolean preferCssPageSize;
