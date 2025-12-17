@@ -455,6 +455,75 @@ public class PdfOptions {
         }
 
         /**
+         * Adds a simple page number footer in the format "Page X of Y".
+         * Automatically enables displayHeaderFooter.
+         * Uses centered text with default styling.
+         *
+         * @return this builder
+         */
+        public Builder simplePageNumbers() {
+            this.displayHeaderFooter = true;
+            this.footerTemplate =
+                "<div style=\"font-size: 10px; text-align: center; width: 100%;\">" +
+                "Page <span class=\"pageNumber\"></span> of <span class=\"totalPages\"></span>" +
+                "</div>";
+            return this;
+        }
+
+        /**
+         * Adds a header displaying the document title.
+         * Automatically enables displayHeaderFooter.
+         * Uses centered text with default styling.
+         *
+         * @return this builder
+         */
+        public Builder headerWithTitle() {
+            this.displayHeaderFooter = true;
+            this.headerTemplate =
+                "<div style=\"font-size: 10px; text-align: center; width: 100%;\">" +
+                "<span class=\"title\"></span>" +
+                "</div>";
+            return this;
+        }
+
+        /**
+         * Adds a footer displaying the current date.
+         * Automatically enables displayHeaderFooter.
+         * Uses centered text with default styling.
+         *
+         * @return this builder
+         */
+        public Builder footerWithDate() {
+            this.displayHeaderFooter = true;
+            this.footerTemplate =
+                "<div style=\"font-size: 10px; text-align: center; width: 100%;\">" +
+                "<span class=\"date\"></span>" +
+                "</div>";
+            return this;
+        }
+
+        /**
+         * Adds a header displaying the document title on the left
+         * and a footer with page numbers in the format "Page X of Y" centered.
+         * This is a convenience method combining headerWithTitle() and simplePageNumbers().
+         * Automatically enables displayHeaderFooter.
+         *
+         * @return this builder
+         */
+        public Builder standardHeaderFooter() {
+            this.displayHeaderFooter = true;
+            this.headerTemplate =
+                "<div style=\"font-size: 10px; padding: 0 0.5cm; width: 100%;\">" +
+                "<span class=\"title\"></span>" +
+                "</div>";
+            this.footerTemplate =
+                "<div style=\"font-size: 10px; text-align: center; width: 100%;\">" +
+                "Page <span class=\"pageNumber\"></span> of <span class=\"totalPages\"></span>" +
+                "</div>";
+            return this;
+        }
+
+        /**
          * Builds the PdfOptions instance.
          * Performs validation on complex fields.
          *

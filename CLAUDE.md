@@ -190,7 +190,9 @@ The library can currently:
 6. Set margins with multiple units (inches, cm, px)
 7. Control orientation (portrait/landscape)
 8. Enable/disable background graphics
-9. Set custom headers and footers
+9. Set custom headers and footers:
+   - Convenience methods: simplePageNumbers(), headerWithTitle(), footerWithDate(), standardHeaderFooter()
+   - Custom HTML templates with CDP variables (pageNumber, totalPages, date, title, url)
 10. Handle thread-safe concurrent PDF generation
 
 The test application provides:
@@ -287,6 +289,44 @@ try (PdfGenerator generator = PdfGenerator.create().build()) {
         .generate();
     Files.write(Path.of("custom.pdf"), pdf);
 }
+```
+
+### Headers and Footers
+
+```java
+// Simple page numbers in footer
+PdfOptions options = PdfOptions.builder()
+    .simplePageNumbers()  // "Page X of Y"
+    .build();
+
+// Document title in header
+PdfOptions options = PdfOptions.builder()
+    .headerWithTitle()
+    .build();
+
+// Date in footer
+PdfOptions options = PdfOptions.builder()
+    .footerWithDate()
+    .build();
+
+// Standard header and footer (title + page numbers)
+PdfOptions options = PdfOptions.builder()
+    .standardHeaderFooter()
+    .build();
+
+// Custom header/footer templates
+PdfOptions options = PdfOptions.builder()
+    .displayHeaderFooter(true)
+    .headerTemplate("<div style=\"font-size: 10px; text-align: center; width: 100%;\"><span class=\"title\"></span></div>")
+    .footerTemplate("<div style=\"font-size: 10px; text-align: center; width: 100%;\">Page <span class=\"pageNumber\"></span> of <span class=\"totalPages\"></span></div>")
+    .build();
+
+// Supported template variables:
+// - <span class="pageNumber"></span> - current page number
+// - <span class="totalPages"></span> - total pages
+// - <span class="date"></span> - formatted date
+// - <span class="title"></span> - document title
+// - <span class="url"></span> - document URL
 ```
 
 ### Custom Chrome Configuration

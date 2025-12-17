@@ -474,10 +474,21 @@
             <tasks>
                 <task>CSS injection support</task>
                 <task>JavaScript execution before PDF generation</task>
-                <task>Custom headers and footers</task>
+                <task status="COMPLETED">Custom headers and footers</task>
                 <task>Page range selection</task>
                 <task>Integration tests for advanced features</task>
             </tasks>
+            <completed-features>
+                <feature>PdfOptions.Builder convenience methods for headers/footers</feature>
+                <feature>simplePageNumbers() - Adds footer with "Page X of Y" format</feature>
+                <feature>headerWithTitle() - Adds header with document title</feature>
+                <feature>footerWithDate() - Adds footer with current date</feature>
+                <feature>standardHeaderFooter() - Combines title header and page number footer</feature>
+                <feature>Support for custom HTML templates with CDP span classes (pageNumber, totalPages, date, title, url)</feature>
+                <feature>Automatic displayHeaderFooter flag enabling in convenience methods</feature>
+                <feature>7 unit tests in PdfOptionsBuilderTest</feature>
+                <feature>9 integration tests in HeaderFooterIT validating actual PDF generation</feature>
+            </completed-features>
         </phase>
         <phase number="6">
             <name>Test Application</name>
@@ -751,7 +762,7 @@
                 <phase number="2" status="COMPLETED" completion-date="2025-12-16">Core Infrastructure and Design Patterns (All 7 tasks completed including PageController)</phase>
                 <phase number="3" status="COMPLETED" completion-date="2025-12-16">API Design with Builder Pattern (All 8 tasks completed including comprehensive validation and tests)</phase>
                 <phase number="4" status="PARTIALLY_COMPLETED">Wait Strategies (basic timeout implemented, advanced strategies pending)</phase>
-                <phase number="5" status="NOT_STARTED">Advanced Features</phase>
+                <phase number="5" status="PARTIALLY_COMPLETED">Advanced Features (Custom headers/footers completed)</phase>
                 <phase number="6" status="COMPLETED">Test Application (REST API and Thymeleaf UI completed)</phase>
                 <phase number="7" status="NOT_STARTED">Documentation and Polish</phase>
             </phase-status>
@@ -761,10 +772,11 @@
                 <task>TASK-035: Thymeleaf web UI with interactive HTML-to-PDF form</task>
                 <task>TASK-017: Comprehensive validation logic in all builders</task>
                 <task>TASK-020: Extensive unit tests for all builders (111 tests: PdfOptions=40, ChromeOptions=38, PageOptions=33)</task>
+                <task>TASK-030: Custom headers and footers with convenience methods (simplePageNumbers, headerWithTitle, footerWithDate, standardHeaderFooter)</task>
             </completed-tasks>
             <next-tasks>
                 <task>Implement wait strategies (NetworkIdleWait, ElementWait, etc.)</task>
-                <task>Add advanced features (CSS injection, custom headers)</task>
+                <task>Add remaining advanced features (CSS injection, JavaScript execution, page range selection)</task>
                 <task>Complete documentation and polish</task>
             </next-tasks>
         </implementation-progress>

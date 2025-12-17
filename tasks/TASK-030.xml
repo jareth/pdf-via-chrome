@@ -5,6 +5,8 @@
     <phase>Phase 5: Advanced Features</phase>
     <priority>MEDIUM</priority>
     <complexity>MODERATE</complexity>
+    <status>COMPLETED</status>
+    <completion-date>2025-12-17</completion-date>
 
     <dependencies>
         <dependency>TASK-014: Implement PdfOptions.Builder</dependency>
@@ -65,4 +67,45 @@
     </testing-requirements>
 
     <estimated-effort>5-6 hours</estimated-effort>
+
+    <implementation-summary>
+        <summary>
+            Successfully implemented custom header and footer support for PDF generation.
+            Added four convenience methods to PdfOptions.Builder for common header/footer patterns.
+        </summary>
+        <changes>
+            <change>
+                Added PdfOptions.Builder.simplePageNumbers() - Adds footer with "Page X of Y" format
+            </change>
+            <change>
+                Added PdfOptions.Builder.headerWithTitle() - Adds header with document title
+            </change>
+            <change>
+                Added PdfOptions.Builder.footerWithDate() - Adds footer with current date
+            </change>
+            <change>
+                Added PdfOptions.Builder.standardHeaderFooter() - Combines title header and page number footer
+            </change>
+            <change>
+                All convenience methods automatically enable displayHeaderFooter flag
+            </change>
+            <change>
+                Added 7 unit tests in PdfOptionsBuilderTest covering all convenience methods
+            </change>
+            <change>
+                Created HeaderFooterIT with 9 integration tests validating actual PDF generation
+            </change>
+            <change>
+                All templates use valid HTML with inline CSS and CDP-supported span classes
+            </change>
+        </changes>
+        <files-modified>
+            <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfOptions.java</file>
+            <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/PdfOptionsBuilderTest.java</file>
+        </files-modified>
+        <files-created>
+            <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/HeaderFooterIT.java</file>
+        </files-created>
+        <tests-passing>All 332 unit tests passing (added 7 new tests)</tests-passing>
+    </implementation-summary>
 </task>

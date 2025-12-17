@@ -334,4 +334,108 @@ class PdfOptionsBuilderTest {
         assertThat(options1.isLandscape()).isTrue();
         assertThat(options1.getScale()).isEqualTo(1.5);
     }
+
+    // Header/Footer Convenience Methods Tests
+
+    @Test
+    void testSimplePageNumbers() {
+        PdfOptions options = PdfOptions.builder()
+            .simplePageNumbers()
+            .build();
+
+        assertThat(options.isDisplayHeaderFooter()).isTrue();
+        assertThat(options.getFooterTemplate())
+            .contains("Page")
+            .contains("pageNumber")
+            .contains("totalPages");
+        assertThat(options.getHeaderTemplate()).isEmpty();
+    }
+
+    @Test
+    void testHeaderWithTitle() {
+        PdfOptions options = PdfOptions.builder()
+            .headerWithTitle()
+            .build();
+
+        assertThat(options.isDisplayHeaderFooter()).isTrue();
+        assertThat(options.getHeaderTemplate())
+            .contains("title");
+        assertThat(options.getFooterTemplate()).isEmpty();
+    }
+
+    @Test
+    void testFooterWithDate() {
+        PdfOptions options = PdfOptions.builder()
+            .footerWithDate()
+            .build();
+
+        assertThat(options.isDisplayHeaderFooter()).isTrue();
+        assertThat(options.getFooterTemplate())
+            .contains("date");
+        assertThat(options.getHeaderTemplate()).isEmpty();
+    }
+
+    @Test
+    void testStandardHeaderFooter() {
+        PdfOptions options = PdfOptions.builder()
+            .standardHeaderFooter()
+            .build();
+
+        assertThat(options.isDisplayHeaderFooter()).isTrue();
+        assertThat(options.getHeaderTemplate())
+            .contains("title");
+        assertThat(options.getFooterTemplate())
+            .contains("Page")
+            .contains("pageNumber")
+            .contains("totalPages");
+    }
+
+    @Test
+    void testConvenienceMethodsCanBeCombinedWithCustomTemplates() {
+        PdfOptions options = PdfOptions.builder()
+            .simplePageNumbers()
+            .headerTemplate("<div>Custom Header</div>")
+            .build();
+
+        assertThat(options.isDisplayHeaderFooter()).isTrue();
+        assertThat(options.getHeaderTemplate()).isEqualTo("<div>Custom Header</div>");
+        assertThat(options.getFooterTemplate()).contains("pageNumber");
+    }
+
+    @Test
+    void testConvenienceMethodsAutomaticallyEnableDisplayHeaderFooter() {
+        PdfOptions options1 = PdfOptions.builder()
+            .simplePageNumbers()
+            .build();
+        assertThat(options1.isDisplayHeaderFooter()).isTrue();
+
+        PdfOptions options2 = PdfOptions.builder()
+            .headerWithTitle()
+            .build();
+        assertThat(options2.isDisplayHeaderFooter()).isTrue();
+
+        PdfOptions options3 = PdfOptions.builder()
+            .footerWithDate()
+            .build();
+        assertThat(options3.isDisplayHeaderFooter()).isTrue();
+
+        PdfOptions options4 = PdfOptions.builder()
+            .standardHeaderFooter()
+            .build();
+        assertThat(options4.isDisplayHeaderFooter()).isTrue();
+    }
+
+    @Test
+    void testConvenienceMethodsGenerateValidHtmlTemplates() {
+        PdfOptions options = PdfOptions.builder()
+            .simplePageNumbers()
+            .build();
+
+        // Template should be valid HTML with div and span tags
+        assertThat(options.getFooterTemplate())
+            .startsWith("<div")
+            .endsWith("</div>")
+            .contains("<span class=\"pageNumber\"></span>")
+            .contains("<span class=\"totalPages\"></span>");
+    }
 }
