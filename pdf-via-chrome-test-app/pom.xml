@@ -11,7 +11,7 @@
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>headless-chrome-pdf-test-app</artifactId>
+    <artifactId>pdf-via-chrome-test-app</artifactId>
     <packaging>jar</packaging>
 
     <name>Headless Chrome PDF - Test Application</name>

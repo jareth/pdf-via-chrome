@@ -45,7 +45,7 @@
 
     <modules>
         <module>pdf-via-chrome</module>
-        <module>headless-chrome-pdf-test-app</module>
+        <module>pdf-via-chrome-test-app</module>
     </modules>
 
     <dependencyManagement>
