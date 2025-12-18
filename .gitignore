@@ -1,6 +1,7 @@
 # Maven build directories
 target/
 */target/
+.flattened-pom.xml
 
 # Compiled class files
 *.class
