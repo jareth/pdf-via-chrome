@@ -1,0 +1,103 @@
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] ------------< com.headlesschrome:headless-chrome-pdf-core >-------------
+[INFO] Building Headless Chrome PDF - Core Library 1.0.0-SNAPSHOT
+[INFO] --------------------------------[ jar ]---------------------------------
+[INFO] 
+[INFO] >>> maven-javadoc-plugin:3.6.2:javadoc (default-cli) > generate-sources @ headless-chrome-pdf-core >>>
+[INFO] 
+[INFO] --- jacoco-maven-plugin:0.8.11:prepare-agent (prepare-agent) @ headless-chrome-pdf-core ---
+[INFO] argLine set to -javaagent:C:\\Users\\jareth.van.bone\\.m2\\repository\\org\\jacoco\\org.jacoco.agent\\0.8.11\\org.jacoco.agent-0.8.11-runtime.jar=destfile=C:\\Users\\jareth.van.bone\\claude\\headless-chrome-pdf\\headless-chrome-pdf-core\\target\\jacoco.exec
+[INFO] 
+[INFO] <<< maven-javadoc-plugin:3.6.2:javadoc (default-cli) < generate-sources @ headless-chrome-pdf-core <<<
+[INFO] 
+[INFO] 
+[INFO] --- maven-javadoc-plugin:3.6.2:javadoc (default-cli) @ headless-chrome-pdf-core ---
+[INFO] No previous run data found, generating javadoc.
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD FAILURE
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  12.737 s
+[INFO] Finished at: 2025-12-17T16:34:36+10:00
+[INFO] ------------------------------------------------------------------------
+[ERROR] Failed to execute goal org.apache.maven.plugins:maven-javadoc-plugin:3.6.2:javadoc (default-cli) on project headless-chrome-pdf-core: An error has occurred in Javadoc report generation: 
+[ERROR] Exit code: 1
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\cdp\PageController.java:31: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\converter\HtmlToPdfConverter.java:37: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\BrowserTimeoutException.java:15: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\BrowserTimeoutException.java:24: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\PdfGenerationException.java:19: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\CdpConnectionException.java:17: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\CdpConnectionException.java:32: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\ChromeNotFoundException.java:12: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\ChromeNotFoundException.java:20: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\PageLoadException.java:16: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\exception\PageLoadException.java:31: error: unexpected end tag: </p>
+[ERROR]  * </p>
+[ERROR]    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:58: warning: no comment
+[ERROR]     public List<String> getAdditionalFlags() {
+[ERROR]                         ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:42: warning: no comment
+[ERROR]     public Path getChromePath() {
+[ERROR]                 ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:50: warning: no comment
+[ERROR]     public int getRemoteDebuggingPort() {
+[ERROR]                ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:82: warning: no comment
+[ERROR]     public int getShutdownTimeoutSeconds() {
+[ERROR]                ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:78: warning: no comment
+[ERROR]     public int getStartupTimeoutSeconds() {
+[ERROR]                ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:54: warning: no comment
+[ERROR]     public Path getUserDataDir() {
+[ERROR]                 ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:74: warning: no comment
+[ERROR]     public String getWindowSize() {
+[ERROR]                   ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:66: warning: no comment
+[ERROR]     public boolean isDisableDevShmUsage() {
+[ERROR]                    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:62: warning: no comment
+[ERROR]     public boolean isDisableGpu() {
+[ERROR]                    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:46: warning: no comment
+[ERROR]     public boolean isHeadless() {
+[ERROR]                    ^
+[ERROR] C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\src\main\java\com\github\headlesschromepdf\chrome\ChromeOptions.java:70: warning: no comment
+[ERROR]     public boolean isNoSandbox() {
+[ERROR]                    ^
+[ERROR] 11 errors
+[ERROR] 11 warnings
+[ERROR] Command line was: cmd.exe /X /C ""C:\Program Files\Eclipse Adoptium\jdk-17.0.16.8-hotspot\bin\javadoc.exe" @options @packages"
+[ERROR] 
+[ERROR] Refer to the generated Javadoc files in 'C:\Users\jareth.van.bone\claude\headless-chrome-pdf\headless-chrome-pdf-core\target\site\apidocs' dir.
+[ERROR] 
+[ERROR] -> [Help 1]
+[ERROR] 
+[ERROR] To see the full stack trace of the errors, re-run Maven with the -e switch.
+[ERROR] Re-run Maven using the -X switch to enable full debug logging.
+[ERROR] 
+[ERROR] For more information about the errors and possible solutions, please read the following articles:
+[ERROR] [Help 1] http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
