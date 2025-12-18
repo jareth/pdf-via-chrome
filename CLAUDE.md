@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**headless-chrome-pdf** is a Java library for generating PDFs from HTML content and URLs using headless Chrome/Chromium via the Chrome DevTools Protocol (CDP). It's a multi-module Maven project targeting Java 17+.
+**pdf-via-chrome** is a Java library for generating PDFs from HTML content and URLs using headless Chrome/Chromium via the Chrome DevTools Protocol (CDP). It's a multi-module Maven project targeting Java 17+.
 
 ## Build Commands
 
@@ -22,7 +22,7 @@ mvn test
 mvn verify
 
 # Run tests in a specific module
-mvn test -pl headless-chrome-pdf-core
+mvn test -pl pdf-via-chrome
 
 # Run a single test class
 mvn test -Dtest=ChromeManagerTest
@@ -35,8 +35,8 @@ mvn test -Dtest=ChromeManagerTest#testStartChrome
 
 This is a Maven multi-module project with two modules:
 
-- **headless-chrome-pdf-core**: The main library containing all PDF generation functionality. All core implementation happens here.
-- **headless-chrome-pdf-test-app**: A Spring Boot application for manual testing and demonstrating the library. Includes REST API endpoints for HTML-to-PDF generation.
+- **pdf-via-chrome**: The main library containing all PDF generation functionality. All core implementation happens here.
+- **pdf-via-chrome-test-app**: A Spring Boot application for manual testing and demonstrating the library. Includes REST API endpoints for HTML-to-PDF generation.
 
 ## Core Architecture
 
@@ -80,9 +80,9 @@ The project uses the builder pattern for configuration objects:
 - `PdfOptions.Builder` - PDF output configuration (paper size, margins, orientation, scale, headers/footers)
 - `PageOptions.Builder` - Page-specific settings (viewport, user agent, JavaScript, device scale factor)
 
-### Package Structure (headless-chrome-pdf-core)
+### Package Structure (pdf-via-chrome)
 
-Base package: `com.github.headlesschromepdf`
+Base package: `com.fostermoore.pdfviachrome`
 
 - **api/**: Public API (IMPLEMENTED)
   - `PdfGenerator` - Main entry point with fluent API (AutoCloseable, thread-safe, lazy initialization)
@@ -117,9 +117,9 @@ Base package: `com.github.headlesschromepdf`
 - **wait/**: Wait strategies for page readiness (NOT YET IMPLEMENTED)
   - Planned: `WaitStrategy`, `NetworkIdleWait`, `ElementWait`, `TimeoutWait`
 
-### Package Structure (headless-chrome-pdf-test-app)
+### Package Structure (pdf-via-chrome-test-app)
 
-Base package: `com.github.headlesschromepdf.testapp`
+Base package: `com.fostermoore.pdfviachrome.testapp`
 
 - **controller/**: REST controllers (PARTIALLY IMPLEMENTED)
   - `PdfController` - REST endpoint for HTML-to-PDF generation
@@ -393,11 +393,11 @@ The test application provides a REST endpoint for testing the library via HTTP r
 
 ```bash
 # Run from project root
-mvn spring-boot:run -pl headless-chrome-pdf-test-app
+mvn spring-boot:run -pl pdf-via-chrome-test-app
 
 # Or build and run the JAR
-mvn clean package -pl headless-chrome-pdf-test-app
-java -jar headless-chrome-pdf-test-app/target/headless-chrome-pdf-test-app-1.0.0-SNAPSHOT.jar
+mvn clean package -pl pdf-via-chrome-test-app
+java -jar pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0-SNAPSHOT.jar
 ```
 
 Application runs on `http://localhost:8080`
@@ -469,7 +469,7 @@ The API returns appropriate HTTP status codes:
 - `503 Service Unavailable` - Chrome not found or CDP connection issues
 - `504 Gateway Timeout` - Browser operation timeout
 
-See `headless-chrome-pdf-test-app/MANUAL_TESTING.md` for more examples.
+See `pdf-via-chrome-test-app/MANUAL_TESTING.md` for more examples.
 
 ## Development Notes
 

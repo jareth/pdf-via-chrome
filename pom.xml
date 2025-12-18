@@ -6,11 +6,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.fostermoore</groupId>
-    <artifactId>headless-chrome-pdf-parent</artifactId>
+    <artifactId>pdf-via-chrome-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
-    <name>Headless Chrome PDF - Parent</name>
+    <name>PDF via Chrome - Parent</name>
     <description>Parent POM for Headless Chrome PDF project</description>
 
     <properties>

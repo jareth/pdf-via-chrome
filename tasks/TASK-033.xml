@@ -20,7 +20,7 @@
     <acceptance-criteria>
         <criterion>Spring Boot application class created</criterion>
         <criterion>Application properties configured</criterion>
-        <criterion>Dependency on headless-chrome-pdf-core module</criterion>
+        <criterion>Dependency on pdf-via-chrome module</criterion>
         <criterion>Application starts successfully on port 8080</criterion>
         <criterion>Basic health check endpoint works</criterion>
     </acceptance-criteria>
@@ -38,21 +38,21 @@
         <note>
             application.properties:
             - server.port=8080
-            - spring.application.name=headless-chrome-pdf-test-app
-            - logging.level.com.github.headlesschromepdf=DEBUG
+            - spring.application.name=pdf-via-chrome-test-app
+            - logging.level.com.fostermoore.pdfviachrome=DEBUG
         </note>
         <note>
             Add Spring Boot dependencies in pom.xml:
             - spring-boot-starter-web
             - spring-boot-starter-thymeleaf
-            - headless-chrome-pdf-core
+            - pdf-via-chrome
         </note>
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/PdfTestApplication.java</file>
-        <file>headless-chrome-pdf-test-app/src/main/resources/application.properties</file>
-        <file>headless-chrome-pdf-test-app/pom.xml</file>
+        <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/PdfTestApplication.java</file>
+        <file>pdf-via-chrome-test-app/src/main/resources/application.properties</file>
+        <file>pdf-via-chrome-test-app/pom.xml</file>
     </affected-files>
 
     <testing-requirements>

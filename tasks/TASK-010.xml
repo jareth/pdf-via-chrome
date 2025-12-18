@@ -50,9 +50,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeManager.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/ResourceCleanup.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/chrome/ChromeManagerShutdownTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/chrome/ChromeManager.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/util/ResourceCleanup.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/chrome/ChromeManagerShutdownTest.java</file>
     </affected-files>
 
     <testing-requirements>

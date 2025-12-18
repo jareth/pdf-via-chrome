@@ -59,9 +59,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/PdfGenerationIT.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/HtmlToPdfIT.java</file>
-        <file>headless-chrome-pdf-core/pom.xml (add Testcontainers dependency)</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/PdfGenerationIT.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/HtmlToPdfIT.java</file>
+        <file>pdf-via-chrome/pom.xml (add Testcontainers dependency)</file>
     </affected-files>
     <note>UrlToPdfIT.java moved to Version 2 (Phase 8, TASK-043)</note>
 

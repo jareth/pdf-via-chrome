@@ -52,10 +52,10 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/ViewController.java</file>
-        <file>headless-chrome-pdf-test-app/src/main/resources/templates/index.html</file>
-        <file>headless-chrome-pdf-test-app/src/main/resources/static/css/style.css</file>
-        <file>headless-chrome-pdf-test-app/src/main/resources/static/js/app.js</file>
+        <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/ViewController.java</file>
+        <file>pdf-via-chrome-test-app/src/main/resources/templates/index.html</file>
+        <file>pdf-via-chrome-test-app/src/main/resources/static/css/style.css</file>
+        <file>pdf-via-chrome-test-app/src/main/resources/static/js/app.js</file>
     </affected-files>
 
     <testing-requirements>
@@ -114,14 +114,14 @@
         </implementation-summary>
 
         <files-created>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/ViewController.java</file>
-            <file>headless-chrome-pdf-test-app/src/main/resources/templates/index.html</file>
-            <file>headless-chrome-pdf-test-app/src/main/resources/static/css/style.css</file>
-            <file>headless-chrome-pdf-test-app/src/main/resources/static/js/app.js</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/ViewController.java</file>
+            <file>pdf-via-chrome-test-app/src/main/resources/templates/index.html</file>
+            <file>pdf-via-chrome-test-app/src/main/resources/static/css/style.css</file>
+            <file>pdf-via-chrome-test-app/src/main/resources/static/js/app.js</file>
         </files-created>
 
         <files-modified>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/HealthCheckController.java</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/HealthCheckController.java</file>
         </files-modified>
     </completion-status>
 </task>

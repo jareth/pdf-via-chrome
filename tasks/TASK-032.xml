@@ -47,10 +47,10 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/AdvancedFeaturesIT.java</file>
-        <file>headless-chrome-pdf-core/src/test/resources/test-pages/multi-page.html</file>
-        <file>headless-chrome-pdf-core/src/test/resources/test-css/print-styles.css</file>
-        <file>headless-chrome-pdf-core/src/test/resources/test-js/page-manipulation.js</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/AdvancedFeaturesIT.java</file>
+        <file>pdf-via-chrome/src/test/resources/test-pages/multi-page.html</file>
+        <file>pdf-via-chrome/src/test/resources/test-css/print-styles.css</file>
+        <file>pdf-via-chrome/src/test/resources/test-js/page-manipulation.js</file>
     </affected-files>
 
     <testing-requirements>

@@ -63,10 +63,10 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeManager.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeOptions.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeProcess.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/chrome/ChromeManagerTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/chrome/ChromeManager.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/chrome/ChromeOptions.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/chrome/ChromeProcess.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/chrome/ChromeManagerTest.java</file>
     </affected-files>
 
     <testing-requirements>

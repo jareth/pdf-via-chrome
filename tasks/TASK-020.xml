@@ -51,9 +51,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/PdfOptionsBuilderTest.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/chrome/ChromeOptionsBuilderTest.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/PageOptionsBuilderTest.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/api/PdfOptionsBuilderTest.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/chrome/ChromeOptionsBuilderTest.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/api/PageOptionsBuilderTest.java</file>
     </affected-files>
 
     <testing-requirements>

@@ -53,9 +53,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/HtmlRequest.java</file>
-        <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerTest.java</file>
+        <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/PdfController.java</file>
+        <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/dto/HtmlRequest.java</file>
+        <file>pdf-via-chrome-test-app/src/test/java/com/fostermoore/pdfviachrome/testapp/controller/PdfControllerTest.java</file>
     </affected-files>
     <note>UrlRequest.java moved to Version 2 (Phase 8, TASK-045)</note>
 
@@ -107,18 +107,18 @@
             <item>Created MANUAL_TESTING.md with curl and PowerShell examples</item>
         </completed-items>
         <files-created>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/HtmlRequest.java</file>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/dto/PdfOptionsDto.java</file>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/config/PdfGeneratorConfig.java</file>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/GlobalExceptionHandler.java</file>
-            <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerTest.java</file>
-            <file>headless-chrome-pdf-test-app/src/test/java/com/github/headlesschromepdf/testapp/controller/PdfControllerIntegrationTest.java</file>
-            <file>headless-chrome-pdf-test-app/src/test/resources/application-test.properties</file>
-            <file>headless-chrome-pdf-test-app/MANUAL_TESTING.md</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/dto/HtmlRequest.java</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/dto/PdfOptionsDto.java</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/config/PdfGeneratorConfig.java</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/PdfController.java</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/GlobalExceptionHandler.java</file>
+            <file>pdf-via-chrome-test-app/src/test/java/com/fostermoore/pdfviachrome/testapp/controller/PdfControllerTest.java</file>
+            <file>pdf-via-chrome-test-app/src/test/java/com/fostermoore/pdfviachrome/testapp/controller/PdfControllerIntegrationTest.java</file>
+            <file>pdf-via-chrome-test-app/src/test/resources/application-test.properties</file>
+            <file>pdf-via-chrome-test-app/MANUAL_TESTING.md</file>
         </files-created>
         <files-modified>
-            <file>headless-chrome-pdf-test-app/pom.xml (added validation and test dependencies, configured surefire plugin)</file>
+            <file>pdf-via-chrome-test-app/pom.xml (added validation and test dependencies, configured surefire plugin)</file>
         </files-modified>
     </implementation-summary>
 </task>

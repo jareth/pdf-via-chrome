@@ -1,4 +1,4 @@
-# headless-chrome-pdf
+# pdf-via-chrome
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Java](https://img.shields.io/badge/Java-17+-orange.svg)](https://openjdk.org/)
@@ -9,7 +9,7 @@
 
 ## Overview
 
-**headless-chrome-pdf** is a Java library for generating PDFs from HTML content and URLs using headless Chrome/Chromium via the Chrome DevTools Protocol (CDP). It provides a clean, fluent API for PDF generation with extensive customization options, making it ideal for server-side PDF generation in Java applications.
+**pdf-via-chrome** is a Java library for generating PDFs from HTML content and URLs using headless Chrome/Chromium via the Chrome DevTools Protocol (CDP). It provides a clean, fluent API for PDF generation with extensive customization options, making it ideal for server-side PDF generation in Java applications.
 
 Unlike browser automation frameworks like Selenium or Playwright, this library focuses specifically on PDF generation, offering a lightweight solution that leverages the native PDF rendering capabilities of Chrome/Chromium.
 
@@ -55,8 +55,8 @@ mvn verify
 ```
 
 The build will produce:
-- `headless-chrome-pdf-core/target/headless-chrome-pdf-core-1.0.0-SNAPSHOT.jar` - Core library
-- `headless-chrome-pdf-test-app/target/headless-chrome-pdf-test-app-1.0.0-SNAPSHOT.jar` - Test application
+- `pdf-via-chrome/target/pdf-via-chrome-1.0.0-SNAPSHOT.jar` - Core library
+- `pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0-SNAPSHOT.jar` - Test application
 
 ## Module Structure
 
@@ -65,10 +65,10 @@ This project uses a Maven multi-module structure:
 ```
 headless-chrome-pdf/
 ├── pom.xml                              # Parent POM with dependency management
-├── headless-chrome-pdf-core/            # Core library module
+├── pdf-via-chrome/            # Core library module
 │   ├── src/
 │   │   ├── main/java/                   # Library source code
-│   │   │   └── com/github/headlesschromepdf/
+│   │   │   └── com/fostermoore/pdfviachrome/
 │   │   │       ├── api/                 # Public API interfaces and builders
 │   │   │       ├── chrome/              # Chrome browser management
 │   │   │       ├── cdp/                 # CDP protocol interaction
@@ -79,7 +79,7 @@ headless-chrome-pdf/
 │   │   ├── test/java/                   # Unit tests
 │   │   └── test/resources/              # Test resources
 │   └── pom.xml
-└── headless-chrome-pdf-test-app/        # Test application module
+└── pdf-via-chrome-test-app/        # Test application module
     ├── src/
     │   ├── main/java/                   # Spring Boot application
     │   └── main/resources/              # Application configuration
@@ -88,8 +88,8 @@ headless-chrome-pdf/
 
 ### Module Descriptions
 
-- **headless-chrome-pdf-core**: The main library containing all PDF generation functionality. This is the module you'll depend on in your projects.
-- **headless-chrome-pdf-test-app**: A simple Spring Boot web application for manual testing and demonstration purposes. Not intended for production use.
+- **pdf-via-chrome**: The main library containing all PDF generation functionality. This is the module you'll depend on in your projects.
+- **pdf-via-chrome-test-app**: A simple Spring Boot web application for manual testing and demonstration purposes. Not intended for production use.
 
 ## Quick Start
 
@@ -97,8 +97,8 @@ Add the dependency to your `pom.xml`:
 
 ```xml
 <dependency>
-    <groupId>com.headlesschrome</groupId>
-    <artifactId>headless-chrome-pdf-core</artifactId>
+    <groupId>com.fostermoore</groupId>
+    <artifactId>pdf-via-chrome</artifactId>
     <version>1.0.0-SNAPSHOT</version>
 </dependency>
 ```
@@ -130,7 +130,7 @@ Guidelines for contributing:
 This project is licensed under the Apache License 2.0 - see the [LICENSE](LICENSE) file for details.
 
 ```
-Copyright 2024 headless-chrome-pdf contributors
+Copyright 2024 pdf-via-chrome contributors
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

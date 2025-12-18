@@ -44,8 +44,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/TimeoutWait.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/TimeoutWaitTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/wait/TimeoutWait.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/wait/TimeoutWaitTest.java</file>
     </affected-files>
 
     <testing-requirements>

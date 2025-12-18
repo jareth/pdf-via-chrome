@@ -74,7 +74,7 @@ const templates = {
         <p>The styling includes gradients, shadows, rounded corners, and custom fonts.</p>
     </div>
     <div class="footer">
-        <p>Generated with Headless Chrome PDF</p>
+        <p>Generated with PDF via Chrome</p>
     </div>
 </body>
 </html>`,

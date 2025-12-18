@@ -54,9 +54,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/cdp/CdpSession.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/cdp/CdpClient.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/cdp/CdpSessionTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/cdp/CdpSession.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/cdp/CdpClient.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/cdp/CdpSessionTest.java</file>
     </affected-files>
 
     <testing-requirements>

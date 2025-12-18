@@ -45,8 +45,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/ElementWait.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/ElementWaitTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/wait/ElementWait.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/wait/ElementWaitTest.java</file>
     </affected-files>
 
     <testing-requirements>

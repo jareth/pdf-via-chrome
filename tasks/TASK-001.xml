@@ -13,8 +13,8 @@
 
     <description>
         Create the Maven multi-module project structure with a parent POM and two child modules:
-        - headless-chrome-pdf-core (library)
-        - headless-chrome-pdf-test-app (Spring Boot test application)
+        - pdf-via-chrome (library)
+        - pdf-via-chrome-test-app (Spring Boot test application)
     </description>
 
     <acceptance-criteria>
@@ -28,11 +28,11 @@
     <implementation-notes>
         <note>
             Create directory structure:
-            headless-chrome-pdf/
+            (project home)/
             ├── pom.xml (parent)
-            ├── headless-chrome-pdf-core/
+            ├── pdf-via-chrome/
             │   └── pom.xml
-            └── headless-chrome-pdf-test-app/
+            └── pdf-via-chrome-test-app/
                 └── pom.xml
         </note>
         <note>
@@ -48,8 +48,8 @@
 
     <affected-files>
         <file>pom.xml</file>
-        <file>headless-chrome-pdf-core/pom.xml</file>
-        <file>headless-chrome-pdf-test-app/pom.xml</file>
+        <file>pdf-via-chrome/pom.xml</file>
+        <file>pdf-via-chrome-test-app/pom.xml</file>
     </affected-files>
 
     <testing-requirements>

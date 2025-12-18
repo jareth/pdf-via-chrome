@@ -59,8 +59,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/ChromePathDetector.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/util/ChromePathDetectorTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/util/ChromePathDetector.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/util/ChromePathDetectorTest.java</file>
     </affected-files>
 
     <testing-requirements>

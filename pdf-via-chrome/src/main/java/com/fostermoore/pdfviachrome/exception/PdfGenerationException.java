@@ -1,7 +1,7 @@
 package com.fostermoore.pdfviachrome.exception;
 
 /**
- * Base exception for all PDF generation failures in the headless-chrome-pdf library.
+ * Base exception for all PDF generation failures in the pdf-via-chrome library.
  * <p>
  * This is an unchecked exception (extends {@link RuntimeException}) that serves as the parent
  * for all library-specific exceptions. This allows library users to catch all PDF generation

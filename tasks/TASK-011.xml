@@ -52,11 +52,11 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/exception/PdfGenerationException.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/exception/ChromeNotFoundException.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/exception/BrowserTimeoutException.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/exception/PageLoadException.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/exception/CdpConnectionException.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/exception/PdfGenerationException.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/exception/ChromeNotFoundException.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/exception/BrowserTimeoutException.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/exception/PageLoadException.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/exception/CdpConnectionException.java</file>
     </affected-files>
 
     <testing-requirements>

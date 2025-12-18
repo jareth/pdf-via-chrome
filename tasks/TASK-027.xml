@@ -43,8 +43,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/WaitStrategyIntegrationTest.java</file>
-        <file>headless-chrome-pdf-core/src/test/resources/test-pages/*.html</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/wait/WaitStrategyIntegrationTest.java</file>
+        <file>pdf-via-chrome/src/test/resources/test-pages/*.html</file>
     </affected-files>
 
     <testing-requirements>

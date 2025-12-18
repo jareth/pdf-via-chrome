@@ -28,7 +28,7 @@
     <implementation-notes>
         <note>
             Include sections:
-            # headless-chrome-pdf
+            # pdf-via-chrome
             ## Overview
             ## Features (high-level, to be expanded)
             ## Requirements

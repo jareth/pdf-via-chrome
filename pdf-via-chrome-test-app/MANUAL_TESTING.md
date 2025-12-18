@@ -6,11 +6,11 @@ This guide provides examples for manually testing the PDF generation endpoints.
 
 ```bash
 # From the project root directory
-mvn spring-boot:run -pl headless-chrome-pdf-test-app
+mvn spring-boot:run -pl pdf-via-chrome-test-app
 
 # Or build and run the JAR
-mvn clean package -pl headless-chrome-pdf-test-app
-java -jar headless-chrome-pdf-test-app/target/headless-chrome-pdf-test-app-1.0.0-SNAPSHOT.jar
+mvn clean package -pl pdf-via-chrome-test-app
+java -jar pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0-SNAPSHOT.jar
 ```
 
 The application will start on `http://localhost:8080`

@@ -52,8 +52,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/cdp/PageController.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/cdp/PageControllerTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/cdp/PageController.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/cdp/PageControllerTest.java</file>
     </affected-files>
 
     <testing-requirements>

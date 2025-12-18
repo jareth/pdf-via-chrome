@@ -62,7 +62,7 @@
     </implementation-notes>
 
     <affected-files>
-        <file>All public classes in headless-chrome-pdf-core/src/main/java/**/*.java</file>
+        <file>All public classes in pdf-via-chrome/src/main/java/**/*.java</file>
         <file>pom.xml (maven-javadoc-plugin configuration)</file>
     </affected-files>
 
@@ -78,7 +78,7 @@
     <completion-summary>
         <summary>
             Successfully added comprehensive Javadoc documentation to all public API classes
-            in the headless-chrome-pdf-core module. All classes now have complete documentation
+            in the pdf-via-chrome module. All classes now have complete documentation
             including class-level descriptions, method-level documentation with @param, @return,
             and @throws tags, and cross-references using @see tags.
         </summary>
@@ -125,7 +125,7 @@
         <verification>
             <test>mvn javadoc:javadoc - BUILD SUCCESS</test>
             <result>Zero errors, zero warnings</result>
-            <javadoc-location>headless-chrome-pdf-core/target/site/apidocs</javadoc-location>
+            <javadoc-location>pdf-via-chrome/target/site/apidocs</javadoc-location>
         </verification>
     </completion-summary>
 </task>

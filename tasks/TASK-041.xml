@@ -63,7 +63,7 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/performance/PerformanceTest.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/performance/PerformanceTest.java</file>
         <file>docs/PERFORMANCE.md</file>
     </affected-files>
 

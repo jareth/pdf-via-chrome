@@ -49,8 +49,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/CustomConditionWait.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/wait/CustomConditionWaitTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/wait/CustomConditionWait.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/wait/CustomConditionWaitTest.java</file>
     </affected-files>
 
     <testing-requirements>

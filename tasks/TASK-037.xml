@@ -53,9 +53,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-test-app/src/main/resources/logback-spring.xml</file>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/config/LoggingConfig.java</file>
-        <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
+        <file>pdf-via-chrome-test-app/src/main/resources/logback-spring.xml</file>
+        <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/config/LoggingConfig.java</file>
+        <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/PdfController.java</file>
     </affected-files>
 
     <testing-requirements>
@@ -87,11 +87,11 @@
             <feature>application.properties enhanced with logging configuration and file paths</feature>
         </completed-features>
         <files-created>
-            <file>headless-chrome-pdf-test-app/src/main/resources/logback-spring.xml</file>
+            <file>pdf-via-chrome-test-app/src/main/resources/logback-spring.xml</file>
         </files-created>
         <files-modified>
-            <file>headless-chrome-pdf-test-app/src/main/resources/application.properties</file>
-            <file>headless-chrome-pdf-test-app/src/main/java/com/github/headlesschromepdf/testapp/controller/PdfController.java</file>
+            <file>pdf-via-chrome-test-app/src/main/resources/application.properties</file>
+            <file>pdf-via-chrome-test-app/src/main/java/com/fostermoore/pdfviachrome/testapp/controller/PdfController.java</file>
         </files-modified>
         <logging-appenders>
             <appender name="CONSOLE">Console output for development</appender>
@@ -100,9 +100,9 @@
             <appender name="PERFORMANCE_FILE">Performance metrics in structured CSV format (10MB, 30 days)</appender>
         </logging-appenders>
         <log-files>
-            <file>logs/headless-chrome-pdf-app.log - Main application log</file>
-            <file>logs/headless-chrome-pdf-errors.log - Error-only log</file>
-            <file>logs/headless-chrome-pdf-performance.log - Performance metrics (CSV format)</file>
+            <file>logs/pdf-via-chrome-app.log - Main application log</file>
+            <file>logs/pdf-via-chrome-errors.log - Error-only log</file>
+            <file>logs/pdf-via-chrome-performance.log - Performance metrics (CSV format)</file>
         </log-files>
         <test-results>
             <result>All 39 tests passing (26 validation + 13 controller tests)</result>

@@ -54,8 +54,8 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfOptions.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/HeaderFooterTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/api/PdfOptions.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/HeaderFooterTest.java</file>
     </affected-files>
 
     <testing-requirements>
@@ -100,11 +100,11 @@
             </change>
         </changes>
         <files-modified>
-            <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfOptions.java</file>
-            <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/PdfOptionsBuilderTest.java</file>
+            <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/api/PdfOptions.java</file>
+            <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/api/PdfOptionsBuilderTest.java</file>
         </files-modified>
         <files-created>
-            <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/api/HeaderFooterIT.java</file>
+            <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/api/HeaderFooterIT.java</file>
         </files-created>
         <tests-passing>All 332 unit tests passing (added 7 new tests)</tests-passing>
     </implementation-summary>

@@ -46,7 +46,7 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/wait/WaitStrategy.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/wait/WaitStrategy.java</file>
     </affected-files>
 
     <testing-requirements>

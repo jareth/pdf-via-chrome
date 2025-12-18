@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 /**
  * Main Spring Boot application for testing and demonstrating the
- * headless-chrome-pdf library.
+ * pdf-via-chrome library.
  *
  * <p>This application provides a web interface for manual testing
  * of PDF generation features including:

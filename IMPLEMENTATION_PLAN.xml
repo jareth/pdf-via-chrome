@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <implementation-plan>
     <metadata>
-        <project>headless-chrome-pdf</project>
+        <project>pdf-via-chrome</project>
         <version>1.0.0-SNAPSHOT</version>
         <created>2025-12-15</created>
         <updated>2025-12-17</updated>
@@ -14,7 +14,7 @@
 
     <overview>
         <description>
-            This implementation plan breaks down the headless-chrome-pdf library development
+            This implementation plan breaks down the pdf-via-chrome library development
             into 8 phases with 42 individual tasks. Each task is defined in a separate XML
             file in the tasks/ directory.
 

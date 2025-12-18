@@ -47,10 +47,10 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfGenerator.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/HtmlToPdfConverter.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/UrlToPdfConverter.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/CssInjectionTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/api/PdfGenerator.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/converter/HtmlToPdfConverter.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/converter/UrlToPdfConverter.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/CssInjectionTest.java</file>
     </affected-files>
 
     <testing-requirements>

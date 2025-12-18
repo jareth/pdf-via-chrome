@@ -56,9 +56,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/ProcessRegistry.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/chrome/ChromeManager.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/util/ProcessRegistryTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/util/ProcessRegistry.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/chrome/ChromeManager.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/util/ProcessRegistryTest.java</file>
     </affected-files>
 
     <testing-requirements>

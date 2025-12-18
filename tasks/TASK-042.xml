@@ -75,8 +75,8 @@
     <affected-files>
         <file>pom.xml (add OWASP dependency-check plugin)</file>
         <file>SECURITY.md</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/UrlValidator.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/util/HtmlSanitizer.java (optional)</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/util/UrlValidator.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/util/HtmlSanitizer.java (optional)</file>
     </affected-files>
 
     <testing-requirements>

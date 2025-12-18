@@ -56,9 +56,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/UrlToPdfConverter.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/converter/UrlToPdfConverterTest.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/converter/UrlToPdfConverterIT.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/converter/UrlToPdfConverter.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/converter/UrlToPdfConverterTest.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/converter/UrlToPdfConverterIT.java</file>
     </affected-files>
 
     <testing-requirements>

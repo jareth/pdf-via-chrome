@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project-specification>
     <metadata>
-        <name>headless-chrome-pdf</name>
+        <name>pdf-via-chrome</name>
         <description>A Java library for generating PDFs using headless Chrome/Chromium via Chrome DevTools Protocol</description>
         <version>1.0.0-SNAPSHOT</version>
     </metadata>
@@ -43,13 +43,13 @@
             <root-pom>Parent POM with shared configuration</root-pom>
             <modules>
                 <module>
-                    <name>headless-chrome-pdf-core</name>
+                    <name>pdf-via-chrome</name>
                     <type>library</type>
                     <description>Core library with PDF generation capabilities</description>
                     <output>JAR artifact for distribution</output>
                 </module>
                 <module>
-                    <name>headless-chrome-pdf-test-app</name>
+                    <name>pdf-via-chrome-test-app</name>
                     <type>application</type>
                     <description>Simple Spring Boot application for manual testing</description>
                     <output>Executable JAR with embedded web server</output>
@@ -58,7 +58,7 @@
         </module-layout>
 
         <core-library-structure>
-            <package base="com.github.headlesschromepdf">
+            <package base="com.fostermoore.pdfviachrome">
                 <package name="api">
                     <description>Public API interfaces and builders</description>
                     <classes>
@@ -357,7 +357,7 @@
                 <name>Spring Boot Starter Thymeleaf</name>
             </dependency>
             <dependency>
-                <name>headless-chrome-pdf-core</name>
+                <name>pdf-via-chrome</name>
             </dependency>
         </test-app>
     </key-dependencies>
@@ -741,19 +741,19 @@
 
     <delivery-artifacts>
         <artifact>
-            <name>headless-chrome-pdf-core-{version}.jar</name>
+            <name>pdf-via-chrome-{version}.jar</name>
             <description>Main library JAR</description>
         </artifact>
         <artifact>
-            <name>headless-chrome-pdf-core-{version}-sources.jar</name>
+            <name>pdf-via-chrome-{version}-sources.jar</name>
             <description>Source code JAR</description>
         </artifact>
         <artifact>
-            <name>headless-chrome-pdf-core-{version}-javadoc.jar</name>
+            <name>pdf-via-chrome-{version}-javadoc.jar</name>
             <description>Javadoc JAR</description>
         </artifact>
         <artifact>
-            <name>headless-chrome-pdf-test-app-{version}.jar</name>
+            <name>pdf-via-chrome-test-app-{version}.jar</name>
             <description>Executable test application</description>
         </artifact>
     </delivery-artifacts>

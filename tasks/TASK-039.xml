@@ -29,7 +29,7 @@
     <implementation-notes>
         <note>
             README sections:
-            # headless-chrome-pdf
+            # pdf-via-chrome
             ## Features
             ## Requirements
             ## Installation (Maven dependency)
@@ -53,7 +53,7 @@
             Include Maven dependency snippet:
             &lt;dependency&gt;
                 &lt;groupId&gt;com.github&lt;/groupId&gt;
-                &lt;artifactId&gt;headless-chrome-pdf-core&lt;/artifactId&gt;
+                &lt;artifactId&gt;pdf-via-chrome&lt;/artifactId&gt;
                 &lt;version&gt;1.0.0&lt;/version&gt;
             &lt;/dependency&gt;
         </note>

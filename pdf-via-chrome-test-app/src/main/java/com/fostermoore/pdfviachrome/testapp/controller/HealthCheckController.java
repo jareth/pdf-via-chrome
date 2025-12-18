@@ -25,7 +25,7 @@ public class HealthCheckController {
     public ResponseEntity<Map<String, Object>> healthCheck() {
         Map<String, Object> response = new HashMap<>();
         response.put("status", "UP");
-        response.put("application", "headless-chrome-pdf-test-app");
+        response.put("application", "chrome-via-pdf-test-app");
         response.put("startTime", startTime);
         response.put("uptime", java.time.Duration.between(startTime, Instant.now()).toSeconds() + " seconds");
         response.put("message", "PDF Test Application is running successfully");

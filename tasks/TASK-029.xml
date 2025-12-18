@@ -54,9 +54,9 @@
     </implementation-notes>
 
     <affected-files>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/api/PdfGenerator.java</file>
-        <file>headless-chrome-pdf-core/src/main/java/com/github/headlesschromepdf/converter/HtmlToPdfConverter.java</file>
-        <file>headless-chrome-pdf-core/src/test/java/com/github/headlesschromepdf/JavaScriptExecutionTest.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/api/PdfGenerator.java</file>
+        <file>pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/converter/HtmlToPdfConverter.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/JavaScriptExecutionTest.java</file>
     </affected-files>
     <note>UrlToPdfConverter.java integration will be added in Version 2 (Phase 8, TASK-044)</note>
 
