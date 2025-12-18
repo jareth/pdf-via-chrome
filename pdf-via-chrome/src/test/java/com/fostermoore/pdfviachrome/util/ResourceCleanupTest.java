@@ -173,6 +173,7 @@ class ResourceCleanupTest {
 
         // Manually run the shutdown hook to test its behavior
         hook.start();
+        hook.join(); // Wait for the shutdown hook to complete
 
         // Verify the process was forcibly destroyed
         verify(mockProcess).destroyForcibly();
@@ -196,6 +197,7 @@ class ResourceCleanupTest {
 
         // Manually run the shutdown hook
         hook.start();
+        hook.join(); // Wait for the shutdown hook to complete
 
         // Verify destroyForcibly was NOT called since process is already dead
         verify(mockProcess, never()).destroyForcibly();
