@@ -18,6 +18,7 @@ import java.util.concurrent.TimeoutException;
  *   <li>{@link TimeoutWait} - Wait for a fixed duration</li>
  *   <li>{@link NetworkIdleWait} - Wait until network activity stops (Version 2.0+)</li>
  *   <li>{@link ElementWait} - Wait for a specific element to appear (Version 2.0+)</li>
+ *   <li>{@link CustomConditionWait} - Wait for custom JavaScript condition to be true (Version 2.0+)</li>
  * </ul>
  *
  * <h2>Usage Example</h2>
@@ -33,6 +34,10 @@ import java.util.concurrent.TimeoutException;
  * // Wait for a specific element to appear
  * WaitStrategy elementWait = WaitStrategy.elementPresent("#content-loaded");
  * elementWait.await(cdpService, Duration.ofSeconds(10));
+ *
+ * // Wait for custom JavaScript condition
+ * WaitStrategy customWait = WaitStrategy.customCondition("window.myApp && window.myApp.ready === true");
+ * customWait.await(cdpService, Duration.ofSeconds(10));
  * }</pre>
  *
  * <h2>Custom Implementation Example</h2>
@@ -192,6 +197,48 @@ public interface WaitStrategy {
                 .selector(cssSelector)
                 .pollInterval(pollInterval)
                 .waitForVisible(waitForVisible)
+                .build();
+    }
+
+    /**
+     * Creates a custom condition wait strategy that executes JavaScript and waits for it to return true.
+     * <p>
+     * This strategy provides maximum flexibility by allowing arbitrary JavaScript expressions.
+     * The expression will be evaluated repeatedly until it returns a truthy value or the timeout is reached.
+     * Uses the default poll interval of 100ms.
+     * </p>
+     *
+     * @param javascriptExpression the JavaScript expression that should return true when ready
+     * @return a new CustomConditionWait strategy
+     * @throws IllegalArgumentException if javascriptExpression is null or empty
+     * @see CustomConditionWait
+     * @since 2.0.0
+     */
+    static WaitStrategy customCondition(String javascriptExpression) {
+        return CustomConditionWait.builder()
+                .expression(javascriptExpression)
+                .build();
+    }
+
+    /**
+     * Creates a custom condition wait strategy with a custom poll interval.
+     * <p>
+     * This strategy provides maximum flexibility by allowing arbitrary JavaScript expressions.
+     * The expression will be evaluated repeatedly at the specified interval until it returns
+     * a truthy value or the timeout is reached.
+     * </p>
+     *
+     * @param javascriptExpression the JavaScript expression that should return true when ready
+     * @param pollInterval the interval between JavaScript evaluations
+     * @return a new CustomConditionWait strategy with custom poll interval
+     * @throws IllegalArgumentException if javascriptExpression is null/empty, or pollInterval is null/negative
+     * @see CustomConditionWait
+     * @since 2.0.0
+     */
+    static WaitStrategy customCondition(String javascriptExpression, Duration pollInterval) {
+        return CustomConditionWait.builder()
+                .expression(javascriptExpression)
+                .pollInterval(pollInterval)
                 .build();
     }
 }
