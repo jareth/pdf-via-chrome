@@ -6,6 +6,7 @@ import com.fostermoore.pdfviachrome.exception.BrowserTimeoutException;
 import com.fostermoore.pdfviachrome.exception.PageLoadException;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
 import com.github.kklisura.cdt.protocol.commands.Page;
+import com.github.kklisura.cdt.protocol.commands.Runtime;
 import com.github.kklisura.cdt.protocol.types.page.Navigate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -87,6 +88,22 @@ public class UrlToPdfConverter {
      * @throws IllegalArgumentException if url or options are null
      */
     public byte[] convert(String url, PdfOptions options) {
+        return convert(url, options, null);
+    }
+
+    /**
+     * Converts a web page from a URL to PDF with optional custom CSS injection.
+     *
+     * @param url the URL to navigate to and convert
+     * @param options the PDF generation options
+     * @param customCss optional custom CSS to inject (can be null)
+     * @return the PDF data as a byte array
+     * @throws PageLoadException if the page fails to load (404, network errors, etc.)
+     * @throws BrowserTimeoutException if the page load exceeds the configured timeout
+     * @throws PdfGenerationException if PDF generation fails
+     * @throws IllegalArgumentException if url or options are null
+     */
+    public byte[] convert(String url, PdfOptions options, String customCss) {
         if (url == null || url.trim().isEmpty()) {
             throw new IllegalArgumentException("URL cannot be null or empty");
         }
@@ -147,7 +164,14 @@ public class UrlToPdfConverter {
                 throw new PageLoadException("Error occurred while navigating to URL: " + errorMessage.toString());
             }
 
-            logger.debug("Page loaded successfully, generating PDF");
+            logger.debug("Page loaded successfully");
+
+            // Inject custom CSS if provided
+            if (customCss != null && !customCss.trim().isEmpty()) {
+                injectCss(customCss);
+            }
+
+            logger.debug("Generating PDF");
 
             // Generate PDF with the specified options
             byte[] pdfData = generatePdf(page, options);
@@ -254,5 +278,57 @@ public class UrlToPdfConverter {
         }
         String header = new String(data, 0, 5, StandardCharsets.US_ASCII);
         return header.equals("%PDF-");
+    }
+
+    /**
+     * Injects CSS into the page by creating a style element in the document head.
+     *
+     * @param css the CSS to inject
+     * @throws PdfGenerationException if CSS injection fails
+     */
+    private void injectCss(String css) {
+        try {
+            logger.debug("Injecting custom CSS (length: {} chars)", css.length());
+
+            // Get the Runtime domain
+            Runtime runtime = session.getRuntime();
+
+            // Enable Runtime domain
+            runtime.enable();
+
+            // Escape the CSS for JavaScript string literal
+            String escapedCss = css
+                .replace("\\", "\\\\")
+                .replace("'", "\\'")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
+
+            // JavaScript code to inject CSS
+            String jsCode = String.format(
+                "(function() {" +
+                "  var style = document.createElement('style');" +
+                "  style.textContent = '%s';" +
+                "  document.head.appendChild(style);" +
+                "})()",
+                escapedCss
+            );
+
+            // Execute the JavaScript
+            var result = runtime.evaluate(jsCode);
+
+            // Check for JavaScript execution errors
+            if (result.getExceptionDetails() != null) {
+                String errorMessage = result.getExceptionDetails().getText();
+                logger.error("CSS injection failed: {}", errorMessage);
+                throw new PdfGenerationException("Failed to inject CSS: " + errorMessage);
+            }
+
+            logger.debug("Custom CSS injected successfully");
+
+        } catch (PdfGenerationException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new PdfGenerationException("Failed to inject custom CSS", e);
+        }
     }
 }

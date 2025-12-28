@@ -6,6 +6,7 @@ import com.fostermoore.pdfviachrome.chrome.ChromeOptions;
 import com.fostermoore.pdfviachrome.chrome.ChromeProcess;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
 import com.github.kklisura.cdt.protocol.commands.Page;
+import com.github.kklisura.cdt.protocol.commands.Runtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -16,7 +17,9 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import java.io.IOException;
 import java.io.StringWriter;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Base64;
@@ -422,6 +425,7 @@ public class PdfGenerator implements AutoCloseable {
     public class GenerationBuilder {
         private final ContentSource contentSource;
         private PdfOptions pdfOptions = PdfOptions.defaults();
+        private String customCss;
 
         private GenerationBuilder(ContentSource contentSource) {
             this.contentSource = contentSource;
@@ -440,6 +444,54 @@ public class PdfGenerator implements AutoCloseable {
             }
             this.pdfOptions = options;
             return this;
+        }
+
+        /**
+         * Injects custom CSS into the page before PDF generation.
+         * The CSS is applied after the page loads but before PDF generation.
+         * This allows you to override styles specifically for printing, such as
+         * hiding navigation, adjusting layouts, or applying print-specific styles.
+         *
+         * @param css the CSS string to inject
+         * @return this builder
+         * @throws IllegalArgumentException if css is null or empty
+         */
+        public GenerationBuilder withCustomCss(String css) {
+            if (css == null || css.trim().isEmpty()) {
+                throw new IllegalArgumentException("CSS cannot be null or empty");
+            }
+            this.customCss = css;
+            return this;
+        }
+
+        /**
+         * Injects custom CSS from a file into the page before PDF generation.
+         * The CSS is applied after the page loads but before PDF generation.
+         * This allows you to override styles specifically for printing, such as
+         * hiding navigation, adjusting layouts, or applying print-specific styles.
+         *
+         * @param cssFile the path to the CSS file
+         * @return this builder
+         * @throws IllegalArgumentException if cssFile is null or doesn't exist
+         * @throws PdfGenerationException if the file cannot be read
+         */
+        public GenerationBuilder withCustomCssFromFile(Path cssFile) {
+            if (cssFile == null) {
+                throw new IllegalArgumentException("CSS file path cannot be null");
+            }
+            if (!Files.exists(cssFile)) {
+                throw new IllegalArgumentException("CSS file does not exist: " + cssFile);
+            }
+            if (!Files.isRegularFile(cssFile)) {
+                throw new IllegalArgumentException("CSS file path is not a regular file: " + cssFile);
+            }
+
+            try {
+                String css = Files.readString(cssFile);
+                return withCustomCss(css);
+            } catch (IOException e) {
+                throw new PdfGenerationException("Failed to read CSS file: " + cssFile, e);
+            }
         }
 
         /**
@@ -477,6 +529,11 @@ public class PdfGenerator implements AutoCloseable {
                     // TODO: Implement wait strategies (will be in future tasks)
                     Thread.sleep(1000); // Simple wait for now
 
+                    // Inject custom CSS if provided
+                    if (customCss != null && !customCss.trim().isEmpty()) {
+                        injectCss(customCss);
+                    }
+
                     // Generate PDF
                     var pdfResult = page.printToPDF(
                         pdfOptions.isLandscape(),
@@ -512,6 +569,58 @@ public class PdfGenerator implements AutoCloseable {
 
             } finally {
                 lock.unlock();
+            }
+        }
+
+        /**
+         * Injects CSS into the page by creating a style element in the document head.
+         *
+         * @param css the CSS to inject
+         * @throws PdfGenerationException if CSS injection fails
+         */
+        private void injectCss(String css) {
+            try {
+                logger.debug("Injecting custom CSS (length: {} chars)", css.length());
+
+                // Get the Runtime domain
+                Runtime runtime = cdpSession.getRuntime();
+
+                // Enable Runtime domain
+                runtime.enable();
+
+                // Escape the CSS for JavaScript string literal
+                String escapedCss = css
+                    .replace("\\", "\\\\")
+                    .replace("'", "\\'")
+                    .replace("\n", "\\n")
+                    .replace("\r", "\\r");
+
+                // JavaScript code to inject CSS
+                String jsCode = String.format(
+                    "(function() {" +
+                    "  var style = document.createElement('style');" +
+                    "  style.textContent = '%s';" +
+                    "  document.head.appendChild(style);" +
+                    "})()",
+                    escapedCss
+                );
+
+                // Execute the JavaScript
+                var result = runtime.evaluate(jsCode);
+
+                // Check for JavaScript execution errors
+                if (result.getExceptionDetails() != null) {
+                    String errorMessage = result.getExceptionDetails().getText();
+                    logger.error("CSS injection failed: {}", errorMessage);
+                    throw new PdfGenerationException("Failed to inject CSS: " + errorMessage);
+                }
+
+                logger.debug("Custom CSS injected successfully");
+
+            } catch (PdfGenerationException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new PdfGenerationException("Failed to inject custom CSS", e);
             }
         }
     }

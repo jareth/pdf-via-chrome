@@ -191,7 +191,12 @@ The library can currently:
 9. Set custom headers and footers:
    - Convenience methods: simplePageNumbers(), headerWithTitle(), footerWithDate(), standardHeaderFooter()
    - Custom HTML templates with CDP variables (pageNumber, totalPages, date, title, url)
-10. Handle thread-safe concurrent PDF generation
+10. Inject custom CSS for print-specific styling:
+   - withCustomCss(String css) for inline CSS injection
+   - withCustomCssFromFile(Path cssFile) for external CSS files
+   - Works with both HTML and URL sources
+   - Applied after page load, before PDF generation
+11. Handle thread-safe concurrent PDF generation
 
 The test application provides:
 1. REST API endpoint: POST /api/pdf/from-html - Generate PDFs from HTML via HTTP
@@ -364,6 +369,72 @@ PdfOptions options = PdfOptions.builder()
 // - <span class="date"></span> - formatted date
 // - <span class="title"></span> - document title
 // - <span class="url"></span> - document URL
+```
+
+### CSS Injection
+
+```java
+// Inject custom CSS to override page styles for printing
+String customCss = """
+    @media print {
+        .no-print { display: none !important; }
+        .page-break { page-break-after: always; }
+    }
+    body {
+        font-size: 12pt;
+        line-height: 1.5;
+    }
+    """;
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(htmlContent)
+        .withCustomCss(customCss)
+        .generate();
+    Files.write(Path.of("styled.pdf"), pdf);
+}
+
+// Load CSS from a file
+Path cssFile = Path.of("styles/print.css");
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(htmlContent)
+        .withCustomCssFromFile(cssFile)
+        .generate();
+    Files.write(Path.of("styled.pdf"), pdf);
+}
+
+// Combine CSS injection with PDF options
+PdfOptions options = PdfOptions.builder()
+    .paperSize(PaperFormat.A4)
+    .printBackground(true)
+    .build();
+
+String css = ".header { display: none; } .footer { display: none; }";
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(htmlContent)
+        .withCustomCss(css)
+        .withOptions(options)
+        .generate();
+    Files.write(Path.of("clean.pdf"), pdf);
+}
+
+// Works with URLs too
+String printCss = """
+    nav, aside, .sidebar {
+        display: none !important;
+    }
+    article {
+        width: 100% !important;
+        max-width: none !important;
+    }
+    """;
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromUrl("https://example.com")
+        .withCustomCss(printCss)
+        .generate();
+    Files.write(Path.of("webpage.pdf"), pdf);
+}
 ```
 
 ### Custom Chrome Configuration

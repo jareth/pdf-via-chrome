@@ -471,7 +471,7 @@
         <phase number="5">
             <name>Advanced Features</name>
             <tasks>
-                <task>CSS injection support</task>
+                <task status="COMPLETED">CSS injection support</task>
                 <task>JavaScript execution before PDF generation</task>
                 <task status="COMPLETED">Custom headers and footers</task>
                 <task>Page range selection</task>
@@ -487,6 +487,14 @@
                 <feature>Automatic displayHeaderFooter flag enabling in convenience methods</feature>
                 <feature>7 unit tests in PdfOptionsBuilderTest</feature>
                 <feature>9 integration tests in HeaderFooterIT validating actual PDF generation</feature>
+                <feature>CSS Injection - PdfGenerator.GenerationBuilder.withCustomCss(String css) for inline CSS</feature>
+                <feature>CSS Injection - PdfGenerator.GenerationBuilder.withCustomCssFromFile(Path cssFile) for external CSS files</feature>
+                <feature>HtmlToPdfConverter.convert() overload with customCss parameter</feature>
+                <feature>UrlToPdfConverter.convert() overload with customCss parameter</feature>
+                <feature>CSS applied after page load, before PDF generation using CDP Runtime.evaluate()</feature>
+                <feature>Proper CSS escaping for JavaScript string literals (backslashes, quotes, newlines)</feature>
+                <feature>Error handling for CSS injection failures with detailed exception messages</feature>
+                <feature>16 comprehensive integration tests in CssInjectionTest covering all scenarios</feature>
             </completed-features>
         </phase>
         <phase number="6">
