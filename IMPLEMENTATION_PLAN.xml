@@ -4,11 +4,11 @@
         <project>pdf-via-chrome</project>
         <version>1.0.0-SNAPSHOT</version>
         <created>2025-12-15</created>
-        <updated>2025-12-17</updated>
+        <updated>2025-12-28</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
-        <completed-tasks>31</completed-tasks>
-        <completion-percentage>74%</completion-percentage>
+        <completed-tasks>35</completed-tasks>
+        <completion-percentage>83%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -122,10 +122,10 @@
             <name>Version 2: URL-to-PDF Features and Advanced Web Capabilities</name>
             <description>Add URL-to-PDF conversion with web navigation, network handling, CSS/JS injection, and advanced web features</description>
             <tasks>
-                <task-ref id="TASK-019" file="tasks/TASK-019.xml" note="Moved from Phase 3 - URL-to-PDF Converter"/>
-                <task-ref id="TASK-023" file="tasks/TASK-023.xml" note="Moved from Phase 4 - NetworkIdleWait Strategy"/>
-                <task-ref id="TASK-024" file="tasks/TASK-024.xml" note="Moved from Phase 4 - ElementWait Strategy"/>
-                <task-ref id="TASK-026" file="tasks/TASK-026.xml" note="Moved from Phase 4 - CustomConditionWait Strategy"/>
+                <task-ref id="TASK-019" file="tasks/TASK-019.xml" status="Completed" note="Moved from Phase 3 - URL-to-PDF Converter"/>
+                <task-ref id="TASK-023" file="tasks/TASK-023.xml" status="Completed" note="Moved from Phase 4 - NetworkIdleWait Strategy"/>
+                <task-ref id="TASK-024" file="tasks/TASK-024.xml" status="Completed" note="Moved from Phase 4 - ElementWait Strategy"/>
+                <task-ref id="TASK-026" file="tasks/TASK-026.xml" status="Completed" note="Moved from Phase 4 - CustomConditionWait Strategy"/>
                 <task-ref id="TASK-028" file="tasks/TASK-028.xml" note="Moved from Phase 5 - CSS Injection Support"/>
                 <task-ref id="TASK-029" file="tasks/TASK-029.xml" note="Moved from Phase 5 - JavaScript Execution Support"/>
                 <task-ref id="TASK-031" file="tasks/TASK-031.xml" note="Moved from Phase 5 - Page Ranges Support"/>
