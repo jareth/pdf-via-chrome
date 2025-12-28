@@ -325,6 +325,455 @@ class WaitStrategyIntegrationTest {
         }
     }
 
+    // ========== ElementWait Integration Tests ==========
+
+    @Test
+    void elementWait_whenElementPresentImmediately_shouldReturnQuickly() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Navigate to a page with the element already present
+                page.navigate("data:text/html,<html><body><div id=\"target\">Element is here</div></body></html>");
+                Thread.sleep(100); // Allow navigation to complete
+
+                // Wait for the element
+                WaitStrategy wait = ElementWait.builder()
+                        .selector("#target")
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(10));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                // Should return very quickly since element is already present
+                assertThat(elapsedTime).isLessThan(500);
+            }
+        }
+    }
+
+    @Test
+    void elementWait_whenElementAppearsAfterDelay_shouldWaitUntilFound() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page that adds element after 500ms
+                String html = """
+                    <html>
+                    <body>
+                        <div id="initial">Initial content</div>
+                        <script>
+                            setTimeout(() => {
+                                const div = document.createElement('div');
+                                div.id = 'delayed-element';
+                                div.textContent = 'Delayed content';
+                                document.body.appendChild(div);
+                            }, 500);
+                        </script>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100); // Allow navigation to complete
+
+                // Wait for the delayed element
+                WaitStrategy wait = ElementWait.builder()
+                        .selector("#delayed-element")
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(5));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                // Should wait at least 500ms (the delay time)
+                assertThat(elapsedTime).isGreaterThanOrEqualTo(500);
+                assertThat(elapsedTime).isLessThan(1500);
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withVisibleCheck_shouldWaitForVisibility() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page with hidden element that becomes visible after delay
+                String html = """
+                    <html>
+                    <head>
+                        <style>
+                            #hidden-element { display: none; }
+                        </style>
+                    </head>
+                    <body>
+                        <div id="hidden-element">Hidden element</div>
+                        <script>
+                            setTimeout(() => {
+                                document.getElementById('hidden-element').style.display = 'block';
+                            }, 400);
+                        </script>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100); // Allow navigation to complete
+
+                // Wait for element to be visible (not just present)
+                WaitStrategy wait = ElementWait.builder()
+                        .selector("#hidden-element")
+                        .waitForVisible(true)
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(5));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                // Should wait at least 400ms for visibility
+                assertThat(elapsedTime).isGreaterThanOrEqualTo(400);
+                assertThat(elapsedTime).isLessThan(1000);
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withPresentCheck_shouldFindHiddenElement() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page with hidden element
+                String html = """
+                    <html>
+                    <head>
+                        <style>
+                            #hidden-element { display: none; }
+                        </style>
+                    </head>
+                    <body>
+                        <div id="hidden-element">Hidden but present</div>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100); // Allow navigation to complete
+
+                // Wait for element presence (ignore visibility)
+                WaitStrategy wait = ElementWait.builder()
+                        .selector("#hidden-element")
+                        .waitForVisible(false)
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(5));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                // Should find element immediately even though it's hidden
+                assertThat(elapsedTime).isLessThan(500);
+            }
+        }
+    }
+
+    @Test
+    void elementWait_whenElementNeverAppears_shouldTimeout() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page without the target element
+                page.navigate("data:text/html,<html><body><div id=\"other\">Other content</div></body></html>");
+                Thread.sleep(100); // Allow navigation to complete
+
+                // Wait for non-existent element
+                WaitStrategy wait = ElementWait.builder()
+                        .selector("#nonexistent")
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                assertThatThrownBy(() ->
+                    wait.await(getDevToolsService(session), Duration.ofSeconds(1))
+                ).isInstanceOf(java.util.concurrent.TimeoutException.class)
+                 .hasMessageContaining("#nonexistent")
+                 .hasMessageContaining("not present");
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withClassSelector_shouldWork() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page with class-based element
+                String html = """
+                    <html>
+                    <body>
+                        <div class="content">Content</div>
+                        <script>
+                            setTimeout(() => {
+                                const div = document.createElement('div');
+                                div.className = 'target-class';
+                                div.textContent = 'Target';
+                                document.body.appendChild(div);
+                            }, 300);
+                        </script>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100);
+
+                // Wait for element with class selector
+                WaitStrategy wait = ElementWait.builder()
+                        .selector(".target-class")
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(5));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                assertThat(elapsedTime).isGreaterThanOrEqualTo(300);
+                assertThat(elapsedTime).isLessThan(1000);
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withAttributeSelector_shouldWork() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page with attribute-based element
+                String html = """
+                    <html>
+                    <body>
+                        <div>Content</div>
+                        <script>
+                            setTimeout(() => {
+                                const div = document.createElement('div');
+                                div.setAttribute('data-loaded', 'true');
+                                div.textContent = 'Loaded';
+                                document.body.appendChild(div);
+                            }, 300);
+                        </script>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100);
+
+                // Wait for element with attribute selector
+                WaitStrategy wait = ElementWait.builder()
+                        .selector("[data-loaded='true']")
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(5));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                assertThat(elapsedTime).isGreaterThanOrEqualTo(300);
+                assertThat(elapsedTime).isLessThan(1000);
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withStaticFactoryPresent_shouldWork() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                page.navigate("data:text/html,<html><body><div id=\"test\">Test</div></body></html>");
+                Thread.sleep(100);
+
+                // Use static factory method
+                WaitStrategy wait = WaitStrategy.elementPresent("#test");
+
+                assertThatNoException().isThrownBy(() ->
+                    wait.await(getDevToolsService(session), Duration.ofSeconds(5))
+                );
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withStaticFactoryVisible_shouldWork() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page with visible element
+                String html = """
+                    <html>
+                    <body>
+                        <div id="visible-test" style="display: block; width: 100px; height: 100px;">Visible</div>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100);
+
+                // Use static factory method for visibility
+                WaitStrategy wait = WaitStrategy.elementVisible("#visible-test");
+
+                assertThatNoException().isThrownBy(() ->
+                    wait.await(getDevToolsService(session), Duration.ofSeconds(5))
+                );
+            }
+        }
+    }
+
+    @Test
+    void elementWait_withComplexSelector_shouldWork() throws Exception {
+        ChromeOptions options = ChromeOptions.builder()
+                .headless(true)
+                .build();
+
+        try (ChromeManager chromeManager = new ChromeManager(options)) {
+            ChromeProcess chromeProcess = chromeManager.start();
+
+            try (CdpSession session = new CdpSession(chromeProcess.getWebSocketDebuggerUrl())) {
+                session.connect();
+
+                Page page = session.getPage();
+                page.enable();
+
+                // Page with nested elements
+                String html = """
+                    <html>
+                    <body>
+                        <div class="container">
+                            <div class="content">
+                                <p class="text">Initial</p>
+                            </div>
+                        </div>
+                        <script>
+                            setTimeout(() => {
+                                const p = document.createElement('p');
+                                p.className = 'text target';
+                                p.textContent = 'Target text';
+                                document.querySelector('.content').appendChild(p);
+                            }, 300);
+                        </script>
+                    </body>
+                    </html>
+                    """;
+
+                page.navigate("data:text/html," + html);
+                Thread.sleep(100);
+
+                // Wait for element with complex selector
+                WaitStrategy wait = ElementWait.builder()
+                        .selector(".container .content p.target")
+                        .pollInterval(Duration.ofMillis(50))
+                        .build();
+
+                long startTime = System.currentTimeMillis();
+                wait.await(getDevToolsService(session), Duration.ofSeconds(5));
+                long elapsedTime = System.currentTimeMillis() - startTime;
+
+                assertThat(elapsedTime).isGreaterThanOrEqualTo(300);
+                assertThat(elapsedTime).isLessThan(1000);
+            }
+        }
+    }
+
     /**
      * Helper method to get the ChromeDevToolsService from a CdpSession.
      * This uses reflection to access the internal devToolsService field.

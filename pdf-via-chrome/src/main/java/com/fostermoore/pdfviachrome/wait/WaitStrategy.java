@@ -17,6 +17,7 @@ import java.util.concurrent.TimeoutException;
  * <ul>
  *   <li>{@link TimeoutWait} - Wait for a fixed duration</li>
  *   <li>{@link NetworkIdleWait} - Wait until network activity stops (Version 2.0+)</li>
+ *   <li>{@link ElementWait} - Wait for a specific element to appear (Version 2.0+)</li>
  * </ul>
  *
  * <h2>Usage Example</h2>
@@ -28,6 +29,10 @@ import java.util.concurrent.TimeoutException;
  * // Wait for network to be idle
  * WaitStrategy networkIdle = WaitStrategy.networkIdle();
  * networkIdle.await(cdpService, Duration.ofSeconds(30));
+ *
+ * // Wait for a specific element to appear
+ * WaitStrategy elementWait = WaitStrategy.elementPresent("#content-loaded");
+ * elementWait.await(cdpService, Duration.ofSeconds(10));
  * }</pre>
  *
  * <h2>Custom Implementation Example</h2>
@@ -124,5 +129,69 @@ public interface WaitStrategy {
      */
     static WaitStrategy networkIdle() {
         return NetworkIdleWait.builder().build();
+    }
+
+    /**
+     * Creates an element wait strategy that waits for an element to be present in the DOM.
+     * <p>
+     * This strategy polls the DOM using the specified CSS selector until the element appears.
+     * It uses the default poll interval of 100ms.
+     * </p>
+     *
+     * @param cssSelector the CSS selector for the element to wait for
+     * @return a new ElementWait strategy that checks for element presence
+     * @throws IllegalArgumentException if cssSelector is null or empty
+     * @see ElementWait
+     * @since 2.0.0
+     */
+    static WaitStrategy elementPresent(String cssSelector) {
+        return ElementWait.builder()
+                .selector(cssSelector)
+                .waitForVisible(false)
+                .build();
+    }
+
+    /**
+     * Creates an element wait strategy that waits for an element to be visible.
+     * <p>
+     * This strategy polls the DOM using the specified CSS selector until the element
+     * is both present and visible (has non-zero dimensions and is not hidden by CSS).
+     * It uses the default poll interval of 100ms.
+     * </p>
+     *
+     * @param cssSelector the CSS selector for the element to wait for
+     * @return a new ElementWait strategy that checks for element visibility
+     * @throws IllegalArgumentException if cssSelector is null or empty
+     * @see ElementWait
+     * @since 2.0.0
+     */
+    static WaitStrategy elementVisible(String cssSelector) {
+        return ElementWait.builder()
+                .selector(cssSelector)
+                .waitForVisible(true)
+                .build();
+    }
+
+    /**
+     * Creates an element wait strategy with custom configuration.
+     * <p>
+     * This allows full control over the element waiting behavior including
+     * poll interval and visibility checking.
+     * </p>
+     *
+     * @param cssSelector the CSS selector for the element to wait for
+     * @param pollInterval the interval between element checks
+     * @param waitForVisible whether to wait for visibility (true) or just presence (false)
+     * @return a new ElementWait strategy with custom configuration
+     * @throws IllegalArgumentException if cssSelector is null/empty, or pollInterval is null/negative
+     * @see ElementWait
+     * @since 2.0.0
+     */
+    static WaitStrategy element(String cssSelector, Duration pollInterval, boolean waitForVisible) {
+        return ElementWait.builder()
+                .selector(cssSelector)
+                .pollInterval(pollInterval)
+                .waitForVisible(waitForVisible)
+                .build();
     }
 }
