@@ -16,6 +16,7 @@ import java.util.concurrent.TimeoutException;
  * <h2>Common Implementations</h2>
  * <ul>
  *   <li>{@link TimeoutWait} - Wait for a fixed duration</li>
+ *   <li>{@link NetworkIdleWait} - Wait until network activity stops (Version 2.0+)</li>
  * </ul>
  *
  * <h2>Usage Example</h2>
@@ -23,6 +24,10 @@ import java.util.concurrent.TimeoutException;
  * // Wait with a simple timeout
  * WaitStrategy timeout = WaitStrategy.timeout(Duration.ofSeconds(5));
  * timeout.await(cdpService, Duration.ofSeconds(10));
+ *
+ * // Wait for network to be idle
+ * WaitStrategy networkIdle = WaitStrategy.networkIdle();
+ * networkIdle.await(cdpService, Duration.ofSeconds(30));
  * }</pre>
  *
  * <h2>Custom Implementation Example</h2>
@@ -83,5 +88,41 @@ public interface WaitStrategy {
      */
     static WaitStrategy timeout() {
         return timeout(Duration.ofSeconds(2));
+    }
+
+    /**
+     * Creates a network idle wait strategy with custom configuration.
+     * <p>
+     * This strategy waits until network activity stops for a specified duration.
+     * It's useful for pages with AJAX requests and dynamic content loading.
+     * </p>
+     *
+     * @param quietPeriod the duration the network must be quiet before considering it idle
+     * @param maxInflightRequests the maximum number of allowed inflight requests during quiet period
+     * @return a new NetworkIdleWait strategy
+     * @throws IllegalArgumentException if quietPeriod is null or not positive, or maxInflightRequests is negative
+     * @see NetworkIdleWait
+     * @since 2.0.0
+     */
+    static WaitStrategy networkIdle(Duration quietPeriod, int maxInflightRequests) {
+        return NetworkIdleWait.builder()
+                .quietPeriod(quietPeriod)
+                .maxInflightRequests(maxInflightRequests)
+                .build();
+    }
+
+    /**
+     * Creates a network idle wait strategy with default settings.
+     * <p>
+     * This is a convenience method equivalent to {@code networkIdle(Duration.ofMillis(500), 0)}.
+     * The default configuration waits for 500ms of network quiet time with no inflight requests.
+     * </p>
+     *
+     * @return a new NetworkIdleWait strategy with default settings (500ms quiet period, 0 max inflight requests)
+     * @see NetworkIdleWait
+     * @since 2.0.0
+     */
+    static WaitStrategy networkIdle() {
+        return NetworkIdleWait.builder().build();
     }
 }
