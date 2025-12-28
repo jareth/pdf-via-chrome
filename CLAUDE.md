@@ -196,7 +196,13 @@ The library can currently:
    - withCustomCssFromFile(Path cssFile) for external CSS files
    - Works with both HTML and URL sources
    - Applied after page load, before PDF generation
-11. Handle thread-safe concurrent PDF generation
+11. Select specific pages for PDF output using page ranges:
+   - Supports single pages: "1", "5", "10"
+   - Supports ranges: "1-5", "10-20"
+   - Supports mixed format: "1-5, 8, 11-13, 20"
+   - Validates page range format and ensures page numbers start from 1
+   - Empty string generates all pages
+12. Handle thread-safe concurrent PDF generation
 
 The test application provides:
 1. REST API endpoint: POST /api/pdf/from-html - Generate PDFs from HTML via HTTP
@@ -435,6 +441,70 @@ try (PdfGenerator generator = PdfGenerator.create().build()) {
         .generate();
     Files.write(Path.of("webpage.pdf"), pdf);
 }
+```
+
+### Page Ranges
+
+```java
+// Generate multi-page HTML document
+String multiPageHtml = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <style>
+            @media print {
+                .page-break { page-break-after: always; }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="page-break"><h1>Page 1</h1><p>Content for page 1...</p></div>
+        <div class="page-break"><h1>Page 2</h1><p>Content for page 2...</p></div>
+        <div class="page-break"><h1>Page 3</h1><p>Content for page 3...</p></div>
+        <div class="page-break"><h1>Page 4</h1><p>Content for page 4...</p></div>
+        <div><h1>Page 5</h1><p>Content for page 5...</p></div>
+    </body>
+    </html>
+    """;
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    // Extract only pages 1-3
+    PdfOptions rangeOptions = PdfOptions.builder()
+        .pageRanges("1-3")
+        .build();
+
+    byte[] pages1to3 = generator.fromHtml(multiPageHtml)
+        .withOptions(rangeOptions)
+        .generate();
+    Files.write(Path.of("pages-1-3.pdf"), pages1to3);
+
+    // Extract specific pages (1, 3, 5)
+    PdfOptions specificPages = PdfOptions.builder()
+        .pageRanges("1,3,5")
+        .build();
+
+    byte[] oddPages = generator.fromHtml(multiPageHtml)
+        .withOptions(specificPages)
+        .generate();
+    Files.write(Path.of("odd-pages.pdf"), oddPages);
+
+    // Mixed ranges: pages 1-2 and page 4
+    PdfOptions mixedRanges = PdfOptions.builder()
+        .pageRanges("1-2,4")
+        .build();
+
+    byte[] selectedPages = generator.fromHtml(multiPageHtml)
+        .withOptions(mixedRanges)
+        .generate();
+    Files.write(Path.of("selected-pages.pdf"), selectedPages);
+}
+
+// Page range format examples:
+// - Single page: "1" or "5" or "10"
+// - Range: "1-5" or "10-20"
+// - Multiple pages: "1,3,5,7"
+// - Mixed: "1-5, 8, 11-13, 20"
+// - All pages: "" (empty string)
 ```
 
 ### Custom Chrome Configuration

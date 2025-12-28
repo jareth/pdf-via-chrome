@@ -4,11 +4,11 @@
         <project>pdf-via-chrome</project>
         <version>1.0.0-SNAPSHOT</version>
         <created>2025-12-15</created>
-        <updated>2025-12-28</updated>
+        <updated>2025-12-29</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
-        <completed-tasks>36</completed-tasks>
-        <completion-percentage>86%</completion-percentage>
+        <completed-tasks>37</completed-tasks>
+        <completion-percentage>88%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -128,7 +128,7 @@
                 <task-ref id="TASK-026" file="tasks/TASK-026.xml" status="Completed" note="Moved from Phase 4 - CustomConditionWait Strategy"/>
                 <task-ref id="TASK-028" file="tasks/TASK-028.xml" status="Completed" note="Moved from Phase 5 - CSS Injection Support"/>
                 <task-ref id="TASK-029" file="tasks/TASK-029.xml" note="Moved from Phase 5 - JavaScript Execution Support"/>
-                <task-ref id="TASK-031" file="tasks/TASK-031.xml" note="Moved from Phase 5 - Page Ranges Support"/>
+                <task-ref id="TASK-031" file="tasks/TASK-031.xml" status="Completed" note="Moved from Phase 5 - Page Ranges Support"/>
                 <task-ref id="TASK-032" file="tasks/TASK-032.xml" note="Moved from Phase 5 - Media Type and Emulation"/>
                 <task-ref id="TASK-043" file="tasks/TASK-043.xml" note="URL-to-PDF integration tests (split from TASK-021)"/>
                 <task-ref id="TASK-044" file="tasks/TASK-044.xml" note="Update TASK-029 to support URL sources"/>

@@ -564,4 +564,163 @@ class PdfOptionsTest {
 
         assertThat(options.getMarginTop()).isEqualTo(2.0);
     }
+
+    // Page ranges validation tests
+
+    @Test
+    void testBuilder_pageRanges_singlePage() {
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("1")
+            .build();
+
+        assertThat(options.getPageRanges()).isEqualTo("1");
+    }
+
+    @Test
+    void testBuilder_pageRanges_multiplePages() {
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("1,3,5")
+            .build();
+
+        assertThat(options.getPageRanges()).isEqualTo("1,3,5");
+    }
+
+    @Test
+    void testBuilder_pageRanges_singleRange() {
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("1-5")
+            .build();
+
+        assertThat(options.getPageRanges()).isEqualTo("1-5");
+    }
+
+    @Test
+    void testBuilder_pageRanges_mixed() {
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("1-3,7-9")
+            .build();
+
+        assertThat(options.getPageRanges()).isEqualTo("1-3,7-9");
+    }
+
+    @Test
+    void testBuilder_pageRanges_complexMixed() {
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("1-5, 8, 11-13, 20")
+            .build();
+
+        assertThat(options.getPageRanges()).isEqualTo("1-5, 8, 11-13, 20");
+    }
+
+    @Test
+    void testBuilder_pageRanges_withSpaces_invalid() {
+        // Spaces within ranges are not valid in the current implementation
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("1 - 5").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_emptyString() {
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("")
+            .build();
+
+        assertThat(options.getPageRanges()).isEmpty();
+    }
+
+    @Test
+    void testBuilder_pageRanges_whitespaceOnly() {
+        // The pageRanges setter accepts whitespace and stores it
+        // but the validator treats trimmed empty as valid (all pages)
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("   ")
+            .build();
+
+        // Whitespace is preserved by the setter but validated as empty
+        assertThat(options.getPageRanges().trim()).isEmpty();
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_letters() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("1-5, abc").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_specialChars() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("1-5; 8").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_negativeNumber() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("-1").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_zeroPage() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("0").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Page numbers must start from 1");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_zeroInRange() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("0-5").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Page numbers must start from 1");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidRange_endBeforeStart() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("5-3").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("end page must be >= start page");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_trailingComma() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("1-5,").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_leadingComma() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges(",1-5").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_invalidFormat_doubleHyphen() {
+        assertThatThrownBy(() ->
+            PdfOptions.builder().pageRanges("1--5").build()
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Invalid page ranges format");
+    }
+
+    @Test
+    void testBuilder_pageRanges_sameStartAndEnd() {
+        // Range like "5-5" should be valid (same as just "5")
+        PdfOptions options = PdfOptions.builder()
+            .pageRanges("5-5")
+            .build();
+
+        assertThat(options.getPageRanges()).isEqualTo("5-5");
+    }
 }
