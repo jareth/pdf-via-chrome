@@ -8,14 +8,22 @@ import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
 import com.github.kklisura.cdt.protocol.commands.Page;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Base64;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
- * Main entry point for PDF generation from HTML content and URLs.
+ * Main entry point for PDF generation from HTML content, URLs, and DOM Documents.
  *
  * This class provides a fluent API for generating PDFs using headless Chrome.
  * It implements AutoCloseable to ensure proper cleanup of Chrome and CDP resources.
@@ -32,6 +40,12 @@ import java.util.concurrent.locks.ReentrantLock;
  *     // Generate PDF from URL
  *     byte[] pdf2 = generator.fromUrl("https://example.com")
  *         .withOptions(PdfOptions.defaults())
+ *         .generate();
+ *
+ *     // Generate PDF from DOM Document
+ *     Document doc = ... // create or parse a DOM Document
+ *     byte[] pdf3 = generator.fromDocument(doc)
+ *         .withOptions(PdfOptions.builder().printBackground(true).build())
  *         .generate();
  * }
  * }</pre>
@@ -104,6 +118,50 @@ public class PdfGenerator implements AutoCloseable {
         }
 
         return new GenerationBuilder(ContentSource.url(url));
+    }
+
+    /**
+     * Starts building a PDF generation request from a DOM Document.
+     *
+     * @param document the DOM Document to convert to PDF
+     * @return a GenerationBuilder for configuring the PDF generation
+     * @throws IllegalArgumentException if document is null
+     * @throws IllegalStateException if the generator has been closed
+     * @throws PdfGenerationException if document serialization fails
+     */
+    public GenerationBuilder fromDocument(Document document) {
+        if (document == null) {
+            throw new IllegalArgumentException("Document cannot be null");
+        }
+        if (closed) {
+            throw new IllegalStateException("PdfGenerator has been closed");
+        }
+
+        String html = documentToHtml(document);
+        return fromHtml(html);
+    }
+
+    /**
+     * Converts a DOM Document to an HTML string.
+     *
+     * @param document the DOM Document to convert
+     * @return the HTML string representation
+     * @throws PdfGenerationException if serialization fails
+     */
+    private String documentToHtml(Document document) {
+        try {
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.METHOD, "html");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+            StringWriter writer = new StringWriter();
+            transformer.transform(new DOMSource(document), new StreamResult(writer));
+            return writer.toString();
+        } catch (TransformerException e) {
+            throw new PdfGenerationException("Failed to convert Document to HTML", e);
+        }
     }
 
     /**

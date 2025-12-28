@@ -1,0 +1,875 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<implementation-plan>
+    <plan-id>REMOVE_CDP_DEPENDENCY</plan-id>
+    <plan-name>Remove cdt-java-client Dependency - Implement CDP Directly</plan-name>
+    <version>1.0</version>
+    <created-date>2025-12-28</created-date>
+
+    <overview>
+        <summary>
+            Remove the dependency on io.fluidsonic.mirror:cdt-java-client library and implement
+            Chrome DevTools Protocol (CDP) communication directly using WebSockets and JSON.
+            This will eliminate the external dependency, reduce library size, and give full
+            control over the CDP implementation tailored specifically to PDF generation needs.
+        </summary>
+
+        <current-dependency>
+            <groupId>io.fluidsonic.mirror</groupId>
+            <artifactId>cdt-java-client</artifactId>
+            <version>4.0.0-fluidsonic-1</version>
+            <note>
+                This is a fork of com.github.kklisura.cdt that fixes a bug where createTab()
+                incorrectly uses HTTP GET instead of PUT for the /json/new endpoint.
+            </note>
+        </current-dependency>
+
+        <motivation>
+            <reason>Reduce dependencies - The library only uses a small subset of CDP features</reason>
+            <reason>Full control - Custom implementation tailored for PDF generation</reason>
+            <reason>Smaller artifact size - No need for full CDP protocol definitions</reason>
+            <reason>Better error handling - Direct control over WebSocket and protocol errors</reason>
+            <reason>Maintainability - No dependency on third-party library maintenance</reason>
+            <reason>Transparency - Clear understanding of exactly what CDP calls are being made</reason>
+        </motivation>
+
+        <scope>
+            <in-scope>WebSocket client for CDP communication</in-scope>
+            <in-scope>JSON message serialization/deserialization</in-scope>
+            <in-scope>CDP Page domain commands: enable, navigate, setDocumentContent, getFrameTree, printToPDF</in-scope>
+            <in-scope>CDP Page domain events: domContentEventFired, loadEventFired</in-scope>
+            <in-scope>HTTP API for tab management: createTab, closeTab</in-scope>
+            <in-scope>Event callback system for CDP events</in-scope>
+            <out-of-scope>Other CDP domains (Runtime, Network, Emulation, DOM, Performance, Security) - keep interfaces but no implementation needed yet</out-of-scope>
+            <out-of-scope>Full CDP protocol coverage</out-of-scope>
+            <out-of-scope>Auto-generated CDP bindings</out-of-scope>
+        </scope>
+    </overview>
+
+    <architecture>
+        <component name="WebSocket Client">
+            <package>com.fostermoore.pdfviachrome.cdp.websocket</package>
+            <description>
+                Low-level WebSocket client for CDP communication. Uses Java 11+ WebSocket API
+                (java.net.http.WebSocket) or Jakarta WebSocket API.
+            </description>
+            <classes>
+                <class>CdpWebSocketClient - Manages WebSocket connection lifecycle</class>
+                <class>CdpMessageListener - Callback interface for CDP messages</class>
+            </classes>
+            <technology>Java 11+ HttpClient WebSocket API (java.net.http.WebSocket)</technology>
+        </component>
+
+        <component name="Protocol Layer">
+            <package>com.fostermoore.pdfviachrome.cdp.protocol</package>
+            <description>
+                CDP protocol message definitions and JSON serialization. Handles request/response
+                correlation and event dispatching.
+            </description>
+            <classes>
+                <class>CdpMessage - Base class for CDP messages</class>
+                <class>CdpRequest - CDP command request (id, method, params)</class>
+                <class>CdpResponse - CDP command response (id, result, error)</class>
+                <class>CdpEvent - CDP event notification (method, params)</class>
+                <class>CdpError - CDP error representation</class>
+                <class>CdpMessageCodec - JSON serialization/deserialization using Jackson or Gson</class>
+                <class>RequestIdGenerator - Generates unique request IDs</class>
+            </classes>
+            <technology>Jackson or Gson for JSON processing</technology>
+        </component>
+
+        <component name="Page Domain">
+            <package>com.fostermoore.pdfviachrome.cdp.domain</package>
+            <description>
+                Implementation of CDP Page domain commands and events. Only implements
+                the methods actually used by the library.
+            </description>
+            <classes>
+                <class>PageDomain - Implementation of Page domain commands</class>
+                <class>PageEventHandlers - Event handler registration for Page events</class>
+            </classes>
+            <methods>
+                <method>enable() - Enable Page domain events</method>
+                <method>navigate(String url) - Navigate to URL</method>
+                <method>setDocumentContent(String frameId, String html) - Set HTML content</method>
+                <method>getFrameTree() - Get frame tree</method>
+                <method>printToPDF(...17 parameters) - Generate PDF</method>
+                <method>onDomContentEventFired(Consumer&lt;DomContentEventFired&gt; handler)</method>
+                <method>onLoadEventFired(Consumer&lt;LoadEventFired&gt; handler)</method>
+            </methods>
+        </component>
+
+        <component name="Type Definitions">
+            <package>com.fostermoore.pdfviachrome.cdp.types</package>
+            <description>
+                Type definitions for CDP messages. Only includes types actually used.
+            </description>
+            <classes>
+                <class>Navigate - Result from Page.navigate</class>
+                <class>FrameTree - Frame tree structure</class>
+                <class>Frame - Frame information</class>
+                <class>PrintToPDFResult - Result from Page.printToPDF</class>
+                <class>DomContentEventFired - Event data (empty for this event)</class>
+                <class>LoadEventFired - Event data (empty for this event)</class>
+            </classes>
+        </component>
+
+        <component name="Tab Management">
+            <package>com.fostermoore.pdfviachrome.cdp.tabs</package>
+            <description>
+                HTTP API client for Chrome tab/target management (/json endpoints).
+            </description>
+            <classes>
+                <class>ChromeTabManager - Manages tabs via HTTP API</class>
+                <class>ChromeTab - Tab representation (id, type, title, url, webSocketDebuggerUrl)</class>
+            </classes>
+            <methods>
+                <method>listTabs() - GET /json/list</method>
+                <method>createTab(String url) - PUT /json/new (not GET!)</method>
+                <method>closeTab(ChromeTab tab) - DELETE /json/close/{id}</method>
+            </methods>
+            <technology>Java 11+ HttpClient for HTTP requests</technology>
+        </component>
+
+        <component name="Session Management">
+            <package>com.fostermoore.pdfviachrome.cdp (existing)</package>
+            <description>
+                Refactored CdpSession to use new CDP implementation instead of cdt-java-client.
+            </description>
+            <classes>
+                <class>CdpSession - Refactored to use CdpWebSocketClient and PageDomain</class>
+                <class>CdpClient - May be removed or simplified</class>
+            </classes>
+        </component>
+    </architecture>
+
+    <implementation-phases>
+        <phase number="1">
+            <name>Foundation - WebSocket and Protocol Layer</name>
+            <priority>CRITICAL</priority>
+            <tasks>
+                <task>
+                    <id>CDP-001</id>
+                    <title>Implement CdpWebSocketClient</title>
+                    <description>
+                        Create WebSocket client using java.net.http.WebSocket API.
+                        - Connect to WebSocket URL
+                        - Send text messages (JSON)
+                        - Receive text messages asynchronously
+                        - Handle connection lifecycle (open, close, error)
+                        - Thread-safe message sending
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/websocket/CdpWebSocketClient.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/websocket/CdpMessageListener.java</file>
+                    </files>
+                    <tests>
+                        <test>CdpWebSocketClientTest - Unit tests with mocked WebSocket</test>
+                        <test>CdpWebSocketClientIT - Integration test with real Chrome</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-002</id>
+                    <title>Implement CDP Protocol Message Classes</title>
+                    <description>
+                        Create CDP message type hierarchy and JSON codec.
+                        - CdpRequest with id, method, params
+                        - CdpResponse with id, result, error
+                        - CdpEvent with method, params
+                        - JSON serialization with Jackson/Gson
+                        - Request ID generation (atomic counter)
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/CdpMessage.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/CdpRequest.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/CdpResponse.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/CdpEvent.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/CdpError.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/CdpMessageCodec.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/protocol/RequestIdGenerator.java</file>
+                    </files>
+                    <tests>
+                        <test>CdpMessageCodecTest - Test JSON serialization/deserialization</test>
+                        <test>RequestIdGeneratorTest - Test ID generation (thread-safety, uniqueness)</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-003</id>
+                    <title>Add JSON Dependency</title>
+                    <description>
+                        Add Jackson or Gson dependency to parent POM for JSON processing.
+                        Jackson is recommended as it's more widely used and has better performance.
+                    </description>
+                    <files>
+                        <file>pom.xml (parent)</file>
+                        <file>pdf-via-chrome/pom.xml</file>
+                    </files>
+                    <dependency>
+                        <groupId>com.fasterxml.jackson.core</groupId>
+                        <artifactId>jackson-databind</artifactId>
+                        <version>2.15.3</version>
+                    </dependency>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="2">
+            <name>Tab Management via HTTP API</name>
+            <priority>CRITICAL</priority>
+            <tasks>
+                <task>
+                    <id>CDP-004</id>
+                    <title>Implement ChromeTabManager</title>
+                    <description>
+                        Implement Chrome HTTP API for tab management.
+                        - GET /json/list - List all tabs/targets
+                        - PUT /json/new?{url} - Create new tab (IMPORTANT: Use PUT, not GET!)
+                        - DELETE /json/close/{id} - Close tab
+                        - Parse JSON responses to ChromeTab objects
+                        Uses Java 11+ HttpClient
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/tabs/ChromeTabManager.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/tabs/ChromeTab.java</file>
+                    </files>
+                    <tests>
+                        <test>ChromeTabManagerTest - Unit tests with mocked HttpClient</test>
+                        <test>ChromeTabManagerIT - Integration test with real Chrome</test>
+                    </tests>
+                    <important-note>
+                        Chrome requires PUT method for /json/new, NOT GET. This was the bug
+                        in the original cdt-java-client library that required using the
+                        fluidsonic fork. Our implementation must use PUT.
+                    </important-note>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="3">
+            <name>CDP Type Definitions</name>
+            <priority>HIGH</priority>
+            <tasks>
+                <task>
+                    <id>CDP-005</id>
+                    <title>Implement CDP Type Classes for Page Domain</title>
+                    <description>
+                        Create type classes for Page domain responses and events.
+                        These are POJOs that Jackson will deserialize CDP JSON into.
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/types/Navigate.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/types/FrameTree.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/types/Frame.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/types/PrintToPDFResult.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/types/DomContentEventFired.java</file>
+                        <file>com/fostermoore/pdfviachrome/cdp/types/LoadEventFired.java</file>
+                    </files>
+                    <type-definitions>
+                        <type name="Navigate">
+                            <field>String frameId - Frame ID</field>
+                            <field>String loaderId - Loader ID (optional)</field>
+                            <field>String errorText - Error text if navigation failed (optional)</field>
+                        </type>
+                        <type name="FrameTree">
+                            <field>Frame frame - Frame information</field>
+                            <field>List&lt;FrameTree&gt; childFrames - Child frames (optional)</field>
+                        </type>
+                        <type name="Frame">
+                            <field>String id - Frame ID</field>
+                            <field>String parentId - Parent frame ID (optional)</field>
+                            <field>String loaderId - Loader ID</field>
+                            <field>String name - Frame name (optional)</field>
+                            <field>String url - Frame URL</field>
+                            <field>String securityOrigin - Security origin</field>
+                            <field>String mimeType - MIME type</field>
+                        </type>
+                        <type name="PrintToPDFResult">
+                            <field>String data - Base64-encoded PDF data</field>
+                            <field>Integer stream - Stream handle (optional, not used)</field>
+                        </type>
+                        <type name="DomContentEventFired">
+                            <field>Double timestamp - Event timestamp</field>
+                        </type>
+                        <type name="LoadEventFired">
+                            <field>Double timestamp - Event timestamp</field>
+                        </type>
+                    </type-definitions>
+                    <tests>
+                        <test>Type deserialization tests for each class</test>
+                    </tests>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="4">
+            <name>Page Domain Implementation</name>
+            <priority>CRITICAL</priority>
+            <tasks>
+                <task>
+                    <id>CDP-006</id>
+                    <title>Implement PageDomain Command Execution</title>
+                    <description>
+                        Implement Page domain methods that send CDP commands via WebSocket
+                        and wait for responses.
+                        - enable() - Enable Page domain events
+                        - navigate(String url) - Navigate to URL, returns Navigate
+                        - setDocumentContent(String frameId, String html) - Set document content
+                        - getFrameTree() - Get frame tree, returns FrameTree
+                        - printToPDF(...) - Generate PDF with all 17 parameters, returns PrintToPDFResult
+
+                        Uses CompletableFuture to wait for responses matching request ID.
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/domain/PageDomain.java</file>
+                    </files>
+                    <methods>
+                        <method signature="void enable()">
+                            Send: {"id": 1, "method": "Page.enable", "params": {}}
+                            Wait for: {"id": 1, "result": {}}
+                        </method>
+                        <method signature="Navigate navigate(String url)">
+                            Send: {"id": 2, "method": "Page.navigate", "params": {"url": "..."}}
+                            Wait for: {"id": 2, "result": {"frameId": "...", "errorText": "..."}}
+                            Deserialize result to Navigate object
+                        </method>
+                        <method signature="void setDocumentContent(String frameId, String html)">
+                            Send: {"id": 3, "method": "Page.setDocumentContent", "params": {"frameId": "...", "html": "..."}}
+                            Wait for: {"id": 3, "result": {}}
+                        </method>
+                        <method signature="FrameTree getFrameTree()">
+                            Send: {"id": 4, "method": "Page.getFrameTree", "params": {}}
+                            Wait for: {"id": 4, "result": {"frameTree": {...}}}
+                            Deserialize result to FrameTree object
+                        </method>
+                        <method signature="PrintToPDFResult printToPDF(Boolean landscape, Boolean displayHeaderFooter, ...)">
+                            Send: {"id": 5, "method": "Page.printToPDF", "params": {...17 params...}}
+                            Wait for: {"id": 5, "result": {"data": "base64..."}}
+                            Deserialize result to PrintToPDFResult object
+                        </method>
+                    </methods>
+                    <tests>
+                        <test>PageDomainTest - Unit tests with mocked WebSocket</test>
+                        <test>PageDomainIT - Integration test with real Chrome</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-007</id>
+                    <title>Implement PageDomain Event Handling</title>
+                    <description>
+                        Implement event registration and dispatching for Page domain events.
+                        - onDomContentEventFired(Consumer&lt;DomContentEventFired&gt; handler)
+                        - onLoadEventFired(Consumer&lt;LoadEventFired&gt; handler)
+
+                        When WebSocket receives a message without "id" field, it's an event.
+                        Parse the "method" field to determine event type and dispatch to
+                        registered handlers.
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/domain/PageEventHandlers.java</file>
+                    </files>
+                    <event-handling>
+                        Incoming event: {"method": "Page.domContentEventFired", "params": {"timestamp": 123.45}}
+                        - Parse "method" field
+                        - Look up registered handlers for "Page.domContentEventFired"
+                        - Deserialize "params" to DomContentEventFired
+                        - Invoke all registered handlers with the event object
+                    </event-handling>
+                    <tests>
+                        <test>PageEventHandlersTest - Test event registration and dispatching</test>
+                    </tests>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="5">
+            <name>Refactor CdpSession</name>
+            <priority>CRITICAL</priority>
+            <tasks>
+                <task>
+                    <id>CDP-008</id>
+                    <title>Refactor CdpSession to Use New CDP Implementation</title>
+                    <description>
+                        Replace cdt-java-client usage in CdpSession with new CDP implementation.
+                        - Remove ChromeServiceImpl and ChromeDevToolsService
+                        - Use ChromeTabManager to create/close tabs
+                        - Use CdpWebSocketClient for WebSocket connection
+                        - Use PageDomain for CDP commands
+                        - Maintain existing API (getPage(), isConnected(), close(), etc.)
+                        - Keep other domain getters (getRuntime(), getNetwork(), etc.) but
+                          throw UnsupportedOperationException for now
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/CdpSession.java</file>
+                    </files>
+                    <migration-steps>
+                        <step>Replace ChromeServiceImpl with ChromeTabManager</step>
+                        <step>Replace ChromeDevToolsService with CdpWebSocketClient + PageDomain</step>
+                        <step>Update connect() method to use new implementation</step>
+                        <step>Update getPage() to return PageDomain instance</step>
+                        <step>Update close() to close WebSocket and delete tab</step>
+                        <step>Keep getRuntime(), getNetwork(), etc. as stubs that throw UnsupportedOperationException</step>
+                    </migration-steps>
+                    <tests>
+                        <test>Update CdpSessionTest to work with new implementation</test>
+                        <test>Update CdpSessionIntegrationTest to work with new implementation</test>
+                    </tests>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="6">
+            <name>Update Converters and API</name>
+            <priority>CRITICAL</priority>
+            <tasks>
+                <task>
+                    <id>CDP-009</id>
+                    <title>Update HtmlToPdfConverter</title>
+                    <description>
+                        Update HtmlToPdfConverter to use new Page domain types.
+                        - Update imports from com.github.kklisura.cdt.* to new packages
+                        - Ensure all Page domain method calls work with new implementation
+                        - Update type references (PrintToPDFResult, FrameTree, etc.)
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/converter/HtmlToPdfConverter.java</file>
+                    </files>
+                    <tests>
+                        <test>Update HtmlToPdfConverterTest</test>
+                        <test>Run HtmlToPdfConverterIT to verify integration</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-010</id>
+                    <title>Update PageController</title>
+                    <description>
+                        Update PageController to use new Page domain types.
+                        - Update imports
+                        - Ensure Navigate type works correctly
+                        - Update all Page domain method calls
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/PageController.java</file>
+                    </files>
+                    <tests>
+                        <test>Update PageControllerTest</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-011</id>
+                    <title>Update PdfGenerator</title>
+                    <description>
+                        Update PdfGenerator to use new Page domain types.
+                        - Update imports
+                        - Ensure all CDP operations work correctly
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/api/PdfGenerator.java</file>
+                    </files>
+                    <tests>
+                        <test>Update PdfGeneratorTest</test>
+                        <test>Run PdfGeneratorIT to verify integration</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-012</id>
+                    <title>Update WaitStrategy Classes</title>
+                    <description>
+                        Update wait strategy classes to not reference ChromeDevToolsService.
+                        Either remove the dependency or create a minimal interface.
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/wait/WaitStrategy.java</file>
+                        <file>com/fostermoore/pdfviachrome/wait/TimeoutWait.java</file>
+                    </files>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="7">
+            <name>Remove cdt-java-client Dependency</name>
+            <priority>CRITICAL</priority>
+            <tasks>
+                <task>
+                    <id>CDP-013</id>
+                    <title>Remove cdt-java-client from POMs</title>
+                    <description>
+                        Remove the cdt-java-client dependency from parent and module POMs.
+                        This is the final step after all code has been migrated.
+                    </description>
+                    <files>
+                        <file>pom.xml (parent)</file>
+                        <file>pdf-via-chrome/pom.xml</file>
+                    </files>
+                    <verification>
+                        <check>Run 'mvn clean install' to verify project builds without cdt-java-client</check>
+                        <check>Run 'mvn dependency:tree' to verify no transitive dependencies remain</check>
+                        <check>Search codebase for 'import com.github.kklisura.cdt' - should find zero matches</check>
+                    </verification>
+                </task>
+
+                <task>
+                    <id>CDP-014</id>
+                    <title>Remove or Update CdpClient Class</title>
+                    <description>
+                        Evaluate if CdpClient class is still needed. It was a factory for
+                        creating CDP sessions. May be simplified or removed entirely.
+                    </description>
+                    <files>
+                        <file>com/fostermoore/pdfviachrome/cdp/CdpClient.java</file>
+                    </files>
+                </task>
+            </tasks>
+        </phase>
+
+        <phase number="8">
+            <name>Testing and Documentation</name>
+            <priority>HIGH</priority>
+            <tasks>
+                <task>
+                    <id>CDP-015</id>
+                    <title>Comprehensive Integration Testing</title>
+                    <description>
+                        Run all integration tests to verify the new CDP implementation works
+                        correctly with real Chrome instances.
+                    </description>
+                    <tests>
+                        <test>Run all *IT.java tests with 'mvn verify'</test>
+                        <test>Test with Chrome, Chromium, and Edge browsers</test>
+                        <test>Test in Docker environment (test-app)</test>
+                        <test>Test all PDF generation scenarios (HTML, URL, DOM Document)</test>
+                        <test>Test all PDF options (landscape, margins, headers/footers, etc.)</test>
+                        <test>Test error handling (timeouts, navigation failures, etc.)</test>
+                    </tests>
+                </task>
+
+                <task>
+                    <id>CDP-016</id>
+                    <title>Update Documentation</title>
+                    <description>
+                        Update project documentation to reflect the removal of cdt-java-client
+                        and the new CDP implementation.
+                    </description>
+                    <files>
+                        <file>CLAUDE.md</file>
+                        <file>README.md</file>
+                        <file>PROJECT_SPEC.xml</file>
+                    </files>
+                    <updates>
+                        <update>Remove references to cdt-java-client dependency</update>
+                        <update>Document the custom CDP implementation</update>
+                        <update>Update architecture section to describe new cdp packages</update>
+                        <update>Add notes about CDP protocol version compatibility</update>
+                        <update>Update Key Technologies section</update>
+                    </updates>
+                </task>
+
+                <task>
+                    <id>CDP-017</id>
+                    <title>Performance Comparison</title>
+                    <description>
+                        Compare performance and memory usage before and after removing cdt-java-client.
+                        Document any improvements in startup time, memory usage, or PDF generation speed.
+                    </description>
+                    <metrics>
+                        <metric>JAR file size comparison</metric>
+                        <metric>Startup time (Chrome launch + CDP connection)</metric>
+                        <metric>Memory usage per PdfGenerator instance</metric>
+                        <metric>PDF generation time for various document sizes</metric>
+                    </metrics>
+                </task>
+            </tasks>
+        </phase>
+    </implementation-phases>
+
+    <technical-details>
+        <cdp-protocol>
+            <overview>
+                Chrome DevTools Protocol (CDP) is a JSON-based protocol over WebSocket.
+                Commands are sent as JSON messages with a unique ID, and responses are
+                correlated by matching the ID.
+            </overview>
+
+            <message-format>
+                <request>
+                    {
+                        "id": 1,                    // Unique request ID (integer)
+                        "method": "Page.navigate",  // CDP method name
+                        "params": {                 // Method parameters (object)
+                            "url": "https://example.com"
+                        }
+                    }
+                </request>
+
+                <response>
+                    {
+                        "id": 1,           // Matches request ID
+                        "result": {        // Result object (structure depends on method)
+                            "frameId": "...",
+                            "loaderId": "..."
+                        }
+                    }
+                </response>
+
+                <error-response>
+                    {
+                        "id": 1,           // Matches request ID
+                        "error": {         // Error object
+                            "code": -32601,
+                            "message": "Method not found"
+                        }
+                    }
+                </error-response>
+
+                <event>
+                    {
+                        "method": "Page.domContentEventFired",  // Event name (no ID!)
+                        "params": {                              // Event parameters
+                            "timestamp": 123456.789
+                        }
+                    }
+                </event>
+            </message-format>
+
+            <http-api>
+                <endpoint>GET /json - Get version info</endpoint>
+                <endpoint>GET /json/list - List all tabs/targets</endpoint>
+                <endpoint>PUT /json/new?{url} - Create new tab (returns tab info with webSocketDebuggerUrl)</endpoint>
+                <endpoint>GET /json/activate/{id} - Activate tab</endpoint>
+                <endpoint>DELETE /json/close/{id} - Close tab</endpoint>
+            </http-api>
+
+            <important-notes>
+                <note>Request IDs must be unique within a CDP session (use atomic counter)</note>
+                <note>Events have no "id" field - distinguish from responses by absence of "id"</note>
+                <note>Responses may contain "error" instead of "result" - check both</note>
+                <note>Use PUT (not GET) for /json/new endpoint - Chrome 98+ requires this</note>
+                <note>WebSocket URL format: ws://host:port/devtools/page/{page-id}</note>
+            </important-notes>
+        </cdp-protocol>
+
+        <java-websocket-api>
+            <overview>
+                Use java.net.http.WebSocket API introduced in Java 11.
+                This is part of the standard library, no external dependency needed.
+            </overview>
+
+            <example>
+                HttpClient client = HttpClient.newHttpClient();
+                WebSocket webSocket = client.newWebSocketBuilder()
+                    .buildAsync(URI.create(webSocketUrl), listener)
+                    .join();
+
+                // Send message
+                webSocket.sendText(jsonMessage, true).join();
+
+                // Listener receives messages
+                WebSocket.Listener listener = new WebSocket.Listener() {
+                    public CompletionStage&lt;?&gt; onText(WebSocket webSocket,
+                                                      CharSequence data,
+                                                      boolean last) {
+                        // Handle incoming message
+                        return WebSocket.Listener.super.onText(webSocket, data, last);
+                    }
+                };
+            </example>
+
+            <thread-safety>
+                WebSocket.sendText() returns CompletableFuture - must be thread-safe.
+                Use locks or synchronization when sending from multiple threads.
+            </thread-safety>
+        </java-websocket-api>
+
+        <json-library>
+            <recommended>Jackson (com.fasterxml.jackson.core:jackson-databind)</recommended>
+            <alternative>Gson (com.google.code.gson:gson)</alternative>
+
+            <jackson-usage>
+                ObjectMapper mapper = new ObjectMapper();
+
+                // Serialize to JSON
+                String json = mapper.writeValueAsString(request);
+
+                // Deserialize from JSON
+                CdpResponse response = mapper.readValue(json, CdpResponse.class);
+
+                // Deserialize with type info
+                Navigate navigate = mapper.convertValue(response.getResult(), Navigate.class);
+            </jackson-usage>
+        </json-library>
+
+        <request-response-correlation>
+            <strategy>
+                Use a Map&lt;Integer, CompletableFuture&lt;CdpResponse&gt;&gt; to correlate
+                requests and responses.
+
+                1. Generate unique request ID
+                2. Create CompletableFuture for this request
+                3. Store in map: pendingRequests.put(id, future)
+                4. Send CDP request with this ID
+                5. When response arrives with matching ID:
+                   - Remove from map: CompletableFuture future = pendingRequests.remove(id)
+                   - Complete the future: future.complete(response)
+                6. Command method waits on future: response = future.get(timeout, TimeUnit)
+            </strategy>
+
+            <timeout-handling>
+                Use CompletableFuture.get(timeout, timeUnit) to implement command timeouts.
+                If timeout occurs, remove from pending map and throw BrowserTimeoutException.
+            </timeout-handling>
+        </request-response-correlation>
+
+        <event-dispatching>
+            <strategy>
+                Use a Map&lt;String, List&lt;Consumer&lt;?&gt;&gt;&gt; to store event handlers.
+
+                When CDP event arrives:
+                1. Check if message has "id" field - if not, it's an event
+                2. Parse "method" field (e.g., "Page.domContentEventFired")
+                3. Look up handlers: handlers = eventHandlers.get("Page.domContentEventFired")
+                4. Deserialize "params" to event type (DomContentEventFired)
+                5. Invoke each handler: handler.accept(eventObject)
+            </strategy>
+
+            <thread-safety>
+                Event handlers are invoked on WebSocket receive thread.
+                Handlers should be fast and non-blocking.
+                Consider using Executor to run handlers asynchronously if needed.
+            </thread-safety>
+        </event-dispatching>
+    </technical-details>
+
+    <testing-strategy>
+        <unit-tests>
+            <test>CdpWebSocketClient - Mock WebSocket, verify send/receive</test>
+            <test>CdpMessageCodec - Test JSON serialization of all message types</test>
+            <test>PageDomain - Mock WebSocket, verify CDP commands sent correctly</test>
+            <test>ChromeTabManager - Mock HttpClient, verify HTTP requests</test>
+            <test>Event dispatching - Verify handlers are invoked correctly</test>
+            <test>Request/response correlation - Verify futures are completed correctly</test>
+        </unit-tests>
+
+        <integration-tests>
+            <test>Full CDP session with real Chrome - connect, send commands, receive events</test>
+            <test>Page.navigate to real URL - verify navigation works</test>
+            <test>Page.setDocumentContent with HTML - verify content is set</test>
+            <test>Page.printToPDF - verify PDF is generated and valid</test>
+            <test>Event handling - verify domContentEventFired and loadEventFired</test>
+            <test>Tab management - create and close tabs via HTTP API</test>
+            <test>Error handling - invalid commands, timeouts, connection failures</test>
+        </integration-tests>
+
+        <compatibility-testing>
+            <test>Test with Chrome (stable channel)</test>
+            <test>Test with Chromium</test>
+            <test>Test with Microsoft Edge</test>
+            <test>Test on Windows, Linux, macOS</test>
+            <test>Test in Docker container</test>
+        </compatibility-testing>
+    </testing-strategy>
+
+    <risks-and-mitigations>
+        <risk>
+            <description>CDP protocol changes in future Chrome versions</description>
+            <likelihood>LOW</likelihood>
+            <impact>MEDIUM</impact>
+            <mitigation>
+                CDP Page domain methods used are very stable and unlikely to change.
+                Monitor Chrome DevTools Protocol changelog for any breaking changes.
+                Add integration tests with multiple Chrome versions if needed.
+            </mitigation>
+        </risk>
+
+        <risk>
+            <description>Missing edge cases in CDP implementation</description>
+            <likelihood>MEDIUM</likelihood>
+            <impact>MEDIUM</impact>
+            <mitigation>
+                Comprehensive integration testing with real Chrome.
+                Compare behavior with cdt-java-client implementation side-by-side during migration.
+                Start with feature parity, then optimize.
+            </mitigation>
+        </risk>
+
+        <risk>
+            <description>Thread-safety issues in WebSocket communication</description>
+            <likelihood>MEDIUM</likelihood>
+            <impact>HIGH</impact>
+            <mitigation>
+                Carefully design thread-safe request/response correlation.
+                Use concurrent data structures (ConcurrentHashMap).
+                Add stress tests with concurrent requests.
+                Use ReentrantLock where needed.
+            </mitigation>
+        </risk>
+
+        <risk>
+            <description>Performance regression</description>
+            <likelihood>LOW</likelihood>
+            <impact>LOW</impact>
+            <mitigation>
+                Benchmark before and after migration.
+                Custom implementation should be faster (less abstraction overhead).
+                Profile if performance issues are discovered.
+            </mitigation>
+        </risk>
+    </risks-and-mitigations>
+
+    <migration-checklist>
+        <item>✓ Phase 1: Implement WebSocket client and protocol layer</item>
+        <item>✓ Phase 2: Implement tab management via HTTP API</item>
+        <item>✓ Phase 3: Implement CDP type definitions</item>
+        <item>✓ Phase 4: Implement Page domain commands and events</item>
+        <item>✓ Phase 5: Refactor CdpSession to use new implementation</item>
+        <item>✓ Phase 6: Update all converters and API classes</item>
+        <item>✓ Phase 7: Remove cdt-java-client dependency from POMs</item>
+        <item>✓ Phase 8: Verify all tests pass (unit + integration)</item>
+        <item>✓ Verify no imports of com.github.kklisura.cdt remain</item>
+        <item>✓ Update documentation (CLAUDE.md, README.md, PROJECT_SPEC.xml)</item>
+        <item>✓ Compare performance metrics</item>
+        <item>✓ Test in Docker environment</item>
+        <item>✓ Final smoke test with test application</item>
+    </migration-checklist>
+
+    <success-criteria>
+        <criterion>All unit tests pass (mvn test)</criterion>
+        <criterion>All integration tests pass (mvn verify)</criterion>
+        <criterion>No dependencies on cdt-java-client or com.github.kklisura.cdt packages</criterion>
+        <criterion>Project builds successfully (mvn clean install)</criterion>
+        <criterion>All PDF generation features work (HTML, URL, DOM Document)</criterion>
+        <criterion>All PDF options work (landscape, margins, headers/footers, etc.)</criterion>
+        <criterion>Test application works correctly</criterion>
+        <criterion>JAR file size is reduced (fewer dependencies)</criterion>
+        <criterion>Documentation is updated</criterion>
+        <criterion>No performance regression (comparable or better performance)</criterion>
+    </success-criteria>
+
+    <estimated-effort>
+        <total>80-100 hours</total>
+        <breakdown>
+            <phase>Phase 1 (WebSocket + Protocol): 16-20 hours</phase>
+            <phase>Phase 2 (Tab Management): 8-10 hours</phase>
+            <phase>Phase 3 (Type Definitions): 6-8 hours</phase>
+            <phase>Phase 4 (Page Domain): 20-24 hours</phase>
+            <phase>Phase 5 (CdpSession Refactor): 10-12 hours</phase>
+            <phase>Phase 6 (Update Converters/API): 8-10 hours</phase>
+            <phase>Phase 7 (Remove Dependency): 2-4 hours</phase>
+            <phase>Phase 8 (Testing + Docs): 10-12 hours</phase>
+        </breakdown>
+    </estimated-effort>
+
+    <benefits>
+        <benefit>Reduced dependencies - No external CDP library needed</benefit>
+        <benefit>Smaller artifact size - Only include what's needed for PDF generation</benefit>
+        <benefit>Full control - Custom implementation tailored to project needs</benefit>
+        <benefit>Better error handling - Direct control over protocol errors</benefit>
+        <benefit>Easier debugging - Clear understanding of CDP communication</benefit>
+        <benefit>No third-party maintenance dependency - No waiting for library updates</benefit>
+        <benefit>Educational value - Deep understanding of CDP protocol</benefit>
+        <benefit>Potential performance improvements - Less abstraction overhead</benefit>
+    </benefits>
+</implementation-plan>

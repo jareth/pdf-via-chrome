@@ -269,6 +269,45 @@ try (PdfGenerator generator = PdfGenerator.create().build()) {
 }
 ```
 
+### PDF from DOM Document
+
+```java
+// Generate PDF from an org.w3c.dom.Document
+import org.w3c.dom.Document;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+// Create a DOM Document programmatically
+DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+DocumentBuilder builder = factory.newDocumentBuilder();
+Document document = builder.newDocument();
+
+// Build HTML structure
+Element html = document.createElement("html");
+Element body = document.createElement("body");
+Element h1 = document.createElement("h1");
+h1.setTextContent("Hello from DOM Document!");
+
+body.appendChild(h1);
+html.appendChild(body);
+document.appendChild(html);
+
+// Generate PDF
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromDocument(document)
+        .generate();
+    Files.write(Path.of("document.pdf"), pdf);
+}
+
+// Or parse an existing HTML file
+Document parsedDoc = builder.parse(new File("input.html"));
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromDocument(parsedDoc)
+        .generate();
+    Files.write(Path.of("parsed.pdf"), pdf);
+}
+```
+
 ### Custom PDF Options
 
 ```java
@@ -352,13 +391,15 @@ try (generator) {
 try (PdfGenerator generator = PdfGenerator.create().build()) {
     byte[] pdf1 = generator.fromHtml(html1).generate();
     byte[] pdf2 = generator.fromUrl("https://example.com").generate();
-    byte[] pdf3 = generator.fromHtml(html2)
+    byte[] pdf3 = generator.fromDocument(domDocument).generate();
+    byte[] pdf4 = generator.fromHtml(html2)
         .withOptions(PdfOptions.builder().landscape(true).build())
         .generate();
 
     Files.write(Path.of("doc1.pdf"), pdf1);
     Files.write(Path.of("doc2.pdf"), pdf2);
     Files.write(Path.of("doc3.pdf"), pdf3);
+    Files.write(Path.of("doc4.pdf"), pdf4);
 }
 ```
 

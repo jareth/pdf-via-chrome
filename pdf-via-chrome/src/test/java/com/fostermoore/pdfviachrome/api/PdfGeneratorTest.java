@@ -2,7 +2,11 @@ package com.fostermoore.pdfviachrome.api;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+import org.w3c.dom.Document;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -354,6 +358,76 @@ class PdfGeneratorTest {
 
             assertThat(builder).isNotNull();
         }
+    }
+
+    @Test
+    void testFromDocument_withValidDocument_returnsGenerationBuilder() throws ParserConfigurationException {
+        PdfGenerator generator = PdfGenerator.create().build();
+        Document document = createSimpleDocument();
+
+        PdfGenerator.GenerationBuilder builder = generator.fromDocument(document);
+
+        assertThat(builder).isNotNull();
+    }
+
+    @Test
+    void testFromDocument_withNullDocument_throwsException() {
+        PdfGenerator generator = PdfGenerator.create().build();
+
+        assertThatThrownBy(() -> generator.fromDocument(null))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Document cannot be null");
+    }
+
+    @Test
+    void testFromDocument_afterClose_throwsException() throws ParserConfigurationException {
+        PdfGenerator generator = PdfGenerator.create().build();
+        generator.close();
+        Document document = createSimpleDocument();
+
+        assertThatThrownBy(() -> generator.fromDocument(document))
+            .isInstanceOf(IllegalStateException.class)
+            .hasMessageContaining("PdfGenerator has been closed");
+    }
+
+    @Test
+    void testFluentApi_documentExample() throws ParserConfigurationException {
+        // This test verifies the Document-based fluent API compiles correctly
+        try (PdfGenerator generator = PdfGenerator.create()
+            .withTimeout(Duration.ofSeconds(30))
+            .build()) {
+
+            Document document = createSimpleDocument();
+
+            PdfGenerator.GenerationBuilder builder = generator
+                .fromDocument(document)
+                .withOptions(PdfOptions.builder()
+                    .printBackground(true)
+                    .build());
+
+            assertThat(builder).isNotNull();
+        }
+    }
+
+    /**
+     * Helper method to create a simple DOM Document for testing.
+     */
+    private Document createSimpleDocument() throws ParserConfigurationException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        Document document = builder.newDocument();
+
+        // Create a simple HTML structure
+        var html = document.createElement("html");
+        var body = document.createElement("body");
+        var h1 = document.createElement("h1");
+        h1.setTextContent("Test Document");
+
+        body.appendChild(h1);
+        html.appendChild(body);
+        document.appendChild(html);
+
+        return document;
     }
 
     /**
