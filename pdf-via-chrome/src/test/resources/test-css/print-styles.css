@@ -1,0 +1,77 @@
+/* Custom print styles for testing CSS injection */
+
+@media print {
+    /* Hide removable sections */
+    .removable {
+        display: none !important;
+    }
+
+    /* Adjust page breaks */
+    .page-break {
+        page-break-after: always;
+    }
+
+    /* Enhance headings for print */
+    h1 {
+        color: #000000 !important;
+        font-size: 24px !important;
+        font-weight: bold !important;
+        border-bottom: 3px solid #000000 !important;
+        margin-top: 0 !important;
+    }
+
+    h2 {
+        color: #333333 !important;
+        font-size: 18px !important;
+        margin-top: 20px !important;
+    }
+}
+
+/* Styles that apply regardless of media type */
+
+/* Make highlighted text more prominent */
+.highlight {
+    background-color: #ffcc00 !important;
+    color: #000000 !important;
+    font-weight: bold !important;
+    padding: 5px 8px !important;
+}
+
+/* Custom table styling */
+table {
+    border: 2px solid #000000 !important;
+}
+
+th {
+    background-color: #cccccc !important;
+    color: #000000 !important;
+    font-weight: bold !important;
+}
+
+td {
+    border: 1px solid #666666 !important;
+}
+
+/* Add a border around the entire body */
+body {
+    border: 5px solid #003366 !important;
+    padding: 20px !important;
+}
+
+/* Show dynamic content */
+.dynamic-content {
+    display: block !important;
+    background-color: #e0f0ff !important;
+    border: 2px dashed #0066cc !important;
+    padding: 15px !important;
+}
+
+/* Style code blocks */
+pre code {
+    background-color: #f5f5f5 !important;
+    border: 1px solid #cccccc !important;
+    padding: 10px !important;
+    display: block !important;
+    font-family: "Courier New", monospace !important;
+    font-size: 12px !important;
+}

@@ -472,10 +472,10 @@
             <name>Advanced Features</name>
             <tasks>
                 <task status="COMPLETED">CSS injection support</task>
-                <task>JavaScript execution before PDF generation</task>
+                <task status="COMPLETED">JavaScript execution before PDF generation</task>
                 <task status="COMPLETED">Custom headers and footers</task>
-                <task>Page range selection</task>
-                <task>Integration tests for advanced features</task>
+                <task status="COMPLETED">Page range selection</task>
+                <task status="COMPLETED">Integration tests for advanced features</task>
             </tasks>
             <completed-features>
                 <feature>PdfOptions.Builder convenience methods for headers/footers</feature>
@@ -495,6 +495,12 @@
                 <feature>Proper CSS escaping for JavaScript string literals (backslashes, quotes, newlines)</feature>
                 <feature>Error handling for CSS injection failures with detailed exception messages</feature>
                 <feature>16 comprehensive integration tests in CssInjectionTest covering all scenarios</feature>
+                <feature>AdvancedFeaturesIT integration test suite with 14 comprehensive tests</feature>
+                <feature>Tests for individual features: CSS injection, JavaScript execution, page ranges, headers/footers</feature>
+                <feature>Tests for combined features: CSS+JS, headers+ranges, CSS+JS+ranges, all features together</feature>
+                <feature>Tests for edge cases: JS modifying DOM before CSS, complex header templates, file loading, mixed page ranges</feature>
+                <feature>Test resources: multi-page.html (5-page test document), print-styles.css, page-manipulation.js</feature>
+                <feature>PDF validation using Apache PDFBox (page count, text extraction, dimensions)</feature>
             </completed-features>
         </phase>
         <phase number="6">
@@ -820,9 +826,10 @@
                 <task>TASK-042: Security review</task>
             </next-tasks>
             <test-statistics>
-                <total-tests>150</total-tests>
+                <total-tests>164</total-tests>
                 <breakdown>
                     <category>Core library builder tests: 111 tests</category>
+                    <category>Core library integration tests: 14 tests (AdvancedFeaturesIT)</category>
                     <category>Test application validation tests: 26 tests</category>
                     <category>Test application controller tests: 13 tests (5 integration, 8 unit)</category>
                 </breakdown>

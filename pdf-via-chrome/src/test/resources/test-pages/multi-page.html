@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Page Test Document</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            line-height: 1.6;
+        }
+
+        h1 {
+            color: #003366;
+            font-size: 28px;
+            border-bottom: 2px solid #003366;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #0066cc;
+            font-size: 20px;
+            margin-top: 30px;
+        }
+
+        .page-break {
+            page-break-after: always;
+        }
+
+        .highlight {
+            background-color: #ffff00;
+            padding: 3px 6px;
+            font-weight: bold;
+        }
+
+        .removable {
+            background-color: #ff9999;
+            padding: 10px;
+            border: 1px solid #ff0000;
+            margin: 10px 0;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 20px 0;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .dynamic-content {
+            display: none;
+            background-color: #e6f3ff;
+            padding: 15px;
+            border-left: 4px solid #0066cc;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Page 1: Introduction</h1>
+    <p>
+        This is a <span class="highlight">multi-page test document</span> designed to test
+        various advanced features of the PDF generation library.
+    </p>
+    <p>
+        This document includes:
+    </p>
+    <ul>
+        <li>Multiple pages with page breaks</li>
+        <li>CSS styling and backgrounds</li>
+        <li>JavaScript manipulation hooks</li>
+        <li>Dynamic content that can be shown/hidden</li>
+        <li>Elements that can be removed via JavaScript</li>
+    </ul>
+
+    <div class="removable" id="removable-section">
+        This section can be removed via JavaScript before PDF generation.
+    </div>
+
+    <div class="page-break"></div>
+
+    <h1>Page 2: Data Tables</h1>
+    <h2>Sample Table</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Feature</th>
+                <th>Status</th>
+                <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>CSS Injection</td>
+                <td>Implemented</td>
+                <td>Custom CSS can be injected before PDF generation</td>
+            </tr>
+            <tr>
+                <td>JavaScript Execution</td>
+                <td>Implemented</td>
+                <td>Custom JavaScript can modify the page before PDF generation</td>
+            </tr>
+            <tr>
+                <td>Page Ranges</td>
+                <td>Implemented</td>
+                <td>Specific pages can be selected for PDF output</td>
+            </tr>
+            <tr>
+                <td>Headers/Footers</td>
+                <td>Implemented</td>
+                <td>Custom headers and footers with templates</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="dynamic-content" id="dynamic-content">
+        <h3>Dynamic Content</h3>
+        <p>This content is hidden by default and can be shown via JavaScript.</p>
+        <p>It demonstrates the ability to modify the page before PDF generation.</p>
+    </div>
+
+    <div class="page-break"></div>
+
+    <h1>Page 3: More Content</h1>
+    <h2>Lorem Ipsum</h2>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
+        incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
+        nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+    </p>
+    <p>
+        Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore
+        eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt
+        in culpa qui officia deserunt mollit anim id est laborum.
+    </p>
+
+    <div class="page-break"></div>
+
+    <h1>Page 4: Code Examples</h1>
+    <h2>Sample Code</h2>
+    <pre><code>
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}
+    </code></pre>
+
+    <div class="page-break"></div>
+
+    <h1>Page 5: Final Page</h1>
+    <h2>Conclusion</h2>
+    <p>
+        This multi-page document tests various advanced features including:
+    </p>
+    <ol>
+        <li>CSS injection for custom print styles</li>
+        <li>JavaScript execution for dynamic content manipulation</li>
+        <li>Page range selection (e.g., pages 1-3, or just page 2)</li>
+        <li>Custom headers and footers with page numbers</li>
+    </ol>
+    <p>
+        <strong>End of document.</strong>
+    </p>
+</body>
+</html>

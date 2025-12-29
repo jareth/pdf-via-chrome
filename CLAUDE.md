@@ -228,6 +228,39 @@ Refer to PROJECT_SPEC.xml for the complete implementation roadmap (7 phases tota
 - **Assertions**: Use AssertJ for fluent assertions
 - **Coverage target**: 80% line coverage (JaCoCo)
 
+### Integration Test Suites
+
+The project includes comprehensive integration test suites that validate end-to-end functionality:
+
+**AdvancedFeaturesIT** - Comprehensive tests for advanced PDF generation features:
+- Individual feature tests: CSS injection, JavaScript execution, page ranges, headers/footers
+- Combined feature tests: CSS+JS, headers+ranges, CSS+JS+ranges, all features together
+- Edge case tests: JS modifying DOM before CSS, complex header templates, file loading, mixed page ranges
+- Total: 14 tests validating feature combinations and interactions
+- Uses test resources: `multi-page.html`, `print-styles.css`, `page-manipulation.js`
+- Validates PDFs using Apache PDFBox (page count, text extraction, dimensions)
+
+**Other Integration Test Suites:**
+- `PdfGenerationIT` - End-to-end PDF generation with PdfGenerator API (9 tests)
+- `HtmlToPdfIT` - HTML to PDF conversion with Testcontainers (17 tests)
+- `HeaderFooterIT` - Header and footer functionality (8 tests)
+- `UrlToPdfConverterIT` - URL to PDF conversion (13 tests)
+- `ChromeManagerIT` - Chrome process management (7 tests)
+- `NetworkIdleWaitIT` - Network idle wait strategy (10 tests)
+- And more...
+
+**Running Integration Tests:**
+```bash
+# Run all integration tests
+mvn verify
+
+# Run specific integration test
+mvn verify -Dit.test=AdvancedFeaturesIT
+
+# Integration tests require Docker (Testcontainers)
+# Tests are automatically skipped if Docker is not available
+```
+
 ## Key Technologies
 
 - **Chrome DevTools Protocol**: Using `cdt-java-client` (io.fluidsonic.mirror:cdt-java-client:4.0.0-fluidsonic-1)
