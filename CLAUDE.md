@@ -240,11 +240,21 @@ The project includes comprehensive integration test suites that validate end-to-
 - Uses test resources: `multi-page.html`, `print-styles.css`, `page-manipulation.js`
 - Validates PDFs using Apache PDFBox (page count, text extraction, dimensions)
 
+**UrlToPdfConverterIT** - Comprehensive tests for URL-to-PDF conversion:
+- URL navigation tests: Simple URLs, HTTP vs HTTPS, query parameters, fragments
+- Custom PDF options: Landscape, A4, margins, scale, print background
+- Header and footer templates with URLs
+- Error handling: Invalid domains, timeouts, disconnected sessions
+- Edge cases: 404 pages, multiple conversions in same session
+- Total: 13 tests validating URL navigation, PDF generation, and error scenarios
+- Disabled by default (requires Chrome and internet connectivity)
+- Enable with: `mvn verify -DCHROME_INTEGRATION_TESTS=true`
+- Uses @EnabledIfEnvironmentVariable to skip tests when not explicitly enabled
+
 **Other Integration Test Suites:**
 - `PdfGenerationIT` - End-to-end PDF generation with PdfGenerator API (9 tests)
 - `HtmlToPdfIT` - HTML to PDF conversion with Testcontainers (17 tests)
 - `HeaderFooterIT` - Header and footer functionality (8 tests)
-- `UrlToPdfConverterIT` - URL to PDF conversion (13 tests)
 - `ChromeManagerIT` - Chrome process management (7 tests)
 - `NetworkIdleWaitIT` - Network idle wait strategy (10 tests)
 - And more...
@@ -257,8 +267,12 @@ mvn verify
 # Run specific integration test
 mvn verify -Dit.test=AdvancedFeaturesIT
 
-# Integration tests require Docker (Testcontainers)
+# Run URL-to-PDF integration tests (requires Chrome and internet)
+mvn verify -Dit.test=UrlToPdfConverterIT -DCHROME_INTEGRATION_TESTS=true
+
+# Most integration tests require Docker (Testcontainers)
 # Tests are automatically skipped if Docker is not available
+# UrlToPdfConverterIT requires Chrome installed and internet connectivity
 ```
 
 ## Key Technologies

@@ -806,6 +806,7 @@
                 <phase number="5" status="COMPLETED" completion-date="2025-12-17">Advanced Features (Custom headers/footers completed)</phase>
                 <phase number="6" status="COMPLETED" completion-date="2025-12-17">Test Application (All 5 tasks completed - REST API, UI, Validation, Error Handling, Logging)</phase>
                 <phase number="7" status="IN_PROGRESS">Documentation and Polish (1 of 5 tasks completed)</phase>
+                <phase number="8" status="IN_PROGRESS">Version 2: URL-to-PDF Features and Advanced Web Capabilities (9 of 15 tasks completed)</phase>
             </phase-status>
             <completed-tasks>
                 <task>TASK-001 through TASK-037: Core library and test application (30 tasks completed)</task>
@@ -817,6 +818,7 @@
                 <task>TASK-020: Extensive unit tests for all builders (111 tests: PdfOptions=40, ChromeOptions=38, PageOptions=33)</task>
                 <task>TASK-030: Custom headers and footers with convenience methods (simplePageNumbers, headerWithTitle, footerWithDate, standardHeaderFooter)</task>
                 <task>TASK-038: Comprehensive Javadocs for all public API classes (completed 2025-12-17)</task>
+                <task>TASK-043: URL-to-PDF integration tests (13 comprehensive tests covering URL navigation, error handling, and various URL formats) (completed 2025-12-29)</task>
             </completed-tasks>
             <next-tasks>
                 <task>Phase 7: Documentation and Polish (4 remaining tasks)</task>
@@ -826,14 +828,14 @@
                 <task>TASK-042: Security review</task>
             </next-tasks>
             <test-statistics>
-                <total-tests>164</total-tests>
+                <total-tests>177</total-tests>
                 <breakdown>
                     <category>Core library builder tests: 111 tests</category>
-                    <category>Core library integration tests: 14 tests (AdvancedFeaturesIT)</category>
+                    <category>Core library integration tests: 27 tests (AdvancedFeaturesIT=14, UrlToPdfConverterIT=13)</category>
                     <category>Test application validation tests: 26 tests</category>
                     <category>Test application controller tests: 13 tests (5 integration, 8 unit)</category>
                 </breakdown>
-                <status>All tests passing</status>
+                <status>All tests passing (UrlToPdfConverterIT disabled by default, requires CHROME_INTEGRATION_TESTS=true)</status>
             </test-statistics>
         </implementation-progress>
     </current-status>

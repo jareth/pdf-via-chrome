@@ -7,8 +7,8 @@
         <updated>2025-12-29</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
-        <completed-tasks>39</completed-tasks>
-        <completion-percentage>93%</completion-percentage>
+        <completed-tasks>40</completed-tasks>
+        <completion-percentage>95%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -130,7 +130,7 @@
                 <task-ref id="TASK-029" file="tasks/TASK-029.xml" status="Completed" note="Moved from Phase 5 - JavaScript Execution Support"/>
                 <task-ref id="TASK-031" file="tasks/TASK-031.xml" status="Completed" note="Moved from Phase 5 - Page Ranges Support"/>
                 <task-ref id="TASK-032" file="tasks/TASK-032.xml" status="Completed" note="Integration Tests for Advanced Features"/>
-                <task-ref id="TASK-043" file="tasks/TASK-043.xml" note="URL-to-PDF integration tests (split from TASK-021)"/>
+                <task-ref id="TASK-043" file="tasks/TASK-043.xml" status="Completed" note="URL-to-PDF integration tests (split from TASK-021)"/>
                 <task-ref id="TASK-044" file="tasks/TASK-044.xml" note="Update TASK-029 to support URL sources"/>
                 <task-ref id="TASK-045" file="tasks/TASK-045.xml" note="Add URL-to-PDF REST endpoint (from TASK-034)"/>
                 <task-ref id="TASK-046" file="tasks/TASK-046.xml" note="Add URL-to-PDF UI form (from TASK-035)"/>
