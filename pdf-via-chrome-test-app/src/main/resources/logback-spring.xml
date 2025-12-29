@@ -65,9 +65,9 @@
         <appender-ref ref="CONSOLE"/>
     </logger>
 
-    <!-- Application loggers -->
-    <logger name="com.fostermoore.pdfviachrome" level="DEBUG"/>
-    <logger name="com.fostermoore.pdfviachrome.testapp" level="DEBUG"/>
+    <!-- Application loggers (use DEBUG for detailed troubleshooting) -->
+    <logger name="com.fostermoore.pdfviachrome" level="INFO"/>
+    <logger name="com.fostermoore.pdfviachrome.testapp" level="INFO"/>
 
     <!-- Spring Framework loggers -->
     <logger name="org.springframework" level="INFO"/>

@@ -375,19 +375,78 @@ public class ChromeManager implements AutoCloseable {
             return;
         }
 
+        logger.debug("Cleaning up temporary user data directory: {}", userDataDir);
+
+        // On Windows, Chrome may hold file locks for a short time after termination.
+        // Wait briefly to allow the OS to release file handles.
         try {
-            logger.debug("Cleaning up temporary user data directory: {}", userDataDir);
-            deleteDirectoryRecursively(userDataDir);
-        } catch (IOException e) {
-            logger.warn("Failed to delete temporary user data directory: {}", userDataDir, e);
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            logger.debug("Interrupted while waiting before cleanup");
+        }
+
+        // Try deletion with retries for Windows file lock issues
+        deleteDirectoryWithRetries(userDataDir, 3, 200);
+    }
+
+    /**
+     * Attempts to delete a directory with retry logic for file lock issues.
+     *
+     * @param directory the directory to delete
+     * @param maxRetries maximum number of retry attempts
+     * @param delayMs delay in milliseconds between retries
+     */
+    private void deleteDirectoryWithRetries(Path directory, int maxRetries, long delayMs) {
+        if (!Files.exists(directory)) {
+            return;
+        }
+
+        for (int attempt = 1; attempt <= maxRetries; attempt++) {
+            try {
+                deleteDirectoryRecursively(directory);
+
+                // Check if directory was successfully deleted
+                if (!Files.exists(directory)) {
+                    logger.debug("Successfully deleted user data directory: {}", directory);
+                    return;
+                }
+
+                // Directory still exists, try again
+                if (attempt < maxRetries) {
+                    logger.trace("Directory still exists after deletion attempt {}, retrying...", attempt);
+                    Thread.sleep(delayMs);
+                }
+
+            } catch (IOException e) {
+                if (attempt == maxRetries) {
+                    // Only log as warning on final attempt
+                    logger.warn("Failed to delete temporary user data directory after {} attempts: {} ({})",
+                               maxRetries, directory, e.getMessage());
+                } else {
+                    logger.trace("Deletion attempt {} failed, will retry: {}", attempt, e.getMessage());
+                    try {
+                        Thread.sleep(delayMs);
+                    } catch (InterruptedException ie) {
+                        Thread.currentThread().interrupt();
+                        logger.debug("Interrupted during retry delay");
+                        return;
+                    }
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                logger.debug("Interrupted during directory deletion");
+                return;
+            }
         }
     }
 
     /**
      * Recursively deletes a directory and all its contents.
+     * Uses best-effort deletion - continues even if individual files fail to delete.
      *
      * @param directory the directory to delete
-     * @throws IOException if deletion fails
+     * @throws IOException if the directory walk fails or if too many files fail to delete
      */
     private void deleteDirectoryRecursively(Path directory) throws IOException {
         if (!Files.exists(directory)) {
@@ -400,7 +459,9 @@ public class ChromeManager implements AutoCloseable {
                       try {
                           Files.deleteIfExists(path);
                       } catch (IOException e) {
-                          logger.debug("Failed to delete: {}", path, e);
+                          // Only log at TRACE level to reduce noise in test output
+                          // DirectoryNotEmptyException and file lock errors are common on Windows
+                          logger.trace("Failed to delete: {} ({})", path, e.getClass().getSimpleName());
                       }
                   });
         }

@@ -32,11 +32,11 @@ class PdfGenerationIT {
 
     private static final Logger logger = LoggerFactory.getLogger(PdfGenerationIT.class);
 
-    private static PdfGenerator pdfGenerator;
+    private PdfGenerator pdfGenerator;
 
-    @BeforeAll
-    static void setUp() {
-        logger.info("Setting up PdfGenerator for integration tests");
+    @BeforeEach
+    void setUp() {
+        logger.info("Setting up PdfGenerator for integration test");
 
         // Create PdfGenerator with settings compatible with both local and Docker environments
         pdfGenerator = PdfGenerator.create()
@@ -48,8 +48,8 @@ class PdfGenerationIT {
         logger.info("PdfGenerator setup complete");
     }
 
-    @AfterAll
-    static void tearDown() {
+    @AfterEach
+    void tearDown() {
         if (pdfGenerator != null) {
             pdfGenerator.close();
             logger.info("PdfGenerator closed");

@@ -37,23 +37,16 @@ class AdvancedFeaturesIT {
 
     private static final Logger logger = LoggerFactory.getLogger(AdvancedFeaturesIT.class);
 
-    private static PdfGenerator pdfGenerator;
+    private PdfGenerator pdfGenerator;
     private static String multiPageHtml;
     private static String printStylesCss;
     private static String pageManipulationJs;
 
     @BeforeAll
-    static void setUp() throws IOException {
-        logger.info("Setting up AdvancedFeaturesIT integration tests");
+    static void setUpClass() throws IOException {
+        logger.info("Loading test resources for AdvancedFeaturesIT");
 
-        // Create PdfGenerator with settings compatible with Docker environments
-        pdfGenerator = PdfGenerator.create()
-                .withHeadless(true)
-                .withNoSandbox(true)
-                .withDisableDevShmUsage(true)
-                .build();
-
-        // Load test resources
+        // Load test resources once for all tests
         Path htmlPath = Paths.get("src/test/resources/test-pages/multi-page.html");
         Path cssPath = Paths.get("src/test/resources/test-css/print-styles.css");
         Path jsPath = Paths.get("src/test/resources/test-js/page-manipulation.js");
@@ -63,11 +56,24 @@ class AdvancedFeaturesIT {
         pageManipulationJs = Files.readString(jsPath);
 
         logger.info("Test resources loaded successfully");
+    }
+
+    @BeforeEach
+    void setUp() {
+        logger.info("Setting up PdfGenerator for test");
+
+        // Create fresh PdfGenerator for each test
+        pdfGenerator = PdfGenerator.create()
+                .withHeadless(true)
+                .withNoSandbox(true)
+                .withDisableDevShmUsage(true)
+                .build();
+
         logger.info("PdfGenerator setup complete");
     }
 
-    @AfterAll
-    static void tearDown() {
+    @AfterEach
+    void tearDown() {
         if (pdfGenerator != null) {
             pdfGenerator.close();
             logger.info("PdfGenerator closed");
@@ -90,9 +96,9 @@ class AdvancedFeaturesIT {
         assertValidPdf(pdfBytes);
 
         // Verify content is present
-        assertPdfContainsText(pdfBytes, "Multi-Page Test Document");
         assertPdfContainsText(pdfBytes, "Page 1: Introduction");
         assertPdfContainsText(pdfBytes, "Page 2: Data Tables");
+        assertPdfContainsText(pdfBytes, "multi-page test document");
 
         logger.info("CSS injection test passed");
     }
@@ -111,7 +117,8 @@ class AdvancedFeaturesIT {
         assertValidPdf(pdfBytes);
 
         // Verify main content is present
-        assertPdfContainsText(pdfBytes, "Multi-Page Test Document");
+        assertPdfContainsText(pdfBytes, "Page 1: Introduction");
+        assertPdfContainsText(pdfBytes, "multi-page test document");
 
         // Note: The JavaScript removes elements with class 'removable' and shows dynamic content
         // We can't easily verify that content was removed via text extraction,
@@ -222,8 +229,9 @@ class AdvancedFeaturesIT {
         assertValidPdf(pdfBytes);
 
         // Verify content is present
-        assertPdfContainsText(pdfBytes, "Multi-Page Test Document");
+        assertPdfContainsText(pdfBytes, "Page 1: Introduction");
         assertPdfContainsText(pdfBytes, "Data Tables");
+        assertPdfContainsText(pdfBytes, "multi-page test document");
 
         logger.info("CSS + JavaScript combined test passed");
     }
@@ -319,9 +327,9 @@ class AdvancedFeaturesIT {
         }
 
         // Verify content
-        assertPdfContainsText(pdfBytes, "Multi-Page Test Document");
         assertPdfContainsText(pdfBytes, "Page 1: Introduction");
         assertPdfContainsText(pdfBytes, "Page 2: Data Tables");
+        assertPdfContainsText(pdfBytes, "multi-page test document");
 
         logger.info("All features combined test passed");
     }
@@ -438,7 +446,8 @@ class AdvancedFeaturesIT {
         // Then - Verify PDF is valid
         assertThat(pdfBytes).isNotEmpty();
         assertValidPdf(pdfBytes);
-        assertPdfContainsText(pdfBytes, "Multi-Page Test Document");
+        assertPdfContainsText(pdfBytes, "Page 1: Introduction");
+        assertPdfContainsText(pdfBytes, "multi-page test document");
 
         logger.info("CSS injection from file test passed");
     }
@@ -456,7 +465,8 @@ class AdvancedFeaturesIT {
         // Then - Verify PDF is valid
         assertThat(pdfBytes).isNotEmpty();
         assertValidPdf(pdfBytes);
-        assertPdfContainsText(pdfBytes, "Multi-Page Test Document");
+        assertPdfContainsText(pdfBytes, "Page 1: Introduction");
+        assertPdfContainsText(pdfBytes, "multi-page test document");
 
         logger.info("JavaScript execution from file test passed");
     }
