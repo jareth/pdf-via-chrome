@@ -240,7 +240,7 @@ class UrlToPdfConverterTest {
     }
 
     @Test
-    @Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
+    //@Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
     void convert_withCustomOptions_shouldUseThem() {
         // Arrange
         PdfOptions options = PdfOptions.builder()
@@ -282,7 +282,7 @@ class UrlToPdfConverterTest {
     }
 
     @Test
-    @Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
+    //@Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
     void convert_withDefaultOptions_shouldUseDefaultPdfOptions() {
         // Arrange
         setupValidPrintToPdfMock();
@@ -413,7 +413,7 @@ class UrlToPdfConverterTest {
     }
 
     @Test
-    @Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
+    //@Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
     void convert_withHttpsUrl_shouldHandleCorrectly() {
         // Arrange
         String httpsUrl = "https://secure.example.com";
