@@ -43,26 +43,25 @@ class HtmlToPdfIT {
 
     /**
      * Chrome container with remote debugging enabled.
-     * Using selenium/standalone-chrome as base image with custom command to enable CDP access.
+     * Using zenika/alpine-chrome as base image - it's designed for headless Chrome with CDP access.
      */
     @Container
     static GenericContainer<?> chromeContainer = new GenericContainer<>(
-            DockerImageName.parse("selenium/standalone-chrome:latest"))
+            DockerImageName.parse("zenika/alpine-chrome:latest"))
             .withExposedPorts(9222)
             .withCommand(
-                    "/opt/google/chrome/google-chrome",
                     "--headless",
                     "--no-sandbox",
                     "--disable-dev-shm-usage",
                     "--disable-gpu",
                     "--remote-debugging-address=0.0.0.0",
                     "--remote-debugging-port=9222",
+                    "--remote-allow-origins=*",  // Required for Chrome 98+ to allow WebSocket connections
                     "--disable-web-security",
-                    "--user-data-dir=/tmp/chrome-user-data",
                     "about:blank"
             )
             .withStartupTimeout(Duration.ofMinutes(2))
-            .waitingFor(Wait.forListeningPort());
+            .waitingFor(Wait.forHttp("/json/version").forPort(9222).forStatusCode(200));
 
     private CdpSession cdpSession;
     private HtmlToPdfConverter converter;
@@ -124,16 +123,34 @@ class HtmlToPdfIT {
             }
 
             // Parse JSON to extract webSocketDebuggerUrl
-            // Simple parsing: look for "webSocketDebuggerUrl":"ws://..."
+            // Simple parsing: look for "webSocketDebuggerUrl": "ws://..." (with spaces)
             String json = response.toString();
-            int startIndex = json.indexOf("\"webSocketDebuggerUrl\":\"") + 24;
-            int endIndex = json.indexOf("\"", startIndex);
-            String wsUrl = json.substring(startIndex, endIndex);
+            logger.debug("Response from Chrome: {}", json);
 
-            // Replace localhost with actual host
+            int keyIndex = json.indexOf("\"webSocketDebuggerUrl\"");
+            if (keyIndex == -1) {
+                throw new IOException("webSocketDebuggerUrl not found in response: " + json);
+            }
+
+            // Find the opening quote of the value (after the colon)
+            int startIndex = json.indexOf("\"", json.indexOf(":", keyIndex)) + 1;
+            if (startIndex == 0) {
+                throw new IOException("Invalid JSON format for webSocketDebuggerUrl in response: " + json);
+            }
+
+            // Find the closing quote
+            int endIndex = json.indexOf("\"", startIndex);
+            if (endIndex == -1) {
+                throw new IOException("Invalid JSON format for webSocketDebuggerUrl in response: " + json);
+            }
+
+            String wsUrl = json.substring(startIndex, endIndex);
+            logger.debug("Extracted WebSocket URL (before replacement): {}", wsUrl);
+
+            // Replace localhost/127.0.0.1 with actual container host
             wsUrl = wsUrl.replace("localhost", host).replace("127.0.0.1", host);
 
-            logger.debug("Extracted WebSocket URL: {}", wsUrl);
+            logger.debug("Extracted WebSocket URL (after replacement): {}", wsUrl);
             return wsUrl;
         } finally {
             conn.disconnect();
