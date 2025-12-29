@@ -182,7 +182,9 @@ public class UrlToPdfConverter {
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new PdfGenerationException("PDF generation interrupted", e);
-        } catch (PageLoadException | BrowserTimeoutException e) {
+        } catch (PdfGenerationException e) {
+            // Re-throw PdfGenerationException and its subclasses (PageLoadException, BrowserTimeoutException)
+            // to preserve specific error messages
             throw e;
         } catch (Exception e) {
             throw new PdfGenerationException("Failed to convert URL to PDF: " + url, e);
