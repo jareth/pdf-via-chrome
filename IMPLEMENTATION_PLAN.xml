@@ -7,8 +7,8 @@
         <updated>2025-12-29</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
-        <completed-tasks>37</completed-tasks>
-        <completion-percentage>88%</completion-percentage>
+        <completed-tasks>38</completed-tasks>
+        <completion-percentage>90%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -127,7 +127,7 @@
                 <task-ref id="TASK-024" file="tasks/TASK-024.xml" status="Completed" note="Moved from Phase 4 - ElementWait Strategy"/>
                 <task-ref id="TASK-026" file="tasks/TASK-026.xml" status="Completed" note="Moved from Phase 4 - CustomConditionWait Strategy"/>
                 <task-ref id="TASK-028" file="tasks/TASK-028.xml" status="Completed" note="Moved from Phase 5 - CSS Injection Support"/>
-                <task-ref id="TASK-029" file="tasks/TASK-029.xml" note="Moved from Phase 5 - JavaScript Execution Support"/>
+                <task-ref id="TASK-029" file="tasks/TASK-029.xml" status="Completed" note="Moved from Phase 5 - JavaScript Execution Support"/>
                 <task-ref id="TASK-031" file="tasks/TASK-031.xml" status="Completed" note="Moved from Phase 5 - Page Ranges Support"/>
                 <task-ref id="TASK-032" file="tasks/TASK-032.xml" note="Moved from Phase 5 - Media Type and Emulation"/>
                 <task-ref id="TASK-043" file="tasks/TASK-043.xml" note="URL-to-PDF integration tests (split from TASK-021)"/>

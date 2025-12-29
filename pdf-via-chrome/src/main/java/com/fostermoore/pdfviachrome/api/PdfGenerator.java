@@ -426,6 +426,7 @@ public class PdfGenerator implements AutoCloseable {
         private final ContentSource contentSource;
         private PdfOptions pdfOptions = PdfOptions.defaults();
         private String customCss;
+        private String customJavaScript;
 
         private GenerationBuilder(ContentSource contentSource) {
             this.contentSource = contentSource;
@@ -495,6 +496,62 @@ public class PdfGenerator implements AutoCloseable {
         }
 
         /**
+         * Executes custom JavaScript in the page before PDF generation.
+         * The JavaScript is executed after the page loads (and after CSS injection if any)
+         * but before PDF generation. This allows you to manipulate the page content,
+         * trigger actions, or wait for dynamic content before capturing the PDF.
+         *
+         * <p>Example use cases:</p>
+         * <ul>
+         *   <li>Remove elements: {@code document.querySelector('.ads').remove()}</li>
+         *   <li>Trigger rendering: {@code window.renderChart()}</li>
+         *   <li>Modify content: {@code document.title = 'PDF Export'}</li>
+         *   <li>Wait for async operations: {@code await loadData()}</li>
+         * </ul>
+         *
+         * @param jsCode the JavaScript code to execute
+         * @return this builder
+         * @throws IllegalArgumentException if jsCode is null or empty
+         */
+        public GenerationBuilder executeJavaScript(String jsCode) {
+            if (jsCode == null || jsCode.trim().isEmpty()) {
+                throw new IllegalArgumentException("JavaScript code cannot be null or empty");
+            }
+            this.customJavaScript = jsCode;
+            return this;
+        }
+
+        /**
+         * Executes custom JavaScript from a file in the page before PDF generation.
+         * The JavaScript is executed after the page loads (and after CSS injection if any)
+         * but before PDF generation. This allows you to manipulate the page content,
+         * trigger actions, or wait for dynamic content before capturing the PDF.
+         *
+         * @param jsFile the path to the JavaScript file
+         * @return this builder
+         * @throws IllegalArgumentException if jsFile is null or doesn't exist
+         * @throws PdfGenerationException if the file cannot be read
+         */
+        public GenerationBuilder executeJavaScriptFromFile(Path jsFile) {
+            if (jsFile == null) {
+                throw new IllegalArgumentException("JavaScript file path cannot be null");
+            }
+            if (!Files.exists(jsFile)) {
+                throw new IllegalArgumentException("JavaScript file does not exist: " + jsFile);
+            }
+            if (!Files.isRegularFile(jsFile)) {
+                throw new IllegalArgumentException("JavaScript file path is not a regular file: " + jsFile);
+            }
+
+            try {
+                String jsCode = Files.readString(jsFile);
+                return executeJavaScript(jsCode);
+            } catch (IOException e) {
+                throw new PdfGenerationException("Failed to read JavaScript file: " + jsFile, e);
+            }
+        }
+
+        /**
          * Generates the PDF.
          *
          * @return the PDF content as a byte array
@@ -532,6 +589,11 @@ public class PdfGenerator implements AutoCloseable {
                     // Inject custom CSS if provided
                     if (customCss != null && !customCss.trim().isEmpty()) {
                         injectCss(customCss);
+                    }
+
+                    // Execute custom JavaScript if provided
+                    if (customJavaScript != null && !customJavaScript.trim().isEmpty()) {
+                        doExecuteJavaScript(customJavaScript);
                     }
 
                     // Generate PDF
@@ -621,6 +683,77 @@ public class PdfGenerator implements AutoCloseable {
                 throw e;
             } catch (Exception e) {
                 throw new PdfGenerationException("Failed to inject custom CSS", e);
+            }
+        }
+
+        /**
+         * Executes JavaScript in the page context.
+         * Supports both synchronous code and Promise-based asynchronous code.
+         *
+         * @param jsCode the JavaScript code to execute
+         * @throws PdfGenerationException if JavaScript execution fails
+         */
+        private void doExecuteJavaScript(String jsCode) {
+            try {
+                logger.debug("Executing custom JavaScript (length: {} chars)", jsCode.length());
+
+                // Get the Runtime domain
+                Runtime runtime = cdpSession.getRuntime();
+
+                // Enable Runtime domain
+                runtime.enable();
+
+                // Wrap the user's code to handle both sync and async execution
+                // If the code returns a Promise, we'll await it
+                String wrappedCode = String.format(
+                    "(async function() { %s })()",
+                    jsCode
+                );
+
+                // Execute the JavaScript with await promise support
+                var result = runtime.evaluate(
+                    wrappedCode,
+                    null,    // objectGroup
+                    false,   // includeCommandLineAPI
+                    false,   // silent
+                    null,    // contextId
+                    false,   // returnByValue
+                    false,   // generatePreview
+                    false,   // userGesture
+                    true,    // awaitPromise - wait for Promise to resolve
+                    false,   // throwOnSideEffect
+                    null,    // timeout
+                    false,   // disableBreaks
+                    false,   // replMode
+                    false,   // allowUnsafeEvalBlockedByCSP
+                    null     // uniqueContextId
+                );
+
+                // Check for JavaScript execution errors
+                if (result.getExceptionDetails() != null) {
+                    String errorMessage = result.getExceptionDetails().getText();
+                    logger.error("JavaScript execution failed: {}", errorMessage);
+
+                    // Log the exception details for debugging
+                    var exception = result.getExceptionDetails().getException();
+                    if (exception != null && exception.getDescription() != null) {
+                        logger.error("Exception details: {}", exception.getDescription());
+                    }
+
+                    throw new PdfGenerationException("Failed to execute JavaScript: " + errorMessage);
+                }
+
+                logger.debug("Custom JavaScript executed successfully");
+
+                // Log the result if it's meaningful (not undefined)
+                if (result.getResult() != null && result.getResult().getValue() != null) {
+                    logger.trace("JavaScript execution result: {}", result.getResult().getValue());
+                }
+
+            } catch (PdfGenerationException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new PdfGenerationException("Failed to execute custom JavaScript", e);
             }
         }
     }

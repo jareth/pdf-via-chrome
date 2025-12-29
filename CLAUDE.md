@@ -202,7 +202,14 @@ The library can currently:
    - Supports mixed format: "1-5, 8, 11-13, 20"
    - Validates page range format and ensures page numbers start from 1
    - Empty string generates all pages
-12. Handle thread-safe concurrent PDF generation
+12. Execute custom JavaScript before PDF generation:
+   - executeJavaScript(String jsCode) for inline JavaScript execution
+   - executeJavaScriptFromFile(Path jsFile) for external JavaScript files
+   - Works with both HTML and URL sources
+   - Executes after page load and CSS injection, before PDF generation
+   - Supports both synchronous and asynchronous (Promise-based) JavaScript
+   - Use cases: Remove elements, trigger rendering, modify content, wait for dynamic content
+13. Handle thread-safe concurrent PDF generation
 
 The test application provides:
 1. REST API endpoint: POST /api/pdf/from-html - Generate PDFs from HTML via HTTP
@@ -505,6 +512,90 @@ try (PdfGenerator generator = PdfGenerator.create().build()) {
 // - Multiple pages: "1,3,5,7"
 // - Mixed: "1-5, 8, 11-13, 20"
 // - All pages: "" (empty string)
+```
+
+### JavaScript Execution
+
+```java
+// Execute JavaScript to modify the page before PDF generation
+String html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>My Document</title>
+    </head>
+    <body>
+        <h1 id="title">Original Title</h1>
+        <div class="ads">Advertisement</div>
+        <p class="content">Important content here</p>
+        <div class="ads">Another Ad</div>
+    </body>
+    </html>
+    """;
+
+String jsCode = """
+    // Remove all ads
+    document.querySelectorAll('.ads').forEach(ad => ad.remove());
+
+    // Modify the title
+    document.getElementById('title').textContent = 'PDF Export';
+    document.title = 'Exported PDF';
+    """;
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(html)
+        .executeJavaScript(jsCode)
+        .generate();
+    Files.write(Path.of("output.pdf"), pdf);
+}
+
+// Execute JavaScript from a file
+Path jsFile = Path.of("scripts/prepare-pdf.js");
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(html)
+        .executeJavaScriptFromFile(jsFile)
+        .generate();
+    Files.write(Path.of("output.pdf"), pdf);
+}
+
+// Asynchronous JavaScript with Promises
+String asyncJsCode = """
+    // Wait for some async operation
+    await new Promise(resolve => setTimeout(resolve, 1000));
+
+    // Trigger dynamic rendering
+    await window.renderChart();
+
+    // Wait for elements to appear
+    while (!document.querySelector('.rendered-content')) {
+        await new Promise(resolve => setTimeout(resolve, 100));
+    }
+    """;
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(html)
+        .executeJavaScript(asyncJsCode)
+        .generate();
+    Files.write(Path.of("output.pdf"), pdf);
+}
+
+// Combine with CSS injection and PDF options
+String css = ".sidebar { display: none; }";
+String js = "document.querySelector('.main-content').style.width = '100%';";
+
+PdfOptions options = PdfOptions.builder()
+    .paperSize(PaperFormat.A4)
+    .printBackground(true)
+    .build();
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(html)
+        .withCustomCss(css)
+        .executeJavaScript(js)
+        .withOptions(options)
+        .generate();
+    Files.write(Path.of("custom.pdf"), pdf);
+}
 ```
 
 ### Custom Chrome Configuration
