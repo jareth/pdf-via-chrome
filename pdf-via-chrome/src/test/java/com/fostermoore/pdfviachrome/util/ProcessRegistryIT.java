@@ -6,7 +6,7 @@ import com.fostermoore.pdfviachrome.chrome.ChromeProcess;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,11 +19,11 @@ import static org.assertj.core.api.Assertions.*;
  *
  * These tests require Chrome to be installed on the system.
  * They are disabled by default and can be enabled by setting the
- * CHROME_INTEGRATION_TESTS environment variable to "true".
+ * CHROME_INTEGRATION_TESTS system property to "true".
  *
  * To run: mvn verify -DCHROME_INTEGRATION_TESTS=true
  */
-@EnabledIfEnvironmentVariable(named = "CHROME_INTEGRATION_TESTS", matches = "true")
+@EnabledIfSystemProperty(named = "CHROME_INTEGRATION_TESTS", matches = "true")
 class ProcessRegistryIT {
 
     private ProcessRegistry registry;

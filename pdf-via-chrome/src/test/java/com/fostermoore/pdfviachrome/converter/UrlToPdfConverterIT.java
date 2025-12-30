@@ -11,7 +11,7 @@ import com.fostermoore.pdfviachrome.exception.PageLoadException;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
 import com.fostermoore.pdfviachrome.util.ChromePathDetector;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
@@ -24,13 +24,13 @@ import static org.assertj.core.api.Assertions.*;
  * <p>
  * These tests require Chrome to be installed on the system and internet connectivity.
  * They are disabled by default and can be enabled by setting the
- * CHROME_INTEGRATION_TESTS environment variable to "true".
+ * CHROME_INTEGRATION_TESTS system property to "true".
  * </p>
  * <p>
  * To run: mvn verify -DCHROME_INTEGRATION_TESTS=true
  * </p>
  */
-@EnabledIfEnvironmentVariable(named = "CHROME_INTEGRATION_TESTS", matches = "true")
+@EnabledIfSystemProperty(named = "CHROME_INTEGRATION_TESTS", matches = "true")
 class UrlToPdfConverterIT {
 
     private static final String EXAMPLE_URL = "https://example.com";
@@ -53,8 +53,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -85,8 +83,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.builder()
                     .landscape(true)
@@ -119,8 +115,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -153,8 +147,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.builder()
                     .displayHeaderFooter(true)
@@ -187,8 +179,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
 
                 // Test the convenience method that uses default options
@@ -215,8 +205,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             CdpSession session = CdpClient.createSession(process);
-            session.connect();
-
             UrlToPdfConverter converter = new UrlToPdfConverter(session);
 
             // Close the session
@@ -244,8 +232,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 // Use a very short timeout (1ms) - this will likely timeout
                 UrlToPdfConverter converter = new UrlToPdfConverter(session, 1);
                 PdfOptions pdfOptions = PdfOptions.defaults();
@@ -271,8 +257,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session, 10000);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -298,8 +282,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -329,8 +311,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -358,8 +338,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -387,8 +365,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -416,8 +392,6 @@ class UrlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 UrlToPdfConverter converter = new UrlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.builder()
                     .printBackground(true)

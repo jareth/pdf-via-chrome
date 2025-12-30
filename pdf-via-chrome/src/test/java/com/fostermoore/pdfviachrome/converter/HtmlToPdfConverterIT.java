@@ -9,7 +9,7 @@ import com.fostermoore.pdfviachrome.chrome.ChromeProcess;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
 import com.fostermoore.pdfviachrome.util.ChromePathDetector;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
+import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -26,13 +26,13 @@ import static org.assertj.core.api.Assertions.*;
  * <p>
  * These tests require Chrome to be installed on the system.
  * They are disabled by default and can be enabled by setting the
- * CHROME_INTEGRATION_TESTS environment variable to "true".
+ * CHROME_INTEGRATION_TESTS system property to "true".
  * </p>
  * <p>
  * To run: mvn verify -DCHROME_INTEGRATION_TESTS=true
  * </p>
  */
-@EnabledIfEnvironmentVariable(named = "CHROME_INTEGRATION_TESTS", matches = "true")
+@EnabledIfSystemProperty(named = "CHROME_INTEGRATION_TESTS", matches = "true")
 class HtmlToPdfConverterIT {
 
     private static final String SIMPLE_HTML = "<html><body><h1>Hello World</h1></body></html>";
@@ -98,8 +98,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -130,8 +128,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.builder()
                     .printBackground(true) // Include background colors
@@ -160,8 +156,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.builder()
                     .landscape(true)
@@ -194,8 +188,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -233,8 +225,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -262,8 +252,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
@@ -290,8 +278,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 // Generate large HTML document
                 StringBuilder largeHtml = new StringBuilder("<html><body>");
                 for (int i = 0; i < 1000; i++) {
@@ -326,8 +312,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
                 PdfOptions pdfOptions = PdfOptions.builder()
                     .displayHeaderFooter(true)
@@ -360,8 +344,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             CdpSession session = CdpClient.createSession(process);
-            session.connect();
-
             HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
 
             // Close the session
@@ -389,8 +371,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 // Use a very short timeout (1ms) - this might fail or succeed depending on timing
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session, 1);
                 PdfOptions pdfOptions = PdfOptions.defaults();
@@ -422,8 +402,6 @@ class HtmlToPdfConverterIT {
             ChromeProcess process = chromeManager.start();
 
             try (CdpSession session = CdpClient.createSession(process)) {
-                session.connect();
-
                 HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
 
                 // Test the convenience method that uses default options

@@ -52,6 +52,9 @@ mvn test
 
 # Run integration tests
 mvn verify
+
+# Some test are skipped by default due to requiring a local chrome setup
+mvn verify -DCHROME_INTEGRATION_TESTS=true
 ```
 
 The build will produce:
