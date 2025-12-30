@@ -366,6 +366,181 @@ class PdfGenerationIT {
         assertPdfContainsText(pdfBytes, "Test 2");
     }
 
+    @Test
+    void testPageRanges_multiPageDocument() throws IOException {
+        // Given - Create HTML with multiple pages using page breaks
+        String html = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        @media print {
+                            .page-break { page-break-after: always; }
+                        }
+                        body { font-family: Arial, sans-serif; margin: 20px; }
+                        h1 { font-size: 24px; }
+                        p { font-size: 12px; }
+                    </style>
+                </head>
+                <body>
+                    <div class="page-break">
+                        <h1>Page 1</h1>
+                        <p>This is the content of page 1.</p>
+                    </div>
+                    <div class="page-break">
+                        <h1>Page 2</h1>
+                        <p>This is the content of page 2.</p>
+                    </div>
+                    <div class="page-break">
+                        <h1>Page 3</h1>
+                        <p>This is the content of page 3.</p>
+                    </div>
+                    <div class="page-break">
+                        <h1>Page 4</h1>
+                        <p>This is the content of page 4.</p>
+                    </div>
+                    <div>
+                        <h1>Page 5</h1>
+                        <p>This is the content of page 5.</p>
+                    </div>
+                </body>
+                </html>
+                """;
+
+        // Test 1: Generate PDF with all pages (no page ranges)
+        PdfOptions allPagesOptions = PdfOptions.builder()
+                .printBackground(true)
+                .build();
+
+        byte[] allPagesPdf = pdfGenerator.fromHtml(html)
+                .withOptions(allPagesOptions)
+                .generate();
+
+        assertValidPdf(allPagesPdf);
+        try (PDDocument document = Loader.loadPDF(allPagesPdf)) {
+            assertThat(document.getNumberOfPages()).isEqualTo(5);
+        }
+
+        // Test 2: Generate PDF with only pages 1-3
+        PdfOptions rangeOptions = PdfOptions.builder()
+                .pageRanges("1-3")
+                .printBackground(true)
+                .build();
+
+        byte[] rangePdf = pdfGenerator.fromHtml(html)
+                .withOptions(rangeOptions)
+                .generate();
+
+        assertValidPdf(rangePdf);
+        try (PDDocument document = Loader.loadPDF(rangePdf)) {
+            assertThat(document.getNumberOfPages()).isEqualTo(3);
+        }
+        assertPdfContainsText(rangePdf, "Page 1");
+        assertPdfContainsText(rangePdf, "Page 2");
+        assertPdfContainsText(rangePdf, "Page 3");
+
+        // Test 3: Generate PDF with specific pages (1, 3, 5)
+        PdfOptions specificPagesOptions = PdfOptions.builder()
+                .pageRanges("1,3,5")
+                .printBackground(true)
+                .build();
+
+        byte[] specificPagesPdf = pdfGenerator.fromHtml(html)
+                .withOptions(specificPagesOptions)
+                .generate();
+
+        assertValidPdf(specificPagesPdf);
+        try (PDDocument document = Loader.loadPDF(specificPagesPdf)) {
+            assertThat(document.getNumberOfPages()).isEqualTo(3);
+        }
+        assertPdfContainsText(specificPagesPdf, "Page 1");
+        assertPdfContainsText(specificPagesPdf, "Page 3");
+        assertPdfContainsText(specificPagesPdf, "Page 5");
+
+        // Test 4: Generate PDF with mixed ranges (1-2, 4)
+        PdfOptions mixedRangesOptions = PdfOptions.builder()
+                .pageRanges("1-2,4")
+                .printBackground(true)
+                .build();
+
+        byte[] mixedRangesPdf = pdfGenerator.fromHtml(html)
+                .withOptions(mixedRangesOptions)
+                .generate();
+
+        assertValidPdf(mixedRangesPdf);
+        try (PDDocument document = Loader.loadPDF(mixedRangesPdf)) {
+            assertThat(document.getNumberOfPages()).isEqualTo(3);
+        }
+        assertPdfContainsText(mixedRangesPdf, "Page 1");
+        assertPdfContainsText(mixedRangesPdf, "Page 2");
+        assertPdfContainsText(mixedRangesPdf, "Page 4");
+
+        // Verify that different page selections produce different size PDFs
+        // (PDFs with fewer pages should generally be smaller)
+        assertThat(rangePdf.length).isLessThan(allPagesPdf.length);
+        assertThat(specificPagesPdf.length).isLessThan(allPagesPdf.length);
+    }
+
+    @Test
+    void testPageRanges_singlePage() throws IOException {
+        // Given
+        String html = """
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <style>
+                        @media print {
+                            .page-break { page-break-after: always; }
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="page-break"><h1>Page 1</h1></div>
+                    <div class="page-break"><h1>Page 2</h1></div>
+                    <div><h1>Page 3</h1></div>
+                </body>
+                </html>
+                """;
+
+        // When - Generate PDF with only page 2
+        PdfOptions options = PdfOptions.builder()
+                .pageRanges("2")
+                .build();
+
+        byte[] pdf = pdfGenerator.fromHtml(html)
+                .withOptions(options)
+                .generate();
+
+        // Then
+        assertValidPdf(pdf);
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            assertThat(document.getNumberOfPages()).isEqualTo(1);
+        }
+        assertPdfContainsText(pdf, "Page 2");
+    }
+
+    @Test
+    void testPageRanges_emptyString_generatesAllPages() throws IOException {
+        // Given
+        String html = "<html><body><h1>Test Page</h1></body></html>";
+
+        // When - Empty page ranges should generate all pages
+        PdfOptions options = PdfOptions.builder()
+                .pageRanges("")
+                .build();
+
+        byte[] pdf = pdfGenerator.fromHtml(html)
+                .withOptions(options)
+                .generate();
+
+        // Then
+        assertValidPdf(pdf);
+        assertPdfContainsText(pdf, "Test Page");
+        try (PDDocument document = Loader.loadPDF(pdf)) {
+            assertThat(document.getNumberOfPages()).isGreaterThan(0);
+        }
+    }
+
     // ========== Helper Methods ==========
 
     /**

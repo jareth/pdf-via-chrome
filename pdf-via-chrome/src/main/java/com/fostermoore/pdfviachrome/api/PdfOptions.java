@@ -592,35 +592,37 @@ public class PdfOptions {
 
         /**
          * Builds the PdfOptions instance.
-         * Performs validation on complex fields.
+         * Performs validation and normalization on complex fields.
          *
          * @return a new PdfOptions instance
          * @throws IllegalArgumentException if pageRanges format is invalid
          */
         public PdfOptions build() {
-            // Validate page ranges format if provided
+            // Validate and normalize page ranges format if provided
             if (pageRanges != null && !pageRanges.trim().isEmpty()) {
-                validatePageRanges(pageRanges);
+                pageRanges = validateAndNormalizePageRanges(pageRanges);
             }
 
             return new PdfOptions(this);
         }
 
         /**
-         * Validates the page ranges format.
+         * Validates and normalizes the page ranges format.
          * Expected format: "1-5, 8, 11-13" or individual page numbers/ranges separated by commas.
+         * Normalizes to ensure commas are always followed by a space for CDP compatibility.
          *
          * @param ranges the page ranges string
+         * @return the normalized page ranges string
          * @throws IllegalArgumentException if the format is invalid
          */
-        private void validatePageRanges(String ranges) {
+        private String validateAndNormalizePageRanges(String ranges) {
             // Pattern: comma-separated list of numbers or ranges (e.g., "1-5, 8, 11-13")
             // Each part can be: a number (e.g., "8") or a range (e.g., "1-5")
             String trimmed = ranges.trim();
 
             // Allow empty string
             if (trimmed.isEmpty()) {
-                return;
+                return "";
             }
 
             // Check overall pattern
@@ -631,7 +633,7 @@ public class PdfOptions {
                 );
             }
 
-            // Validate individual ranges
+            // Validate individual ranges and collect normalized parts
             String[] parts = trimmed.split("\\s*,\\s*");
             for (String part : parts) {
                 if (part.contains("-")) {
@@ -658,6 +660,10 @@ public class PdfOptions {
                     }
                 }
             }
+
+            // Normalize: ensure commas are always followed by a space for CDP compatibility
+            // CDP expects "1, 3, 5" not "1,3,5"
+            return String.join(", ", parts);
         }
     }
 

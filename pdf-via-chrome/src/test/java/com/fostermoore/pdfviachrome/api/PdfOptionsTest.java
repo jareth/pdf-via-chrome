@@ -582,7 +582,8 @@ class PdfOptionsTest {
             .pageRanges("1,3,5")
             .build();
 
-        assertThat(options.getPageRanges()).isEqualTo("1,3,5");
+        // Page ranges are normalized to have spaces after commas for CDP compatibility
+        assertThat(options.getPageRanges()).isEqualTo("1, 3, 5");
     }
 
     @Test
@@ -600,7 +601,8 @@ class PdfOptionsTest {
             .pageRanges("1-3,7-9")
             .build();
 
-        assertThat(options.getPageRanges()).isEqualTo("1-3,7-9");
+        // Page ranges are normalized to have spaces after commas for CDP compatibility
+        assertThat(options.getPageRanges()).isEqualTo("1-3, 7-9");
     }
 
     @Test
