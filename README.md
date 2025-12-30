@@ -16,11 +16,17 @@ Unlike browser automation frameworks like Selenium or Playwright, this library f
 ## Features
 
 - **Simple API**: Fluent builder pattern for easy PDF generation
-- **Multiple Input Sources**: Generate PDFs from HTML strings, files, or URLs
-- **Extensive Customization**: Configure page size, margins, orientation, headers, footers, and more
+- **Multiple Input Sources**: Generate PDFs from HTML strings, URLs, or DOM Documents (org.w3c.dom.Document)
+- **Extensive Customization**: Configure page size, margins, orientation, headers, footers, page ranges, and more
+- **CSS & JavaScript Injection**: Inject custom CSS and execute JavaScript before PDF generation
 - **Chrome DevTools Protocol**: Direct integration with Chrome via CDP for optimal performance
-- **Wait Strategies**: Built-in strategies for handling dynamic content (network idle, element presence, custom conditions)
-- **Resource Management**: Automatic browser lifecycle management with pooling support
+- **Wait Strategies**: Built-in strategies for handling dynamic content:
+  - Fixed duration timeout (TimeoutWait)
+  - Network idle detection (NetworkIdleWait)
+  - DOM element presence (ElementWait)
+  - Custom JavaScript conditions (CustomConditionWait)
+- **Resource Management**: Automatic browser lifecycle management with AutoCloseable pattern
+- **Thread Safety**: Thread-safe concurrent PDF generation from a single PdfGenerator instance
 - **Exception Handling**: Comprehensive error handling with detailed diagnostics
 - **Testcontainers Support**: Easy integration testing with containerized Chrome
 
@@ -106,17 +112,53 @@ Add the dependency to your `pom.xml`:
 </dependency>
 ```
 
-Basic usage example (detailed documentation coming in later phases):
+### Basic Usage
 
 ```java
-// Example will be provided once the API is implemented
-PdfGenerator generator = PdfGenerator.builder().build();
-// More examples to follow...
+// Generate PDF from HTML with default options
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml("<html><body><h1>Hello World</h1></body></html>")
+        .generate();
+    Files.write(Path.of("output.pdf"), pdf);
+}
+
+// Generate PDF from URL
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromUrl("https://example.com")
+        .generate();
+    Files.write(Path.of("webpage.pdf"), pdf);
+}
+
+// Generate PDF with custom options
+PdfOptions options = PdfOptions.builder()
+    .paperSize(PaperFormat.A4)
+    .landscape(true)
+    .printBackground(true)
+    .margins("1cm")
+    .scale(0.8)
+    .build();
+
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(htmlContent)
+        .withOptions(options)
+        .generate();
+    Files.write(Path.of("custom.pdf"), pdf);
+}
 ```
+
+For more detailed examples including headers/footers, CSS injection, JavaScript execution, page ranges, and wait strategies, see [CLAUDE.md](CLAUDE.md).
 
 ## Documentation
 
-Comprehensive documentation including API reference, usage examples, and best practices will be added as the project progresses.
+- **[CLAUDE.md](CLAUDE.md)**: Comprehensive developer guide including:
+  - Complete API usage examples (basic and advanced)
+  - Architecture and design patterns
+  - Build commands and testing conventions
+  - Integration test suites and coverage
+  - Chrome process management details
+  - Test application REST API documentation
+- **Javadoc**: API documentation available via `mvn javadoc:javadoc` (target/site/apidocs)
+- **Test Application**: Spring Boot demo app with REST endpoints for manual testing
 
 ## Contributing
 
@@ -158,4 +200,4 @@ Built using:
 
 ---
 
-**Status**: Phase 1 - Project Bootstrap (In Progress)
+**Status**: Phase 5-6 Complete - Core PDF generation, wait strategies, and test application implemented. Working towards advanced features and production readiness.

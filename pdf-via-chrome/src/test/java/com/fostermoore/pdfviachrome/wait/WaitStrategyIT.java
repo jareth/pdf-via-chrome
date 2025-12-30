@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.*;
  * </p>
  */
 @EnabledIfEnvironmentVariable(named = "RUN_INTEGRATION_TESTS", matches = "true", disabledReason = "Integration tests disabled")
-class WaitStrategyIntegrationTest {
+class WaitStrategyIT {
 
     @Test
     void timeoutWait_withValidDuration_shouldWaitCorrectly() throws Exception {

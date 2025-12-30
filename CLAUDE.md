@@ -98,9 +98,9 @@ Base package: `com.fostermoore.pdfviachrome`
   - `CdpSession` - Manages WebSocket connection to Chrome (AutoCloseable)
   - `CdpClient` - Factory for creating CDP sessions
 
-- **converter/**: Conversion implementations (PARTIALLY IMPLEMENTED)
+- **converter/**: Conversion implementations (FULLY IMPLEMENTED)
   - `HtmlToPdfConverter` - Converts HTML strings to PDF with DOMContentLoaded event handling
-  - Not yet implemented: `UrlToPdfConverter`
+  - `UrlToPdfConverter` - Converts URLs to PDF with page navigation and load event handling
 
 - **exception/**: Custom exceptions (FULLY IMPLEMENTED)
   - `PdfGenerationException` - Base exception for PDF generation failures
@@ -114,8 +114,12 @@ Base package: `com.fostermoore.pdfviachrome`
   - `ProcessRegistry` - Global registry for tracking Chrome processes across JVM
   - `ResourceCleanup` - Utilities for resource cleanup with shutdown hooks
 
-- **wait/**: Wait strategies for page readiness (NOT YET IMPLEMENTED)
-  - Planned: `WaitStrategy`, `NetworkIdleWait`, `ElementWait`, `TimeoutWait`
+- **wait/**: Wait strategies for page readiness (FULLY IMPLEMENTED)
+  - `WaitStrategy` - Base interface for wait strategies
+  - `TimeoutWait` - Wait for a fixed duration
+  - `NetworkIdleWait` - Wait until network activity stops
+  - `ElementWait` - Wait for specific DOM elements to appear
+  - `CustomConditionWait` - Wait for custom JavaScript conditions
 
 ### Package Structure (pdf-via-chrome-test-app)
 
@@ -138,7 +142,7 @@ Base package: `com.fostermoore.pdfviachrome.testapp`
 
 ## Implementation Status
 
-Currently in **Phase 4-6** (Conversion Logic and Test Application). The project has core PDF generation functionality working and a Spring Boot test application with REST API endpoints.
+Currently in **Phase 5-6** (Wait Strategies and Test Application). The project has complete core PDF generation functionality, wait strategies for dynamic content, and a Spring Boot test application with REST API endpoints.
 
 ### Completed Components
 
@@ -155,9 +159,12 @@ Currently in **Phase 4-6** (Conversion Logic and Test Application). The project 
 - PdfOptions.Builder - Complete PDF configuration (paper sizes, margins with units, scale, templates)
 - PageOptions.Builder - Page configuration (viewport, user agent, JavaScript, device scale factor)
 
-**Conversion Logic (Phase 4 - Partial):**
+**Conversion Logic (Phase 4 - Complete):**
 - HtmlToPdfConverter - Full HTML to PDF conversion with event-based page loading
+- UrlToPdfConverter - Full URL to PDF conversion with navigation and load event handling
 - PdfGenerator.fromHtml() - Integrated HTML to PDF generation
+- PdfGenerator.fromUrl() - Integrated URL to PDF generation
+- PdfGenerator.fromDocument() - DOM Document to PDF generation
 
 **Test Application (Phase 6 - Partial):**
 - Spring Boot application structure with health check endpoint
@@ -169,10 +176,16 @@ Currently in **Phase 4-6** (Conversion Logic and Test Application). The project 
 - Unit tests (8 tests, all passing) and integration tests (5 tests) for REST endpoints
 - Manual testing documentation with curl and PowerShell examples
 
+**Wait Strategies (Phase 5 - Complete):**
+- WaitStrategy interface - Base interface for wait strategies
+- TimeoutWait - Fixed duration waiting
+- NetworkIdleWait - Network activity monitoring with configurable idle time
+- ElementWait - DOM element presence detection
+- CustomConditionWait - JavaScript condition evaluation
+- Comprehensive unit and integration tests for all wait strategies
+
 ### Not Yet Implemented
 
-- **Wait strategies (wait/ package)**: NetworkIdleWait, ElementWait, TimeoutWait, custom conditions
-- **URL converter**: Dedicated UrlToPdfConverter (currently handled via PdfGenerator.fromUrl() with basic implementation)
 - **Test application UI**: Thymeleaf-based web UI for manual testing (REST API endpoints completed)
 - **Test application URL endpoint**: POST /api/pdf/from-url endpoint (moved to Version 2, Phase 8)
 - **Advanced features**: Browser pooling, request interception, custom headers, authentication
@@ -183,33 +196,39 @@ The library can currently:
 1. Auto-detect Chrome installation or use custom path
 2. Launch and manage Chrome processes with proper cleanup
 3. Generate PDFs from HTML strings with full customization
-4. Generate PDFs from URLs (basic implementation)
-5. Configure paper size (Letter, A4, Legal, etc.) and custom dimensions
-6. Set margins with multiple units (inches, cm, px)
-7. Control orientation (portrait/landscape)
-8. Enable/disable background graphics
-9. Set custom headers and footers:
+4. Generate PDFs from URLs with full navigation and load handling
+5. Generate PDFs from DOM Documents (org.w3c.dom.Document)
+6. Configure paper size (Letter, A4, Legal, etc.) and custom dimensions
+7. Set margins with multiple units (inches, cm, px)
+8. Control orientation (portrait/landscape)
+9. Enable/disable background graphics
+10. Use wait strategies for dynamic content:
+   - Wait for fixed duration (TimeoutWait)
+   - Wait for network idle (NetworkIdleWait)
+   - Wait for DOM elements to appear (ElementWait)
+   - Wait for custom JavaScript conditions (CustomConditionWait)
+11. Set custom headers and footers:
    - Convenience methods: simplePageNumbers(), headerWithTitle(), footerWithDate(), standardHeaderFooter()
    - Custom HTML templates with CDP variables (pageNumber, totalPages, date, title, url)
-10. Inject custom CSS for print-specific styling:
+12. Inject custom CSS for print-specific styling:
    - withCustomCss(String css) for inline CSS injection
    - withCustomCssFromFile(Path cssFile) for external CSS files
    - Works with both HTML and URL sources
    - Applied after page load, before PDF generation
-11. Select specific pages for PDF output using page ranges:
+13. Select specific pages for PDF output using page ranges:
    - Supports single pages: "1", "5", "10"
    - Supports ranges: "1-5", "10-20"
    - Supports mixed format: "1-5, 8, 11-13, 20"
    - Validates page range format and ensures page numbers start from 1
    - Empty string generates all pages
-12. Execute custom JavaScript before PDF generation:
+14. Execute custom JavaScript before PDF generation:
    - executeJavaScript(String jsCode) for inline JavaScript execution
    - executeJavaScriptFromFile(Path jsFile) for external JavaScript files
    - Works with both HTML and URL sources
    - Executes after page load and CSS injection, before PDF generation
    - Supports both synchronous and asynchronous (Promise-based) JavaScript
    - Use cases: Remove elements, trigger rendering, modify content, wait for dynamic content
-13. Handle thread-safe concurrent PDF generation
+15. Handle thread-safe concurrent PDF generation
 
 The test application provides:
 1. REST API endpoint: POST /api/pdf/from-html - Generate PDFs from HTML via HTTP
@@ -252,12 +271,16 @@ The project includes comprehensive integration test suites that validate end-to-
 - Uses @EnabledIfEnvironmentVariable to skip tests when not explicitly enabled
 
 **Other Integration Test Suites:**
-- `PdfGenerationIT` - End-to-end PDF generation with PdfGenerator API (9 tests)
-- `HtmlToPdfIT` - HTML to PDF conversion with Testcontainers (17 tests)
-- `HeaderFooterIT` - Header and footer functionality (8 tests)
-- `ChromeManagerIT` - Chrome process management (7 tests)
-- `NetworkIdleWaitIT` - Network idle wait strategy (10 tests)
-- And more...
+- `PdfGenerationIT` - End-to-end PDF generation with PdfGenerator API
+- `HtmlToPdfIT` - HTML to PDF conversion with Testcontainers
+- `HeaderFooterIT` - Header and footer functionality
+- `ChromeManagerIT` - Chrome process management
+- `HtmlToPdfConverterIT` - HTML converter integration tests
+- `NetworkIdleWaitIT` - Network idle wait strategy
+- `WaitStrategyIT` - Wait strategy integration tests
+- `PdfGeneratorIT` - PdfGenerator API integration tests
+- `ProcessRegistryIT` - Process registry integration tests
+- And more (12 integration test suites total)
 
 **Running Integration Tests:**
 ```bash
@@ -661,6 +684,66 @@ try (generator) {
     byte[] pdf = generator.fromHtml(html).generate();
     Files.write(Path.of("output.pdf"), pdf);
 }
+```
+
+### Wait Strategies for Dynamic Content
+
+```java
+import com.fostermoore.pdfviachrome.wait.*;
+
+// Wait for a fixed duration before generating PDF
+WaitStrategy timeout = WaitStrategy.timeout(Duration.ofSeconds(5));
+// Use with low-level API - wait strategies are typically used at the converter level
+
+// Wait for network to become idle (no activity for specified duration)
+WaitStrategy networkIdle = WaitStrategy.networkIdle(Duration.ofMillis(500));
+// Useful for single-page applications and dynamic content
+
+// Wait for a specific DOM element to appear
+WaitStrategy elementWait = WaitStrategy.elementPresent("#content-loaded");
+// Waits until the element with id="content-loaded" appears in the DOM
+
+// Wait for custom JavaScript condition to be true
+WaitStrategy customWait = WaitStrategy.customCondition("window.myApp && window.myApp.ready === true");
+// Evaluates JavaScript expression repeatedly until it returns true
+
+// Using wait strategies with converters (low-level API)
+ChromeOptions chromeOptions = ChromeOptions.builder().build();
+try (ChromeManager chromeManager = new ChromeManager(chromeOptions)) {
+    ChromeProcess process = chromeManager.start();
+
+    try (CdpSession session = new CdpSession(process.getWebSocketDebuggerUrl())) {
+        session.connect();
+
+        // Create converter with wait strategy
+        HtmlToPdfConverter converter = new HtmlToPdfConverter(session);
+
+        // Wait strategy can be applied before conversion
+        WaitStrategy networkIdle = WaitStrategy.networkIdle();
+        networkIdle.await(session.getService(), Duration.ofSeconds(30));
+
+        byte[] pdf = converter.convert(htmlContent, PdfOptions.defaults());
+        Files.write(Path.of("output.pdf"), pdf);
+    }
+}
+
+// Common use cases:
+// 1. Single-page applications with lazy loading
+WaitStrategy spaWait = WaitStrategy.networkIdle(Duration.ofSeconds(2));
+
+// 2. Pages with specific loading indicators
+WaitStrategy loaderWait = WaitStrategy.customCondition(
+    "document.querySelector('.loading-spinner') === null"
+);
+
+// 3. Content that depends on specific elements
+WaitStrategy contentReady = WaitStrategy.elementPresent(".main-content");
+
+// 4. Multiple conditions (chain wait strategies)
+// First wait for element, then wait for network idle
+WaitStrategy elementFirst = WaitStrategy.elementPresent("#data-loaded");
+WaitStrategy thenNetworkIdle = WaitStrategy.networkIdle();
+// Apply both sequentially in your conversion logic
 ```
 
 ### Multiple PDFs with Single Generator

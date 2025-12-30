@@ -43,7 +43,7 @@
     </implementation-notes>
 
     <affected-files>
-        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/wait/WaitStrategyIntegrationTest.java</file>
+        <file>pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/wait/WaitStrategyIT.java</file>
         <file>pdf-via-chrome/src/test/resources/test-pages/*.html</file>
     </affected-files>
 
