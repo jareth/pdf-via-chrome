@@ -3,6 +3,7 @@ package com.fostermoore.pdfviachrome;
 import com.fostermoore.pdfviachrome.api.PdfOptions;
 import com.fostermoore.pdfviachrome.cdp.CdpSession;
 import com.fostermoore.pdfviachrome.converter.HtmlToPdfConverter;
+import com.fostermoore.pdfviachrome.util.ChromeContainerTestHelper;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -16,11 +17,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.time.Duration;
 
 import static org.assertj.core.api.Assertions.*;
@@ -73,7 +70,7 @@ class HtmlToPdfIT {
         // Get the WebSocket debugger URL from the containerized Chrome
         String host = chromeContainer.getHost();
         int port = chromeContainer.getMappedPort(9222);
-        String webSocketUrl = getWebSocketDebuggerUrl(host, port);
+        String webSocketUrl = ChromeContainerTestHelper.getWebSocketDebuggerUrl(host, port);
 
         logger.info("Connecting to Chrome at WebSocket URL: {}", webSocketUrl);
 
@@ -100,61 +97,6 @@ class HtmlToPdfIT {
         }
 
         logger.info("Test teardown complete");
-    }
-
-    /**
-     * Gets the WebSocket debugger URL from Chrome's debugging endpoint.
-     */
-    private String getWebSocketDebuggerUrl(String host, int port) throws IOException {
-        String jsonUrl = String.format("http://%s:%d/json/version", host, port);
-        logger.debug("Fetching WebSocket URL from: {}", jsonUrl);
-
-        URL url = new URL(jsonUrl);
-        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-        conn.setRequestMethod("GET");
-        conn.setConnectTimeout(10000);
-        conn.setReadTimeout(10000);
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
-            StringBuilder response = new StringBuilder();
-            String line;
-            while ((line = reader.readLine()) != null) {
-                response.append(line);
-            }
-
-            // Parse JSON to extract webSocketDebuggerUrl
-            // Simple parsing: look for "webSocketDebuggerUrl": "ws://..." (with spaces)
-            String json = response.toString();
-            logger.debug("Response from Chrome: {}", json);
-
-            int keyIndex = json.indexOf("\"webSocketDebuggerUrl\"");
-            if (keyIndex == -1) {
-                throw new IOException("webSocketDebuggerUrl not found in response: " + json);
-            }
-
-            // Find the opening quote of the value (after the colon)
-            int startIndex = json.indexOf("\"", json.indexOf(":", keyIndex)) + 1;
-            if (startIndex == 0) {
-                throw new IOException("Invalid JSON format for webSocketDebuggerUrl in response: " + json);
-            }
-
-            // Find the closing quote
-            int endIndex = json.indexOf("\"", startIndex);
-            if (endIndex == -1) {
-                throw new IOException("Invalid JSON format for webSocketDebuggerUrl in response: " + json);
-            }
-
-            String wsUrl = json.substring(startIndex, endIndex);
-            logger.debug("Extracted WebSocket URL (before replacement): {}", wsUrl);
-
-            // Replace localhost/127.0.0.1 with actual container host
-            wsUrl = wsUrl.replace("localhost", host).replace("127.0.0.1", host);
-
-            logger.debug("Extracted WebSocket URL (after replacement): {}", wsUrl);
-            return wsUrl;
-        } finally {
-            conn.disconnect();
-        }
     }
 
     @Test
