@@ -61,6 +61,11 @@ mvn verify
 
 # Some test are skipped by default due to requiring a local chrome setup
 mvn verify -DCHROME_INTEGRATION_TESTS=true
+
+# Run security vulnerability scan
+mvn dependency-check:check
+
+# Security scan is automatically run during 'mvn verify'
 ```
 
 The build will produce:
@@ -147,6 +152,43 @@ try (PdfGenerator generator = PdfGenerator.create().build()) {
 ```
 
 For more detailed examples including headers/footers, CSS injection, JavaScript execution, page ranges, and wait strategies, see [CLAUDE.md](CLAUDE.md).
+
+## Security
+
+This project includes automated security vulnerability scanning using OWASP Dependency-Check.
+
+### Dependency Scanning
+
+The build automatically scans all dependencies for known security vulnerabilities:
+
+```bash
+# Run security scan manually
+mvn dependency-check:check
+
+# Security scan runs automatically during verify phase
+mvn verify
+```
+
+**Configuration:**
+- Fails build on vulnerabilities with CVSS score >= 7 (HIGH and CRITICAL)
+- Generates HTML and JSON reports in `target/dependency-check-report.html`
+- Uses suppression file `dependency-check-suppressions.xml` for managing false positives
+- Updates vulnerability database automatically (cached in `~/.m2/dependency-check-data`)
+
+**First Run:**
+The initial scan downloads the National Vulnerability Database (~10-15 minutes). Subsequent scans are much faster using the cached database.
+
+**Managing False Positives:**
+If you encounter false positives, add suppression entries to `dependency-check-suppressions.xml`. See the file for examples.
+
+**Optional NVD API Key:**
+For faster database updates, you can obtain a free NVD API key from https://nvd.nist.gov/developers/request-an-api-key and set it as an environment variable:
+
+```bash
+export NVD_API_KEY="your-api-key-here"
+```
+
+Then uncomment the `nvdApiKey` configuration in the parent `pom.xml`.
 
 ## Documentation
 

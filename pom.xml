@@ -41,6 +41,7 @@
         <maven-javadoc-plugin.version>3.6.2</maven-javadoc-plugin.version>
         <maven-jar-plugin.version>3.3.0</maven-jar-plugin.version>
         <spotless-maven-plugin.version>2.41.1</spotless-maven-plugin.version>
+        <dependency-check-maven.version>12.1.0</dependency-check-maven.version>
     </properties>
 
     <modules>
@@ -301,8 +302,63 @@
                         </execution>
                     </executions>
                 </plugin>
+
+                <!-- OWASP Dependency-Check Plugin -->
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${dependency-check-maven.version}</version>
+                    <configuration>
+                        <!-- Fail build on CVSS >= 7 (HIGH and CRITICAL vulnerabilities) -->
+                        <failBuildOnCVSS>7</failBuildOnCVSS>
+
+                        <!-- Report formats -->
+                        <formats>
+                            <format>HTML</format>
+                            <format>JSON</format>
+                        </formats>
+
+                        <!-- Suppression file for managing false positives -->
+                        <suppressionFile>${maven.multiModuleProjectDirectory}${file.separator}dependency-check-suppressions.xml</suppressionFile>
+
+                        <!-- Analyze all scopes -->
+                        <skipProvidedScope>false</skipProvidedScope>
+                        <skipRuntimeScope>false</skipRuntimeScope>
+                        <skipTestScope>false</skipTestScope>
+
+                        <!-- NVD API settings (optional - improves performance) -->
+                         <nvdApiKey>b0b991c6-6867-49d7-812c-fa26770247e9</nvdApiKey>
+                         <nvdApiDelay>4000</nvdApiDelay>
+
+                        <!-- Performance settings -->
+                        <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
+
+                        <!-- Disable OSS Index analyzer to avoid rate limiting and authentication issues -->
+                        <ossindexAnalyzerEnabled>false</ossindexAnalyzerEnabled>
+
+                        <!-- Cache directory to speed up subsequent runs -->
+                        <dataDirectory>${user.home}${file.separator}.m2${file.separator}dependency-check-data</dataDirectory>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <id>dependency-check</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
+
+        <plugins>
+            <!-- OWASP Dependency-Check - Enabled by default for all modules -->
+            <plugin>
+                <groupId>org.owasp</groupId>
+                <artifactId>dependency-check-maven</artifactId>
+            </plugin>
+        </plugins>
     </build>
 
 </project>
