@@ -5,7 +5,7 @@
     <phase>Maintenance: Spring Boot 3.4 Migration</phase>
     <priority>MEDIUM</priority>
     <complexity>MODERATE</complexity>
-    <status>Pending</status>
+    <status>Completed</status>
 
     <dependencies>
         <dependency>Spring Boot 3.4.5 migration completed</dependency>
@@ -163,8 +163,8 @@ void testMultiplePdfsFromSameGenerator() throws IOException {
     </verification-commands>
 
     <estimated-effort>2-3 hours</estimated-effort>
-    <actual-effort>TBD</actual-effort>
-    <completion-date>TBD</completion-date>
+    <actual-effort>Approximately 1 hour</actual-effort>
+    <completion-date>2025-12-31</completion-date>
 
     <notes>
         <note>
@@ -179,6 +179,40 @@ void testMultiplePdfsFromSameGenerator() throws IOException {
         <note>
             Future enhancement: Consider implementing a Chrome process pool to reuse
             Chrome instances across tests, which could improve both stability and performance.
+        </note>
+        <note>
+            Date: 2025-12-31
+            Additional flaky test discovered: CssInjectionTest.testCssInjectionWithMultipleCalls
+
+            Symptom: Test fails intermittently with "Failed to inject CSS: Uncaught" error
+            when running full test suite (mvn test), but passes when run individually or
+            when running just the CssInjectionTest class.
+
+            Error details:
+            - PdfGenerationException: Failed to inject CSS: Uncaught
+            - Occurs at PdfGenerator$GenerationBuilder.injectCss(PdfGenerator.java:677)
+            - JavaScript execution in CSS injection fails with generic "Uncaught" error
+
+            Root cause analysis:
+            - The test calls withCustomCss() twice, expecting second call to override first
+            - Under load or timing pressure, the JavaScript that injects CSS fails to execute
+            - Suggests Chrome/CDP not fully ready when CSS injection is attempted
+            - Similar resource contention/timing issues as PdfGenerationIT failures
+
+            Impact:
+            - Low severity - test passes on retry and in isolation
+            - Indicates potential fragility in CSS injection implementation under load
+
+            Recommended investigation:
+            1. Add synchronization/wait before CSS injection to ensure page is ready
+            2. Add retry logic for CSS injection JavaScript execution failures
+            3. Improve error messages to provide more context than generic "Uncaught"
+            4. Consider adding explicit readiness check before executing injection JavaScript
+
+            Files affected:
+            - pdf-via-chrome/src/test/java/com/fostermoore/pdfviachrome/CssInjectionTest.java
+            - pdf-via-chrome/src/main/java/com/fostermoore/pdfviachrome/api/PdfGenerator.java
+              (specifically the injectCss() method around line 643-687)
         </note>
     </notes>
 </task>

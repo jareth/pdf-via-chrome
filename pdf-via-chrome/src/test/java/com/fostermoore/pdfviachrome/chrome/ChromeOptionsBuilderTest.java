@@ -35,7 +35,7 @@ class ChromeOptionsBuilderTest {
         assertThat(options.isDisableDevShmUsage()).isFalse();
         assertThat(options.isNoSandbox()).isFalse();
         assertThat(options.getWindowSize()).isNull();
-        assertThat(options.getStartupTimeoutSeconds()).isEqualTo(30);
+        assertThat(options.getStartupTimeoutSeconds()).isEqualTo(45);
         assertThat(options.getShutdownTimeoutSeconds()).isEqualTo(5);
     }
 

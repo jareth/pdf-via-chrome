@@ -60,7 +60,7 @@ class ChromeManagerTest {
         assertThat(options.getRemoteDebuggingPort()).isEqualTo(0); // Default is random port
         assertThat(options.isNoSandbox()).isFalse(); // Default is false for security
         assertThat(options.isDisableDevShmUsage()).isFalse();
-        assertThat(options.getStartupTimeoutSeconds()).isEqualTo(30);
+        assertThat(options.getStartupTimeoutSeconds()).isEqualTo(45);
         assertThat(options.getShutdownTimeoutSeconds()).isEqualTo(5);
         assertThat(options.getAdditionalFlags()).isEmpty();
     }

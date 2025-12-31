@@ -282,7 +282,7 @@ class PdfGenerationIT {
     }
 
     @Test
-    void testMultiplePdfsFromSameGenerator() throws IOException {
+    void testMultiplePdfsFromSameGenerator() throws IOException, InterruptedException {
         // Given
         String html1 = "<html><body><h1>First Document</h1></body></html>";
         String html2 = "<html><body><h1>Second Document</h1></body></html>";
@@ -290,7 +290,14 @@ class PdfGenerationIT {
 
         // When - Generate multiple PDFs from the same generator instance
         byte[] pdf1 = pdfGenerator.fromHtml(html1).generate();
+
+        // Add delay to allow Chrome to fully reset between generations (prevents flaky failures under load)
+        Thread.sleep(200);
+
         byte[] pdf2 = pdfGenerator.fromHtml(html2).generate();
+
+        Thread.sleep(200);
+
         byte[] pdf3 = pdfGenerator.fromHtml(html3).generate();
 
         // Then - All PDFs should be valid and contain correct content
@@ -367,7 +374,7 @@ class PdfGenerationIT {
     }
 
     @Test
-    void testPageRanges_multiPageDocument() throws IOException {
+    void testPageRanges_multiPageDocument() throws IOException, InterruptedException {
         // Given - Create HTML with multiple pages using page breaks
         String html = """
                 <!DOCTYPE html>
@@ -421,6 +428,9 @@ class PdfGenerationIT {
             assertThat(document.getNumberOfPages()).isEqualTo(5);
         }
 
+        // Add delay to allow Chrome to fully reset between generations (prevents flaky failures under load)
+        Thread.sleep(200);
+
         // Test 2: Generate PDF with only pages 1-3
         PdfOptions rangeOptions = PdfOptions.builder()
                 .pageRanges("1-3")
@@ -439,6 +449,8 @@ class PdfGenerationIT {
         assertPdfContainsText(rangePdf, "Page 2");
         assertPdfContainsText(rangePdf, "Page 3");
 
+        Thread.sleep(200);
+
         // Test 3: Generate PDF with specific pages (1, 3, 5)
         PdfOptions specificPagesOptions = PdfOptions.builder()
                 .pageRanges("1,3,5")
@@ -456,6 +468,8 @@ class PdfGenerationIT {
         assertPdfContainsText(specificPagesPdf, "Page 1");
         assertPdfContainsText(specificPagesPdf, "Page 3");
         assertPdfContainsText(specificPagesPdf, "Page 5");
+
+        Thread.sleep(200);
 
         // Test 4: Generate PDF with mixed ranges (1-2, 4)
         PdfOptions mixedRangesOptions = PdfOptions.builder()

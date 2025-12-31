@@ -160,7 +160,8 @@ public class ChromeOptions {
         private boolean disableDevShmUsage = false;
         private boolean noSandbox = false;
         private String windowSize;
-        private int startupTimeoutSeconds = 30;
+        // Increased from 30s to 45s to improve stability under load and resource contention
+        private int startupTimeoutSeconds = 45;
         private int shutdownTimeoutSeconds = 5;
 
         /**
@@ -332,7 +333,7 @@ public class ChromeOptions {
 
         /**
          * Sets the timeout in seconds for Chrome startup.
-         * Default is 30 seconds.
+         * Default is 45 seconds.
          *
          * @param timeoutSeconds the timeout in seconds (must be positive)
          * @return this builder

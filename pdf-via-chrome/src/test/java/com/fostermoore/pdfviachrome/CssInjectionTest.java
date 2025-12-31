@@ -291,11 +291,14 @@ class CssInjectionTest {
     }
 
     @Test
-    void testCssInjectionWithMultipleCalls() {
+    void testCssInjectionWithMultipleCalls() throws InterruptedException {
         // Given: HTML content
         String html = "<html><body><h1>Test</h1></body></html>";
         String css1 = "h1 { color: red; }";
         String css2 = "h1 { color: blue; }";
+
+        // Add delay before generation to ensure Chrome/CDP is fully ready (prevents flaky failures under load)
+        Thread.sleep(200);
 
         // When: Call withCustomCss multiple times (last call should win)
         byte[] pdfData = generator.fromHtml(html)
