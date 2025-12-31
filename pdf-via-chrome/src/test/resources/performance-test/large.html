@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Large Performance Test Document - 100+ Pages</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Times New Roman', serif;
+            line-height: 1.6;
+            color: #222;
+        }
+
+        .page {
+            padding: 60px;
+            min-height: 100vh;
+            page-break-after: always;
+        }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        h1 {
+            color: #1a1a1a;
+            font-size: 2em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #2c2c2c;
+            font-size: 1.5em;
+            margin: 25px 0 15px 0;
+        }
+
+        p {
+            margin-bottom: 12px;
+            text-align: justify;
+        }
+
+        .page-number {
+            position: fixed;
+            bottom: 30px;
+            right: 60px;
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            padding: 10px;
+            text-align: left;
+            border: 1px solid #ddd;
+        }
+
+        td {
+            padding: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .section {
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Title Page -->
+    <div class="page">
+        <h1 style="font-size: 3em; text-align: center; margin-top: 200px;">Large Performance Test Document</h1>
+        <p style="text-align: center; font-size: 1.3em; margin-top: 40px;">Testing PDF Generation Performance with 100+ Pages</p>
+        <p style="text-align: center; margin-top: 20px; color: #666;">Version 1.0</p>
+    </div>
+
+    <!-- Generate 120 pages of content -->
+    <div class="page">
+        <h1>Chapter 1: Introduction - Page 1 of 120</h1>
+        <div class="section">
+            <h2>Section 1.1: Overview</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        </div>
+        <div class="section">
+            <h2>Section 1.2: Background</h2>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+            <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.</p>
+            <table>
+                <tr><th>Metric</th><th>Value</th><th>Unit</th></tr>
+                <tr><td>Pages</td><td>120</td><td>count</td></tr>
+                <tr><td>Size</td><td>Large</td><td>category</td></tr>
+                <tr><td>Purpose</td><td>Performance Testing</td><td>-</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="page">
+        <h1>Chapter 2: Methodology - Page 2 of 120</h1>
+        <div class="section">
+            <h2>Section 2.1: Test Approach</h2>
+            <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident.</p>
+            <p>Similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.</p>
+        </div>
+        <div class="section">
+            <h2>Section 2.2: Measurement Criteria</h2>
+            <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+            <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae.</p>
+        </div>
+    </div>
+
+    <!-- Generate pages 3-118 with similar content -->
+    <script>
+        // This script generates additional pages dynamically
+        // Note: This runs during HTML parsing, so content is available for PDF generation
+        for (let i = 3; i <= 118; i++) {
+            const chapterNum = Math.floor((i - 1) / 10) + 1;
+            const sectionNum = ((i - 1) % 10) + 1;
+
+            document.write(`
+                <div class="page">
+                    <h1>Chapter ${chapterNum}: Content Section ${sectionNum} - Page ${i} of 120</h1>
+                    <div class="section">
+                        <h2>Section ${chapterNum}.${sectionNum}.1: Primary Content</h2>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+                        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+                        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+                    </div>
+                    <div class="section">
+                        <h2>Section ${chapterNum}.${sectionNum}.2: Secondary Content</h2>
+                        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+                        <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+                        <table>
+                            <tr>
+                                <th>Item</th>
+                                <th>Description</th>
+                                <th>Value</th>
+                            </tr>
+                            <tr>
+                                <td>Data Point ${i * 3 - 2}</td>
+                                <td>Sample measurement for testing</td>
+                                <td>${(i * 17) % 100}</td>
+                            </tr>
+                            <tr>
+                                <td>Data Point ${i * 3 - 1}</td>
+                                <td>Sample measurement for testing</td>
+                                <td>${(i * 23) % 100}</td>
+                            </tr>
+                            <tr>
+                                <td>Data Point ${i * 3}</td>
+                                <td>Sample measurement for testing</td>
+                                <td>${(i * 31) % 100}</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="section">
+                        <h2>Section ${chapterNum}.${sectionNum}.3: Analysis</h2>
+                        <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+                        <p>Page ${i} contains structured content for performance testing. The document maintains consistent formatting throughout all ${120} pages to ensure realistic PDF generation benchmarking. This helps measure how the library handles large documents with repetitive content structures.</p>
+                    </div>
+                </div>
+            `);
+        }
+    </script>
+
+    <!-- Page 119: Summary -->
+    <div class="page">
+        <h1>Chapter 12: Summary - Page 119 of 120</h1>
+        <div class="section">
+            <h2>Section 12.1: Key Findings</h2>
+            <p>This large document demonstrates the PDF generation system's ability to handle extensive content. With 120 pages of structured HTML, including tables, multiple sections, and consistent formatting, this represents a challenging performance test case.</p>
+            <p>The document structure allows for comprehensive measurement of generation time, memory usage, and throughput characteristics when processing large documents. Performance metrics from this test inform resource planning and optimization priorities.</p>
+        </div>
+        <div class="section">
+            <h2>Section 12.2: Performance Implications</h2>
+            <p>Large document generation requires careful resource management. Chrome memory usage will scale with document size, and processing time increases approximately linearly with page count. However, the per-page overhead decreases as document size increases due to fixed startup costs being amortized over more pages.</p>
+            <table>
+                <tr><th>Characteristic</th><th>Value</th></tr>
+                <tr><td>Total Pages</td><td>120</td></tr>
+                <tr><td>Chapters</td><td>12</td></tr>
+                <tr><td>Tables</td><td>116</td></tr>
+                <tr><td>Content Type</td><td>Mixed (text, tables, headings)</td></tr>
+            </table>
+        </div>
+    </div>
+
+    <!-- Page 120: Conclusion -->
+    <div class="page">
+        <h1>Conclusion - Page 120 of 120</h1>
+        <div class="section">
+            <h2>Document Completion</h2>
+            <p>This concludes the large performance test document. All 120 pages have been generated successfully, providing comprehensive content for performance benchmarking of the PDF generation system.</p>
+            <p>The consistent structure and content distribution across pages ensures that performance measurements reflect realistic usage patterns for large document conversion scenarios.</p>
+        </div>
+        <div class="section">
+            <h2>Expected Performance Characteristics</h2>
+            <p>For a document of this size, expected performance metrics include:</p>
+            <table>
+                <tr><th>Metric</th><th>Expected Value</th></tr>
+                <tr><td>Generation Time</td><td>8-15 seconds</td></tr>
+                <tr><td>Memory Usage</td><td>250-400 MB</td></tr>
+                <tr><td>PDF File Size</td><td>400-800 KB</td></tr>
+                <tr><td>CPU Utilization</td><td>60-80%</td></tr>
+            </table>
+            <p>These values will vary based on hardware capabilities, JVM configuration, and Chrome version. The benchmarking suite should capture actual measurements for comparison against these baseline expectations.</p>
+        </div>
+        <div style="text-align: center; margin-top: 100px; color: #666;">
+            <p><strong>End of Document</strong></p>
+            <p>Large Performance Test Document</p>
+            <p>120 Pages Total</p>
+        </div>
+    </div>
+</body>
+</html>

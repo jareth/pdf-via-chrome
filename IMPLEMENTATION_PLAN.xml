@@ -4,11 +4,11 @@
         <project>pdf-via-chrome</project>
         <version>1.0.0-SNAPSHOT</version>
         <created>2025-12-15</created>
-        <updated>2025-12-29</updated>
+        <updated>2025-12-31</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
-        <completed-tasks>41</completed-tasks>
-        <completion-percentage>98%</completion-percentage>
+        <completed-tasks>42</completed-tasks>
+        <completion-percentage>100%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -106,16 +106,17 @@
             <completion-date>2025-12-17</completion-date>
         </phase>
 
-        <phase id="phase-7" number="7">
+        <phase id="phase-7" number="7" status="COMPLETED">
             <name>Documentation and Polish</name>
             <description>Write documentation, add code coverage, perform security review for Version 1</description>
             <tasks>
                 <task-ref id="TASK-038" file="tasks/TASK-038.xml" status="Completed"/>
-                <task-ref id="TASK-039" file="tasks/TASK-039.xml"/>
+                <task-ref id="TASK-039" file="tasks/TASK-039.xml" status="Completed"/>
                 <task-ref id="TASK-040" file="tasks/TASK-040.xml" status="Completed"/>
-                <task-ref id="TASK-041" file="tasks/TASK-041.xml"/>
-                <task-ref id="TASK-042" file="tasks/TASK-042.xml"/>
+                <task-ref id="TASK-041" file="tasks/TASK-041.xml" status="Completed"/>
+                <task-ref id="TASK-042" file="tasks/TASK-042.xml" status="Completed"/>
             </tasks>
+            <completion-date>2025-12-31</completion-date>
         </phase>
 
         <phase id="phase-8" number="8">

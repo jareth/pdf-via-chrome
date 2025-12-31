@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complex Performance Test Document</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.8;
+            color: #333;
+            background: linear-gradient(to bottom, #f5f5f5, #ffffff);
+        }
+
+        .page {
+            padding: 60px;
+            min-height: 100vh;
+            page-break-after: always;
+        }
+
+        .page:last-child {
+            page-break-after: auto;
+        }
+
+        h1 {
+            color: #2c3e50;
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #34495e;
+            font-size: 1.8em;
+            margin: 30px 0 15px 0;
+            border-left: 5px solid #3498db;
+            padding-left: 15px;
+        }
+
+        h3 {
+            color: #7f8c8d;
+            font-size: 1.3em;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+
+        .highlight {
+            background-color: #fff3cd;
+            padding: 20px;
+            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+
+        .table-container {
+            margin: 30px 0;
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        th {
+            background-color: #3498db;
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #ecf0f1;
+        }
+
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        .code-block {
+            background-color: #2c3e50;
+            color: #ecf0f1;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: 'Courier New', monospace;
+            overflow-x: auto;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5em;
+            border-radius: 8px;
+        }
+
+        .chart {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(to top, #3498db 0%, #3498db var(--height), #ecf0f1 var(--height));
+            margin: 20px 0;
+            border-radius: 5px;
+            position: relative;
+        }
+
+        ul, ol {
+            margin: 15px 0 15px 40px;
+        }
+
+        li {
+            margin-bottom: 8px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #ecf0f1;
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+    </style>
+</head>
+<body>
+    <!-- Page 1: Introduction -->
+    <div class="page">
+        <h1>Complex Performance Test Document</h1>
+        <p>This document contains complex HTML with CSS styling, tables, and multiple pages to simulate real-world PDF generation scenarios.</p>
+
+        <div class="highlight">
+            <h3>Purpose</h3>
+            <p>This test measures PDF generation performance for documents with moderate complexity, including styled elements, tables, and multi-page layouts.</p>
+        </div>
+
+        <h2>Executive Summary</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+
+        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+        <div class="image-placeholder">
+            Chart Visualization
+        </div>
+    </div>
+
+    <!-- Page 2: Data Tables -->
+    <div class="page">
+        <h1>Performance Metrics</h1>
+
+        <h2>Baseline Measurements</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Metric</th>
+                        <th>Value</th>
+                        <th>Unit</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Generation Time</td>
+                        <td>1250</td>
+                        <td>ms</td>
+                        <td>Optimal</td>
+                    </tr>
+                    <tr>
+                        <td>Memory Usage</td>
+                        <td>185</td>
+                        <td>MB</td>
+                        <td>Normal</td>
+                    </tr>
+                    <tr>
+                        <td>CPU Utilization</td>
+                        <td>45</td>
+                        <td>%</td>
+                        <td>Good</td>
+                    </tr>
+                    <tr>
+                        <td>Throughput</td>
+                        <td>0.8</td>
+                        <td>PDFs/sec</td>
+                        <td>Expected</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Code Example</h2>
+        <div class="code-block">
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(htmlContent)
+        .withOptions(PdfOptions.builder()
+            .paperSize(PaperFormat.A4)
+            .printBackground(true)
+            .build())
+        .generate();
+    Files.write(Path.of("output.pdf"), pdf);
+}
+        </div>
+    </div>
+
+    <!-- Page 3: Analysis -->
+    <div class="page">
+        <h1>Detailed Analysis</h1>
+
+        <h2>Key Findings</h2>
+        <ul>
+            <li>PDF generation performance is consistent across different document sizes</li>
+            <li>Memory usage scales linearly with document complexity</li>
+            <li>Chrome startup time dominates short conversion operations</li>
+            <li>Reusing PdfGenerator instances significantly improves throughput</li>
+            <li>Concurrent generation can achieve 3-5x throughput improvement</li>
+        </ul>
+
+        <h2>Optimization Opportunities</h2>
+        <ol>
+            <li><strong>Chrome Instance Pooling:</strong> Reuse browser instances to eliminate startup overhead</li>
+            <li><strong>Resource Cleanup:</strong> Optimize cleanup paths for faster turnaround</li>
+            <li><strong>Connection Management:</strong> Pool CDP connections for reduced latency</li>
+            <li><strong>Concurrent Processing:</strong> Process multiple PDFs in parallel</li>
+            <li><strong>Memory Management:</strong> Tune JVM settings for optimal memory usage</li>
+        </ol>
+
+        <div class="chart" style="--height: 60%"></div>
+    </div>
+
+    <!-- Page 4: Recommendations -->
+    <div class="page">
+        <h1>Recommendations</h1>
+
+        <h2>For High-Throughput Scenarios</h2>
+        <p>When generating large volumes of PDFs, consider the following optimizations:</p>
+
+        <div class="highlight">
+            <h3>Best Practices</h3>
+            <ul>
+                <li>Reuse PdfGenerator instances across multiple conversions</li>
+                <li>Use thread pools to parallelize generation (recommend 2-4 workers per CPU core)</li>
+                <li>Monitor memory usage and tune heap size accordingly</li>
+                <li>Consider implementing a browser pool for very high throughput needs</li>
+            </ul>
+        </div>
+
+        <h2>Resource Requirements</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Scenario</th>
+                        <th>Memory</th>
+                        <th>CPU</th>
+                        <th>Throughput</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Single Instance</td>
+                        <td>200 MB</td>
+                        <td>1 Core</td>
+                        <td>0.8 PDFs/sec</td>
+                    </tr>
+                    <tr>
+                        <td>4 Instances (Parallel)</td>
+                        <td>800 MB</td>
+                        <td>4 Cores</td>
+                        <td>3.2 PDFs/sec</td>
+                    </tr>
+                    <tr>
+                        <td>8 Instances (Parallel)</td>
+                        <td>1600 MB</td>
+                        <td>8 Cores</td>
+                        <td>6.4 PDFs/sec</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Page 5: Additional Content -->
+    <div class="page">
+        <h1>Technical Details</h1>
+
+        <h2>Architecture Overview</h2>
+        <p>The PDF generation system uses a layered architecture with the following components:</p>
+
+        <ul>
+            <li><strong>PdfGenerator:</strong> High-level API with lazy Chrome initialization</li>
+            <li><strong>ChromeManager:</strong> Manages browser process lifecycle</li>
+            <li><strong>CdpSession:</strong> Handles Chrome DevTools Protocol communication</li>
+            <li><strong>Converters:</strong> Transform HTML/URLs into PDF documents</li>
+        </ul>
+
+        <h2>Implementation Notes</h2>
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.</p>
+
+        <div class="code-block">
+// Concurrent generation example
+ExecutorService executor = Executors.newFixedThreadPool(4);
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    List&lt;Future&lt;byte[]&gt;&gt; futures = new ArrayList&lt;&gt;();
+    for (String html : htmlDocuments) {
+        futures.add(executor.submit(() -&gt;
+            generator.fromHtml(html).generate()
+        ));
+    }
+    // Collect results...
+}
+        </div>
+
+        <div class="footer">
+            <p>Performance Test Document - Page 5 of 10</p>
+            <p>Generated for benchmarking purposes only</p>
+        </div>
+    </div>
+
+    <!-- Pages 6-10: Additional filler content -->
+    <div class="page">
+        <h1>Supplementary Information - Part 1</h1>
+        <p>At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id est laborum et dolorum fuga.</p>
+
+        <h2>Section A</h2>
+        <p>Et harum quidem rerum facilis est et expedita distinctio. Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus.</p>
+
+        <div class="image-placeholder">Data Visualization A</div>
+
+        <p>Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet ut et voluptates repudiandae sint et molestiae non recusandae. Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatibus maiores alias consequatur aut perferendis doloribus asperiores repellat.</p>
+    </div>
+
+    <div class="page">
+        <h1>Supplementary Information - Part 2</h1>
+
+        <h2>Section B</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Feature</th>
+                        <th>Description</th>
+                        <th>Priority</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Auto-detection</td><td>Automatically finds Chrome installation</td><td>High</td></tr>
+                    <tr><td>Custom options</td><td>Flexible PDF configuration</td><td>High</td></tr>
+                    <tr><td>Thread-safe</td><td>Concurrent generation support</td><td>Medium</td></tr>
+                    <tr><td>Resource cleanup</td><td>Automatic process management</td><td>High</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+    </div>
+
+    <div class="page">
+        <h1>Supplementary Information - Part 3</h1>
+
+        <h2>Section C</h2>
+        <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.</p>
+
+        <div class="code-block">
+// Performance tuning example
+PdfGenerator generator = PdfGenerator.create()
+    .withChromePath(chromePath)
+    .withTimeout(Duration.ofSeconds(60))
+    .withHeadless(true)
+    .build();
+        </div>
+
+        <h2>Section D</h2>
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet.</p>
+
+        <div class="image-placeholder">Data Visualization B</div>
+    </div>
+
+    <div class="page">
+        <h1>Supplementary Information - Part 4</h1>
+
+        <h2>Section E</h2>
+        <p>Consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam.</p>
+
+        <ul>
+            <li>Feature one with detailed explanation and context</li>
+            <li>Feature two providing additional value</li>
+            <li>Feature three for comprehensive coverage</li>
+            <li>Feature four extending functionality</li>
+        </ul>
+
+        <p>Nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?</p>
+    </div>
+
+    <div class="page">
+        <h1>Conclusion</h1>
+
+        <h2>Summary</h2>
+        <p>This complex document demonstrates the PDF generation capabilities with styled content, multiple pages, tables, and code blocks. The performance characteristics measured from this document represent typical real-world usage scenarios.</p>
+
+        <div class="highlight">
+            <h3>Key Takeaways</h3>
+            <ul>
+                <li>Complex documents can be generated efficiently with proper configuration</li>
+                <li>Resource management is critical for sustained performance</li>
+                <li>Concurrent generation provides significant throughput improvements</li>
+                <li>Chrome instance reuse eliminates startup overhead</li>
+            </ul>
+        </div>
+
+        <h2>Next Steps</h2>
+        <ol>
+            <li>Implement browser pooling for high-throughput scenarios</li>
+            <li>Add request interception for network optimization</li>
+            <li>Develop caching strategies for frequently generated documents</li>
+            <li>Create monitoring and metrics collection</li>
+        </ol>
+
+        <div class="footer">
+            <p>End of Performance Test Document</p>
+            <p>Total Pages: 10 | Document Type: Complex HTML</p>
+        </div>
+    </div>
+</body>
+</html>
