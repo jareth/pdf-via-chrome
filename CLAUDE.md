@@ -113,6 +113,7 @@ Base package: `com.fostermoore.pdfviachrome`
   - `ChromePathDetector` - Auto-detects Chrome installation on Windows/Linux/macOS
   - `ProcessRegistry` - Global registry for tracking Chrome processes across JVM
   - `ResourceCleanup` - Utilities for resource cleanup with shutdown hooks
+  - `UrlValidator` - URL validation for SSRF protection (blocks private IPs, validates protocols)
 
 - **wait/**: Wait strategies for page readiness (FULLY IMPLEMENTED)
   - `WaitStrategy` - Base interface for wait strategies
@@ -184,6 +185,21 @@ Currently in **Phase 5-6** (Wait Strategies and Test Application). The project h
 - CustomConditionWait - JavaScript condition evaluation
 - Comprehensive unit and integration tests for all wait strategies
 
+**Security Review (Phase 7 - Complete):**
+- OWASP Dependency Check integration - Scans for vulnerabilities on mvn verify
+- UrlValidator - Comprehensive SSRF protection utility with builder pattern
+- URL validation in UrlToPdfConverter - Automatic SSRF attack prevention
+- Private IP blocking (10.x.x.x, 192.168.x.x, 172.16-31.x.x)
+- Localhost and loopback address blocking
+- Link-local address blocking (169.254.x.x, fe80::/10)
+- Protocol validation (HTTP, HTTPS, data: only)
+- Domain whitelist/blacklist support
+- DNS resolution for IP validation
+- Data URL safe handling (no network requests)
+- SECURITY.md - Comprehensive security documentation
+- Zero critical or high severity vulnerabilities
+- 33 security validation tests (all passing)
+
 ### Not Yet Implemented
 
 - **Test application UI**: Thymeleaf-based web UI for manual testing (REST API endpoints completed)
@@ -229,6 +245,15 @@ The library can currently:
    - Supports both synchronous and asynchronous (Promise-based) JavaScript
    - Use cases: Remove elements, trigger rendering, modify content, wait for dynamic content
 15. Handle thread-safe concurrent PDF generation
+16. Security features to prevent attacks and vulnerabilities:
+   - Automatic URL validation to prevent SSRF (Server-Side Request Forgery) attacks
+   - Private IP address blocking (10.x.x.x, 192.168.x.x, 172.16-31.x.x)
+   - Localhost and loopback address blocking
+   - Protocol validation (only HTTP, HTTPS, and data: URLs allowed)
+   - Domain whitelist/blacklist support for fine-grained control
+   - DNS resolution to detect IP-based SSRF attempts
+   - OWASP Dependency Check integration for vulnerability scanning
+   - Comprehensive security documentation in SECURITY.md
 
 The test application provides:
 1. REST API endpoint: POST /api/pdf/from-html - Generate PDFs from HTML via HTTP
@@ -297,6 +322,40 @@ mvn verify -Dit.test=UrlToPdfConverterIT -DCHROME_INTEGRATION_TESTS=true
 # Tests are automatically skipped if Docker is not available
 # UrlToPdfConverterIT requires Chrome installed and internet connectivity
 ```
+
+## Code Coverage Reporting
+
+The project uses JaCoCo for code coverage analysis with an enforced 80% line coverage threshold.
+
+**Running Coverage Reports:**
+```bash
+# Generate coverage reports (automatically runs with mvn verify)
+mvn verify
+
+# Generate coverage reports without integration tests
+mvn test jacoco:report
+```
+
+**Viewing Coverage Reports:**
+- **HTML Report**: Open `target/site/jacoco/index.html` in your browser
+  - Located in each module directory (e.g., `pdf-via-chrome/target/site/jacoco/index.html`)
+  - Provides interactive drill-down into packages, classes, and methods
+  - Shows line, branch, and method coverage metrics
+- **XML Report**: `target/site/jacoco/jacoco.xml` (for CI/CD integration)
+- **CSV Report**: `target/site/jacoco/jacoco.csv` (for spreadsheet analysis)
+
+**Coverage Configuration:**
+- **Threshold**: 80% line coverage, 75% branch coverage (enforced on build)
+- **Exclusions**: DTOs, test application classes, and exception classes
+- **Merged Reports**: Combines unit test and integration test coverage
+- **Build Failure**: Build fails if coverage drops below threshold
+
+**Coverage Files:**
+- `jacoco.exec` - Unit test coverage data
+- `jacoco-it.exec` - Integration test coverage data
+- `jacoco-merged.exec` - Combined coverage data
+
+All `.exec` files are excluded from version control via `.gitignore`.
 
 ## Key Technologies
 
@@ -883,3 +942,5 @@ See `pdf-via-chrome-test-app/MANUAL_TESTING.md` for more examples.
 - **Memory**: Chrome can be memory-intensive; consider memory requirements in design (each Chrome instance ~100-200MB)
 - **Logging levels**: Use TRACE for CDP protocol events, DEBUG for internal operations, INFO for major lifecycle events
 - **Docker environments**: Use `withNoSandbox(true)` and `withDisableDevShmUsage(true)` when running in containers
+- **Security**: URL validation is automatically applied in UrlToPdfConverter to prevent SSRF attacks; see SECURITY.md for comprehensive security guidance
+- **Vulnerability scanning**: Run `mvn verify` to execute OWASP Dependency Check; build fails on critical/high vulnerabilities (CVSS ≥ 7)

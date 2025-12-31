@@ -186,13 +186,26 @@
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
                     <version>${jacoco-maven-plugin.version}</version>
+                    <configuration>
+                        <excludes>
+                            <!-- Exclude DTOs and request/response classes -->
+                            <exclude>**/dto/**</exclude>
+                            <!-- Exclude test application (not a library) -->
+                            <exclude>**/testapp/**</exclude>
+                            <!-- Exclude exception classes (simple data holders) -->
+                            <exclude>**/exception/*Exception.class</exclude>
+                        </excludes>
+                    </configuration>
                     <executions>
+                        <!-- Prepare agent for unit tests -->
                         <execution>
                             <id>prepare-agent</id>
                             <goals>
                                 <goal>prepare-agent</goal>
                             </goals>
                         </execution>
+
+                        <!-- Generate unit test report -->
                         <execution>
                             <id>report</id>
                             <phase>test</phase>
@@ -200,18 +213,85 @@
                                 <goal>report</goal>
                             </goals>
                         </execution>
+
+                        <!-- Prepare agent for integration tests -->
                         <execution>
                             <id>prepare-agent-integration</id>
                             <goals>
                                 <goal>prepare-agent-integration</goal>
                             </goals>
                         </execution>
+
+                        <!-- Generate integration test report -->
                         <execution>
                             <id>report-integration</id>
                             <phase>post-integration-test</phase>
                             <goals>
                                 <goal>report-integration</goal>
                             </goals>
+                        </execution>
+
+                        <!-- Merge unit and integration test coverage -->
+                        <execution>
+                            <id>merge-results</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>merge</goal>
+                            </goals>
+                            <configuration>
+                                <fileSets>
+                                    <fileSet>
+                                        <directory>${project.build.directory}</directory>
+                                        <includes>
+                                            <include>jacoco.exec</include>
+                                            <include>jacoco-it.exec</include>
+                                        </includes>
+                                    </fileSet>
+                                </fileSets>
+                                <destFile>${project.build.directory}/jacoco-merged.exec</destFile>
+                            </configuration>
+                        </execution>
+
+                        <!-- Generate merged report (HTML + XML) -->
+                        <execution>
+                            <id>merged-report</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+                                <outputDirectory>${project.reporting.outputDirectory}/jacoco</outputDirectory>
+                            </configuration>
+                        </execution>
+
+                        <!-- Enforce coverage threshold (80% line coverage) -->
+                        <execution>
+                            <id>check</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>check</goal>
+                            </goals>
+                            <configuration>
+                                <dataFile>${project.build.directory}/jacoco-merged.exec</dataFile>
+                                <rules>
+                                    <rule>
+                                        <element>BUNDLE</element>
+                                        <limits>
+                                            <limit>
+                                                <counter>LINE</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>0.80</minimum>
+                                            </limit>
+                                            <limit>
+                                                <counter>BRANCH</counter>
+                                                <value>COVEREDRATIO</value>
+                                                <minimum>0.75</minimum>
+                                            </limit>
+                                        </limits>
+                                    </rule>
+                                </rules>
+                            </configuration>
                         </execution>
                     </executions>
                 </plugin>
@@ -353,6 +433,12 @@
         </pluginManagement>
 
         <plugins>
+            <!-- JaCoCo Code Coverage - Enabled by default for all modules -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+            </plugin>
+
             <!-- OWASP Dependency-Check - Enabled by default for all modules -->
             <plugin>
                 <groupId>org.owasp</groupId>

@@ -73,5 +73,11 @@ dependency-check-report.html
 dependency-check-report.json
 dependency-check-report.xml
 
+# Code Coverage
+*.exec
+jacoco.exec
+jacoco-it.exec
+jacoco-merged.exec
+
 # Claude Code
 .claude/

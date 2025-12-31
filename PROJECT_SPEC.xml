@@ -115,6 +115,7 @@
                         <class>ChromePathDetector</class>
                         <class>TempFileManager</class>
                         <class>ResourceCleanup</class>
+                        <class>UrlValidator</class>
                     </classes>
                 </package>
             </package>
@@ -296,7 +297,7 @@
             </plugin>
             <plugin>
                 <name>jacoco-maven-plugin</name>
-                <config>Code coverage reports</config>
+                <config>Code coverage reports (HTML/XML), enforces 80% line coverage threshold, merges unit and integration test coverage</config>
             </plugin>
             <plugin>
                 <name>maven-source-plugin</name>
@@ -559,12 +560,35 @@
         <phase number="7">
             <name>Documentation and Polish</name>
             <tasks>
-                <task>Write comprehensive Javadocs</task>
+                <task status="COMPLETED">Write comprehensive Javadocs</task>
                 <task>Create usage examples in README</task>
-                <task>Add code coverage reporting</task>
+                <task status="COMPLETED">Add code coverage reporting</task>
                 <task>Performance testing and optimization</task>
-                <task>Security review</task>
+                <task status="COMPLETED">Security review</task>
             </tasks>
+            <security-review-summary>
+                <completion-date>2025-12-31</completion-date>
+                <deliverables>
+                    <item>OWASP Dependency Check integration - 0 vulnerabilities</item>
+                    <item>UrlValidator utility - Comprehensive SSRF protection</item>
+                    <item>URL validation in UrlToPdfConverter - Automatic security</item>
+                    <item>SECURITY.md - Complete security documentation</item>
+                    <item>33 security validation tests (all passing)</item>
+                </deliverables>
+                <vulnerabilities-fixed>
+                    <vulnerability cve="CVE-2025-48924" severity="Medium" library="commons-lang3" fix="Upgraded to 3.18.0"/>
+                </vulnerabilities-fixed>
+                <security-features>
+                    <feature>SSRF attack prevention with automatic URL validation</feature>
+                    <feature>Private IP blocking (RFC 1918: 10.x, 192.168.x, 172.16-31.x)</feature>
+                    <feature>Localhost and loopback blocking (127.x, ::1)</feature>
+                    <feature>Link-local address blocking (169.254.x, fe80::)</feature>
+                    <feature>Protocol validation (HTTP, HTTPS, data: only)</feature>
+                    <feature>Domain whitelist/blacklist support</feature>
+                    <feature>DNS resolution for IP validation</feature>
+                    <feature>Data URL safe handling (no network requests)</feature>
+                </security-features>
+            </security-review-summary>
         </phase>
     </implementation-phases>
 
@@ -787,11 +811,12 @@
                 - Performance metrics logging
                 - Comprehensive error handling with appropriate HTTP status codes
 
-                Recent completions (2025-12-17):
-                - TASK-036: Request validation with Bean Validation annotations (26 tests)
-                - TASK-037: Error handling and logging with logback-spring.xml configuration
-                - Performance logging in CSV format for metrics analysis
-                - Rolling file appenders for application, error, and performance logs
+                Recent completions:
+                - TASK-042: Security review with SSRF protection and vulnerability scanning (2025-12-31)
+                - TASK-036: Request validation with Bean Validation annotations (26 tests) (2025-12-17)
+                - TASK-037: Error handling and logging with logback-spring.xml configuration (2025-12-17)
+                - Performance logging in CSV format for metrics analysis (2025-12-17)
+                - Rolling file appenders for application, error, and performance logs (2025-12-17)
 
                 Recent fixes (2025-12-17):
                 - Switched to fluidsonic fork of cdt-java-client to fix HTTP 405 error in tab creation
@@ -805,7 +830,7 @@
                 <phase number="4" status="PARTIALLY_COMPLETED">Wait Strategies (basic timeout implemented, advanced strategies pending)</phase>
                 <phase number="5" status="COMPLETED" completion-date="2025-12-17">Advanced Features (Custom headers/footers completed)</phase>
                 <phase number="6" status="COMPLETED" completion-date="2025-12-17">Test Application (All 5 tasks completed - REST API, UI, Validation, Error Handling, Logging)</phase>
-                <phase number="7" status="IN_PROGRESS">Documentation and Polish (1 of 5 tasks completed)</phase>
+                <phase number="7" status="IN_PROGRESS">Documentation and Polish (2 of 5 tasks completed - Javadocs and Security Review)</phase>
                 <phase number="8" status="IN_PROGRESS">Version 2: URL-to-PDF Features and Advanced Web Capabilities (9 of 15 tasks completed)</phase>
             </phase-status>
             <completed-tasks>
@@ -818,19 +843,20 @@
                 <task>TASK-020: Extensive unit tests for all builders (111 tests: PdfOptions=40, ChromeOptions=38, PageOptions=33)</task>
                 <task>TASK-030: Custom headers and footers with convenience methods (simplePageNumbers, headerWithTitle, footerWithDate, standardHeaderFooter)</task>
                 <task>TASK-038: Comprehensive Javadocs for all public API classes (completed 2025-12-17)</task>
+                <task>TASK-040: Code coverage reporting with JaCoCo (80% line coverage, HTML/XML reports, threshold enforcement) (completed 2025-12-31)</task>
+                <task>TASK-042: Security review with SSRF protection, dependency scanning, and comprehensive documentation (completed 2025-12-31)</task>
                 <task>TASK-043: URL-to-PDF integration tests (13 comprehensive tests covering URL navigation, error handling, and various URL formats) (completed 2025-12-29)</task>
             </completed-tasks>
             <next-tasks>
-                <task>Phase 7: Documentation and Polish (4 remaining tasks)</task>
+                <task>Phase 7: Documentation and Polish (2 remaining tasks)</task>
                 <task>TASK-039: Create usage examples in README</task>
-                <task>TASK-040: Add code coverage reporting</task>
                 <task>TASK-041: Performance testing and optimization</task>
-                <task>TASK-042: Security review</task>
             </next-tasks>
             <test-statistics>
-                <total-tests>177</total-tests>
+                <total-tests>210</total-tests>
                 <breakdown>
                     <category>Core library builder tests: 111 tests</category>
+                    <category>Core library security tests: 33 tests (UrlValidatorTest)</category>
                     <category>Core library integration tests: 27 tests (AdvancedFeaturesIT=14, UrlToPdfConverterIT=13)</category>
                     <category>Test application validation tests: 26 tests</category>
                     <category>Test application controller tests: 13 tests (5 integration, 8 unit)</category>
@@ -841,6 +867,39 @@
     </current-status>
 
     <technical-notes>
+        <note>
+            <title>SSRF Protection</title>
+            <issue>URL-based PDF generation could be exploited to access internal network resources (SSRF attack)</issue>
+            <solution>Automatic URL validation via UrlValidator prevents access to private IPs, localhost, and link-local addresses</solution>
+            <implementation>
+                - UrlValidator.validate() in UrlToPdfConverter.convert() line 125
+                - Blocks private IP ranges: 10.x.x.x, 192.168.x.x, 172.16-31.x.x
+                - Blocks localhost: 127.x.x.x, ::1
+                - Blocks link-local: 169.254.x.x, fe80::/10
+                - Validates protocols: HTTP, HTTPS, data: only
+                - DNS resolution to detect IP-based SSRF attempts
+                - Domain whitelist/blacklist support for fine-grained control
+            </implementation>
+            <testing>33 comprehensive tests in UrlValidatorTest covering all SSRF scenarios</testing>
+            <documentation>SECURITY.md section 1 - SSRF Protection</documentation>
+            <date-added>2025-12-31</date-added>
+        </note>
+        <note>
+            <title>Dependency Vulnerability Scanning</title>
+            <issue>Third-party dependencies may contain security vulnerabilities</issue>
+            <solution>OWASP Dependency Check plugin automatically scans dependencies on mvn verify</solution>
+            <implementation>
+                - Plugin configured in root pom.xml
+                - Fails build if critical/high vulnerabilities found (CVSS ≥ 7)
+                - Suppression file: dependency-check-suppressions.xml
+                - Reports: target/dependency-check-report.html and .json
+            </implementation>
+            <vulnerabilities-fixed>
+                - CVE-2025-48924 in commons-lang3 3.17.0 (Medium CVSS 5.3)
+                - Fixed by upgrading to commons-lang3 3.18.0
+            </vulnerabilities-fixed>
+            <date-added>2025-12-31</date-added>
+        </note>
         <note>
             <title>Chrome 98+ Compatibility</title>
             <issue>Chrome 98 and later require the --remote-allow-origins flag for CDP WebSocket connections</issue>

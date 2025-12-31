@@ -5,6 +5,7 @@ import com.fostermoore.pdfviachrome.cdp.CdpSession;
 import com.fostermoore.pdfviachrome.exception.BrowserTimeoutException;
 import com.fostermoore.pdfviachrome.exception.PageLoadException;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
+import com.fostermoore.pdfviachrome.util.UrlValidator;
 import com.github.kklisura.cdt.protocol.commands.Page;
 import com.github.kklisura.cdt.protocol.commands.Runtime;
 import com.github.kklisura.cdt.protocol.types.page.Navigate;
@@ -94,13 +95,22 @@ public class UrlToPdfConverter {
     /**
      * Converts a web page from a URL to PDF with optional custom CSS injection.
      *
+     * <p><strong>Security Note:</strong> URLs are automatically validated to prevent SSRF
+     * (Server-Side Request Forgery) attacks. The following are blocked:
+     * <ul>
+     *   <li>Private IP addresses (10.x.x.x, 192.168.x.x, 172.16-31.x.x)</li>
+     *   <li>Localhost and loopback addresses (127.x.x.x, ::1)</li>
+     *   <li>Link-local addresses (169.254.x.x, fe80::/10)</li>
+     *   <li>Non-HTTP(S) protocols (file://, ftp://, etc.)</li>
+     * </ul>
+     *
      * @param url the URL to navigate to and convert
      * @param options the PDF generation options
      * @param customCss optional custom CSS to inject (can be null)
      * @return the PDF data as a byte array
      * @throws PageLoadException if the page fails to load (404, network errors, etc.)
      * @throws BrowserTimeoutException if the page load exceeds the configured timeout
-     * @throws PdfGenerationException if PDF generation fails
+     * @throws PdfGenerationException if PDF generation fails or URL validation fails (SSRF protection)
      * @throws IllegalArgumentException if url or options are null
      */
     public byte[] convert(String url, PdfOptions options, String customCss) {
@@ -110,6 +120,9 @@ public class UrlToPdfConverter {
         if (options == null) {
             throw new IllegalArgumentException("PdfOptions cannot be null");
         }
+
+        // Validate URL to prevent SSRF attacks
+        UrlValidator.validate(url);
 
         if (!session.isConnected()) {
             throw new PdfGenerationException("CDP session is not connected");

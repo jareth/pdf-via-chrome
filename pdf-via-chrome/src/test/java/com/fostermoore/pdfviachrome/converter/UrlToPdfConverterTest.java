@@ -416,7 +416,7 @@ class UrlToPdfConverterTest {
     //@Disabled("Test passes individually but fails when run with other tests due to Mockito mock state issue - needs investigation")
     void convert_withHttpsUrl_shouldHandleCorrectly() {
         // Arrange
-        String httpsUrl = "https://secure.example.com";
+        String httpsUrl = "https://example.com";
         PdfOptions options = PdfOptions.defaults();
 
         setupValidPrintToPdfMock();

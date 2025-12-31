@@ -7,8 +7,8 @@
         <updated>2025-12-29</updated>
         <total-phases>8</total-phases>
         <total-tasks>42</total-tasks>
-        <completed-tasks>40</completed-tasks>
-        <completion-percentage>95%</completion-percentage>
+        <completed-tasks>41</completed-tasks>
+        <completion-percentage>98%</completion-percentage>
         <note>URL-to-PDF features and advanced web capabilities (CSS/JS injection, page ranges, media emulation) moved to Phase 8 (Version 2)</note>
     </metadata>
 
@@ -112,7 +112,7 @@
             <tasks>
                 <task-ref id="TASK-038" file="tasks/TASK-038.xml" status="Completed"/>
                 <task-ref id="TASK-039" file="tasks/TASK-039.xml"/>
-                <task-ref id="TASK-040" file="tasks/TASK-040.xml"/>
+                <task-ref id="TASK-040" file="tasks/TASK-040.xml" status="Completed"/>
                 <task-ref id="TASK-041" file="tasks/TASK-041.xml"/>
                 <task-ref id="TASK-042" file="tasks/TASK-042.xml"/>
             </tasks>
