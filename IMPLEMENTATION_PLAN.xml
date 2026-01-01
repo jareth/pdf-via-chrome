@@ -132,12 +132,6 @@
                 <task-ref id="TASK-031" file="tasks/TASK-031.xml" status="Completed" note="Moved from Phase 5 - Page Ranges Support"/>
                 <task-ref id="TASK-032" file="tasks/TASK-032.xml" status="Completed" note="Integration Tests for Advanced Features"/>
                 <task-ref id="TASK-043" file="tasks/TASK-043.xml" status="Completed" note="URL-to-PDF integration tests (split from TASK-021)"/>
-                <task-ref id="TASK-044" file="tasks/TASK-044.xml" note="Update TASK-029 to support URL sources"/>
-                <task-ref id="TASK-045" file="tasks/TASK-045.xml" note="Add URL-to-PDF REST endpoint (from TASK-034)"/>
-                <task-ref id="TASK-046" file="tasks/TASK-046.xml" note="Add URL-to-PDF UI form (from TASK-035)"/>
-                <task-ref id="TASK-047" file="tasks/TASK-047.xml" note="Network request interception and custom headers"/>
-                <task-ref id="TASK-048" file="tasks/TASK-048.xml" note="Authentication support for URLs"/>
-                <task-ref id="TASK-049" file="tasks/TASK-049.xml" note="Cookie management"/>
             </tasks>
             <note>This phase represents Version 2.0 features and should be started after Version 1.0 release</note>
         </phase>

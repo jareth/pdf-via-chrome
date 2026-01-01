@@ -5,6 +5,7 @@
     <phase>Phase 5: Advanced Features</phase>
     <priority>MEDIUM</priority>
     <complexity>MODERATE</complexity>
+    <status>Completed</status>
 
     <dependencies>
         <dependency>TASK-019: Implement URL-to-PDF Converter</dependency>
@@ -61,4 +62,22 @@
     </testing-requirements>
 
     <estimated-effort>4-5 hours</estimated-effort>
+
+    <completion-status>
+        <completion-date>2025-12-31</completion-date>
+        <summary>
+            CSS injection capability fully implemented in PdfGenerator API. Users can inject custom CSS
+            from strings or files to override page styles before PDF generation. Works with both HTML
+            and URL sources.
+        </summary>
+        <deliverables>
+            <deliverable>PdfGenerator.withCustomCss(String css) - Inject CSS from string</deliverable>
+            <deliverable>PdfGenerator.withCustomCssFromFile(Path cssFile) - Inject CSS from file</deliverable>
+            <deliverable>CSS injection uses CDP Runtime.evaluate() to inject style tags</deliverable>
+            <deliverable>CSS applied after page load, before PDF generation</deliverable>
+            <deliverable>CssInjectionTest.java - Comprehensive unit tests for CSS injection</deliverable>
+            <deliverable>Integration tests in AdvancedFeaturesIT.java</deliverable>
+            <deliverable>Usage examples in README.md and CLAUDE.md</deliverable>
+        </deliverables>
+    </completion-status>
 </task>
