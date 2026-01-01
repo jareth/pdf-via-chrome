@@ -260,10 +260,10 @@ class UrlToPdfConverterIT {
                 UrlToPdfConverter converter = new UrlToPdfConverter(session, 10000);
                 PdfOptions pdfOptions = PdfOptions.defaults();
 
-                // This should throw a PageLoadException due to DNS resolution failure
+                // This should throw a PdfGenerationException due to DNS resolution failure during URL validation
                 assertThatThrownBy(() -> converter.convert(INVALID_URL, pdfOptions))
-                    .isInstanceOf(PageLoadException.class)
-                    .hasMessageContaining("Failed to navigate to URL");
+                    .isInstanceOf(PdfGenerationException.class)
+                    .hasMessageContaining("Unable to resolve host");
             }
         }
     }
