@@ -4,9 +4,9 @@ import com.fostermoore.pdfviachrome.cdp.CdpSession;
 import com.fostermoore.pdfviachrome.chrome.ChromeManager;
 import com.fostermoore.pdfviachrome.chrome.ChromeOptions;
 import com.fostermoore.pdfviachrome.chrome.ChromeProcess;
+import com.fostermoore.pdfviachrome.converter.HtmlToPdfConverter;
+import com.fostermoore.pdfviachrome.converter.UrlToPdfConverter;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
-import com.github.kklisura.cdt.protocol.commands.Page;
-import com.github.kklisura.cdt.protocol.commands.Runtime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -22,7 +22,6 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.Base64;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -427,6 +426,7 @@ public class PdfGenerator implements AutoCloseable {
         private PdfOptions pdfOptions = PdfOptions.defaults();
         private String customCss;
         private String customJavaScript;
+        private String baseUrl;
 
         private GenerationBuilder(ContentSource contentSource) {
             this.contentSource = contentSource;
@@ -552,6 +552,42 @@ public class PdfGenerator implements AutoCloseable {
         }
 
         /**
+         * Sets the base URL for resolving relative URLs in HTML content.
+         * This is particularly useful when HTML content contains relative paths to images,
+         * stylesheets, or other resources that need to be loaded from a web server.
+         *
+         * <p>The base URL is injected into the HTML as a {@code <base>} tag, which tells
+         * the browser how to resolve relative URLs. For example, if you set the base URL
+         * to "http://localhost:8080/", then an image tag like {@code <img src="/images/logo.png"/>}
+         * will be resolved to "http://localhost:8080/images/logo.png".</p>
+         *
+         * <p>Example usage:</p>
+         * <pre>{@code
+         * try (PdfGenerator generator = PdfGenerator.create().build()) {
+         *     String html = "<html><body><img src='/images/logo.png'/></body></html>";
+         *     byte[] pdf = generator.fromHtml(html)
+         *         .withBaseUrl("http://localhost:8080/")
+         *         .generate();
+         * }
+         * }</pre>
+         *
+         * <p><strong>Important:</strong> This method only works with HTML content (fromHtml/fromDocument).
+         * It has no effect when generating PDFs from URLs (fromUrl), as URLs already have
+         * their own base context.</p>
+         *
+         * @param baseUrl the base URL to use for resolving relative URLs (e.g., "http://localhost:8080/")
+         * @return this builder
+         * @throws IllegalArgumentException if baseUrl is null or empty
+         */
+        public GenerationBuilder withBaseUrl(String baseUrl) {
+            if (baseUrl == null || baseUrl.trim().isEmpty()) {
+                throw new IllegalArgumentException("Base URL cannot be null or empty");
+            }
+            this.baseUrl = baseUrl.trim();
+            return this;
+        }
+
+        /**
          * Generates the PDF.
          *
          * @return the PDF content as a byte array
@@ -565,195 +601,35 @@ public class PdfGenerator implements AutoCloseable {
 
                 logger.debug("Generating PDF from {}", contentSource.getType());
 
-                Page page = cdpSession.getPage();
-
-                // Enable page domain
-                page.enable();
-
-                try {
-                    // Navigate to content
-                    if (contentSource.isHtml()) {
-                        // For HTML content, navigate to data URL
-                        String dataUrl = "data:text/html;base64," +
-                            Base64.getEncoder().encodeToString(contentSource.getContent().getBytes());
-                        page.navigate(dataUrl);
-                    } else {
-                        // For URL, navigate directly
-                        page.navigate(contentSource.getContent());
-                    }
-
-                    // Wait for page to load
-                    // TODO: Implement wait strategies (will be in future tasks)
-                    Thread.sleep(1000); // Simple wait for now
-
-                    // Inject custom CSS if provided
-                    if (customCss != null && !customCss.trim().isEmpty()) {
-                        injectCss(customCss);
-                    }
-
-                    // Execute custom JavaScript if provided
-                    if (customJavaScript != null && !customJavaScript.trim().isEmpty()) {
-                        doExecuteJavaScript(customJavaScript);
-                    }
-
-                    // Generate PDF
-                    var pdfResult = page.printToPDF(
-                        pdfOptions.isLandscape(),
-                        pdfOptions.isDisplayHeaderFooter(),
-                        pdfOptions.isPrintBackground(),
-                        pdfOptions.getScale(),
-                        pdfOptions.getPaperWidth(),
-                        pdfOptions.getPaperHeight(),
-                        pdfOptions.getMarginTop(),
-                        pdfOptions.getMarginBottom(),
-                        pdfOptions.getMarginLeft(),
-                        pdfOptions.getMarginRight(),
-                        pdfOptions.getPageRanges(),
-                        false, // ignoreInvalidPageRanges
-                        pdfOptions.getHeaderTemplate(),
-                        pdfOptions.getFooterTemplate(),
-                        pdfOptions.isPreferCssPageSize(),
-                        null // transferMode - null means return as base64
+                // Delegate to appropriate converter based on content source type
+                if (contentSource.isHtml()) {
+                    // Use HtmlToPdfConverter for HTML content
+                    HtmlToPdfConverter converter = new HtmlToPdfConverter(cdpSession);
+                    return converter.convert(
+                        contentSource.getContent(),
+                        pdfOptions,
+                        customCss,
+                        customJavaScript,
+                        baseUrl
                     );
-
-                    logger.debug("PDF generated successfully");
-
-                    // Get base64 data from result and decode to bytes
-                    String base64Pdf = pdfResult.getData();
-                    return Base64.getDecoder().decode(base64Pdf);
-
-                } catch (InterruptedException e) {
-                    Thread.currentThread().interrupt();
-                    throw new PdfGenerationException("PDF generation interrupted", e);
-                } catch (Exception e) {
-                    throw new PdfGenerationException("Failed to generate PDF", e);
+                } else {
+                    // Use UrlToPdfConverter for URL content
+                    if (baseUrl != null && !baseUrl.trim().isEmpty()) {
+                        logger.warn("baseUrl is ignored when generating PDF from URL (URL already has base context)");
+                    }
+                    if (customJavaScript != null && !customJavaScript.trim().isEmpty()) {
+                        logger.warn("JavaScript execution is not supported for URL-based PDF generation");
+                    }
+                    UrlToPdfConverter converter = new UrlToPdfConverter(cdpSession);
+                    return converter.convert(
+                        contentSource.getContent(),
+                        pdfOptions,
+                        customCss
+                    );
                 }
 
             } finally {
                 lock.unlock();
-            }
-        }
-
-        /**
-         * Injects CSS into the page by creating a style element in the document head.
-         *
-         * @param css the CSS to inject
-         * @throws PdfGenerationException if CSS injection fails
-         */
-        private void injectCss(String css) {
-            try {
-                logger.debug("Injecting custom CSS (length: {} chars)", css.length());
-
-                // Get the Runtime domain
-                Runtime runtime = cdpSession.getRuntime();
-
-                // Enable Runtime domain
-                runtime.enable();
-
-                // Escape the CSS for JavaScript string literal
-                String escapedCss = css
-                    .replace("\\", "\\\\")
-                    .replace("'", "\\'")
-                    .replace("\n", "\\n")
-                    .replace("\r", "\\r");
-
-                // JavaScript code to inject CSS
-                String jsCode = String.format(
-                    "(function() {" +
-                    "  var style = document.createElement('style');" +
-                    "  style.textContent = '%s';" +
-                    "  document.head.appendChild(style);" +
-                    "})()",
-                    escapedCss
-                );
-
-                // Execute the JavaScript
-                var result = runtime.evaluate(jsCode);
-
-                // Check for JavaScript execution errors
-                if (result.getExceptionDetails() != null) {
-                    String errorMessage = result.getExceptionDetails().getText();
-                    logger.error("CSS injection failed: {}", errorMessage);
-                    throw new PdfGenerationException("Failed to inject CSS: " + errorMessage);
-                }
-
-                logger.debug("Custom CSS injected successfully");
-
-            } catch (PdfGenerationException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new PdfGenerationException("Failed to inject custom CSS", e);
-            }
-        }
-
-        /**
-         * Executes JavaScript in the page context.
-         * Supports both synchronous code and Promise-based asynchronous code.
-         *
-         * @param jsCode the JavaScript code to execute
-         * @throws PdfGenerationException if JavaScript execution fails
-         */
-        private void doExecuteJavaScript(String jsCode) {
-            try {
-                logger.debug("Executing custom JavaScript (length: {} chars)", jsCode.length());
-
-                // Get the Runtime domain
-                Runtime runtime = cdpSession.getRuntime();
-
-                // Enable Runtime domain
-                runtime.enable();
-
-                // Wrap the user's code to handle both sync and async execution
-                // If the code returns a Promise, we'll await it
-                String wrappedCode = String.format(
-                    "(async function() { %s })()",
-                    jsCode
-                );
-
-                // Execute the JavaScript with await promise support
-                var result = runtime.evaluate(
-                    wrappedCode,
-                    null,    // objectGroup
-                    false,   // includeCommandLineAPI
-                    false,   // silent
-                    null,    // contextId
-                    false,   // returnByValue
-                    false,   // generatePreview
-                    false,   // userGesture
-                    true,    // awaitPromise - wait for Promise to resolve
-                    false,   // throwOnSideEffect
-                    null,    // timeout
-                    false,   // disableBreaks
-                    false,   // replMode
-                    false,   // allowUnsafeEvalBlockedByCSP
-                    null     // uniqueContextId
-                );
-
-                // Check for JavaScript execution errors
-                if (result.getExceptionDetails() != null) {
-                    String errorMessage = result.getExceptionDetails().getText();
-                    logger.error("JavaScript execution failed: {}", errorMessage);
-
-                    // Log the exception details for debugging
-                    var exception = result.getExceptionDetails().getException();
-                    if (exception != null && exception.getDescription() != null) {
-                        logger.error("Exception details: {}", exception.getDescription());
-                    }
-
-                    throw new PdfGenerationException("Failed to execute JavaScript: " + errorMessage);
-                }
-
-                logger.debug("Custom JavaScript executed successfully");
-
-                // Log the result if it's meaningful (not undefined)
-                if (result.getResult() != null && result.getResult().getValue() != null) {
-                    logger.trace("JavaScript execution result: {}", result.getResult().getValue());
-                }
-
-            } catch (PdfGenerationException e) {
-                throw e;
-            } catch (Exception e) {
-                throw new PdfGenerationException("Failed to execute custom JavaScript", e);
             }
         }
     }

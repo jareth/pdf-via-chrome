@@ -96,6 +96,7 @@ The project uses the builder pattern for configuration objects:
 **Phase 7 (Documentation and Polish)** - Core functionality complete. All major features implemented:
 - ✅ HTML-to-PDF and URL-to-PDF conversion
 - ✅ Custom headers/footers, CSS injection, JavaScript execution, page ranges
+- ✅ Base URL support for resolving relative resources in HTML
 - ✅ Wait strategies for dynamic content
 - ✅ Spring Boot test application with REST API and web UI
 - ✅ SSRF protection and security scanning (zero high/critical vulnerabilities)
@@ -175,13 +176,14 @@ PdfOptions options = PdfOptions.builder()
 
 // Advanced features
 generator.fromHtml(html)
+    .withBaseUrl("http://localhost:8080/")  // Resolve relative URLs
     .withCustomCss(css)           // Inject CSS
     .executeJavaScript(js)        // Run JS before PDF
     .withOptions(options)
     .generate();
 ```
 
-**Key features**: Headers/footers, CSS injection, JS execution, page ranges, wait strategies, DOM Document input.
+**Key features**: Headers/footers, CSS injection, JS execution, base URL for relative resources, page ranges, wait strategies, DOM Document input.
 **See README.md for detailed examples of all features.**
 
 ## Test Application

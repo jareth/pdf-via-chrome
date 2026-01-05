@@ -234,11 +234,7 @@ class JavaScriptExecutionTest {
             )
                 .isInstanceOf(PdfGenerationException.class)
                 .satisfies(e -> {
-                    // The outer exception wraps the inner one
-                    assertThat(e.getMessage()).contains("Failed to generate PDF");
-                    // Check the cause contains the JavaScript error
-                    assertThat(e.getCause()).isNotNull();
-                    assertThat(e.getCause().getMessage()).contains("Failed to execute JavaScript");
+                    assertThat(e.getMessage()).contains("Failed to execute JavaScript");
                 });
         }
     }

@@ -3,11 +3,13 @@ package com.fostermoore.pdfviachrome.converter;
 import com.fostermoore.pdfviachrome.api.PdfOptions;
 import com.fostermoore.pdfviachrome.cdp.CdpSession;
 import com.fostermoore.pdfviachrome.exception.PdfGenerationException;
+import com.github.kklisura.cdt.protocol.commands.Network;
 import com.github.kklisura.cdt.protocol.commands.Page;
 import com.github.kklisura.cdt.protocol.types.page.FrameTree;
 import com.github.kklisura.cdt.protocol.types.page.Frame;
 import com.github.kklisura.cdt.protocol.types.page.PrintToPDF;
 import com.github.kklisura.cdt.protocol.events.page.DomContentEventFired;
+import com.github.kklisura.cdt.protocol.events.page.LoadEventFired;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,6 +38,9 @@ class HtmlToPdfConverterTest {
     private Page mockPage;
 
     @Mock
+    private Network mockNetwork;
+
+    @Mock
     private FrameTree mockFrameTree;
 
     @Mock
@@ -50,6 +55,7 @@ class HtmlToPdfConverterTest {
         // Setup common mock behaviors (lenient to avoid unnecessary stubbing warnings)
         lenient().when(mockSession.isConnected()).thenReturn(true);
         lenient().when(mockSession.getPage()).thenReturn(mockPage);
+        lenient().when(mockSession.getNetwork()).thenReturn(mockNetwork);
         lenient().when(mockPage.getFrameTree()).thenReturn(mockFrameTree);
         lenient().when(mockFrameTree.getFrame()).thenReturn(mockFrame);
         lenient().when(mockFrame.getId()).thenReturn("frame123");
@@ -112,7 +118,9 @@ class HtmlToPdfConverterTest {
 
     /**
      * Helper method to setup DOM content loaded event handler.
+     * @deprecated Use setupLoadEventHandler() instead
      */
+    @Deprecated
     private void setupDomContentLoadedHandler() {
         doAnswer(invocation -> {
             // Get the event handler that was registered
@@ -127,6 +135,24 @@ class HtmlToPdfConverterTest {
             }
             return null;
         }).when(mockPage).onDomContentEventFired(any());
+    }
+
+    /**
+     * Helper method to setup load event handler (fires after all resources loaded).
+     * This is the event that HtmlToPdfConverter waits for before generating PDF.
+     */
+    private void setupLoadEventHandler() {
+        // Trigger LoadEventFired (the actual event the converter waits for)
+        doAnswer(invocation -> {
+            Object handler = invocation.getArgument(0);
+            try {
+                Method method = handler.getClass().getMethod("onEvent", Object.class);
+                method.invoke(handler, new LoadEventFired());
+            } catch (Exception e) {
+                System.err.println("Failed to invoke LoadEventFired handler: " + e.getMessage());
+            }
+            return null;
+        }).when(mockPage).onLoadEventFired(any());
     }
 
     @AfterEach
@@ -191,7 +217,7 @@ class HtmlToPdfConverterTest {
         // Arrange
         PdfOptions options = PdfOptions.defaults();
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(SIMPLE_HTML, options);
@@ -237,7 +263,7 @@ class HtmlToPdfConverterTest {
             .build();
 
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(SIMPLE_HTML, options);
@@ -269,7 +295,7 @@ class HtmlToPdfConverterTest {
     void convert_withDefaultOptions_shouldUseDefaultPdfOptions() {
         // Arrange
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(SIMPLE_HTML);
@@ -304,7 +330,7 @@ class HtmlToPdfConverterTest {
         PdfOptions options = PdfOptions.defaults();
 
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(emptyHtml, options);
@@ -320,7 +346,7 @@ class HtmlToPdfConverterTest {
         PdfOptions options = PdfOptions.defaults();
 
         setupNullPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act & Assert
         assertThatThrownBy(() -> converter.convert(SIMPLE_HTML, options))
@@ -334,7 +360,7 @@ class HtmlToPdfConverterTest {
         PdfOptions options = PdfOptions.defaults();
 
         setupEmptyPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act & Assert
         assertThatThrownBy(() -> converter.convert(SIMPLE_HTML, options))
@@ -348,7 +374,7 @@ class HtmlToPdfConverterTest {
         PdfOptions options = PdfOptions.defaults();
 
         setupInvalidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act & Assert
         assertThatThrownBy(() -> converter.convert(SIMPLE_HTML, options))
@@ -396,7 +422,7 @@ class HtmlToPdfConverterTest {
         PdfOptions options = PdfOptions.defaults();
 
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(largeHtml.toString(), options);
@@ -416,7 +442,7 @@ class HtmlToPdfConverterTest {
             .build();
 
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(SIMPLE_HTML, options);
@@ -444,7 +470,7 @@ class HtmlToPdfConverterTest {
             .build();
 
         setupValidPrintToPdfMock();
-        setupDomContentLoadedHandler();
+        setupLoadEventHandler();
 
         // Act
         byte[] result = converter.convert(SIMPLE_HTML, options);

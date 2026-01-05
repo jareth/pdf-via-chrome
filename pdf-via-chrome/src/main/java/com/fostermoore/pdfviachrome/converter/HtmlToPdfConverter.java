@@ -114,6 +114,22 @@ public class HtmlToPdfConverter {
      * @throws IllegalArgumentException if html or options are null
      */
     public byte[] convert(String html, PdfOptions options, String customCss, String customJavaScript) {
+        return convert(html, options, customCss, customJavaScript, null);
+    }
+
+    /**
+     * Converts HTML string content to PDF with optional custom CSS, JavaScript, and base URL.
+     *
+     * @param html the HTML content to convert
+     * @param options the PDF generation options
+     * @param customCss optional custom CSS to inject (can be null)
+     * @param customJavaScript optional custom JavaScript to execute (can be null)
+     * @param baseUrl optional base URL for resolving relative URLs (can be null)
+     * @return the PDF data as a byte array
+     * @throws PdfGenerationException if PDF generation fails
+     * @throws IllegalArgumentException if html or options are null
+     */
+    public byte[] convert(String html, PdfOptions options, String customCss, String customJavaScript, String baseUrl) {
         if (html == null) {
             throw new IllegalArgumentException("HTML content cannot be null");
         }
@@ -133,36 +149,70 @@ public class HtmlToPdfConverter {
             // Enable Page domain to receive events
             page.enable();
 
-            // Navigate to about:blank first
-            logger.trace("Navigating to {}", ABOUT_BLANK);
-            page.navigate(ABOUT_BLANK);
+            // Enable Network domain to monitor resource loading
+            var network = session.getNetwork();
+            network.enable();
 
-            // Set up a latch to wait for DOMContentLoaded event
-            CountDownLatch domLoadedLatch = new CountDownLatch(1);
+            // Log network requests to help debug resource loading issues
+            network.onRequestWillBeSent(event -> {
+                logger.trace("Chrome requesting: {} ({})", event.getRequest().getUrl(), event.getType());
+            });
+
+            network.onResponseReceived(event -> {
+                var response = event.getResponse();
+                logger.trace("Chrome received response: {} - Status {} ({})",
+                    response.getUrl(), response.getStatus(), event.getType());
+            });
+
+            network.onLoadingFailed(event -> {
+                logger.warn("Chrome failed to load resource: {} - {}",
+                    event.getErrorText(), event.getType());
+                if (event.getType() != null && event.getType().toString().equals("Image")) {
+                    logger.error("Image loading failed - PDF may be missing images");
+                }
+            });
+
+            // Navigate to base URL first if provided (to establish security context/origin)
+            // Otherwise navigate to about:blank
+            // This is critical: navigating to the base URL allows setDocumentContent to fetch resources from that origin
+            String navigationUrl = (baseUrl != null && !baseUrl.trim().isEmpty()) ? baseUrl : ABOUT_BLANK;
+            logger.trace("Navigating to {} to establish security context", navigationUrl);
+            page.navigate(navigationUrl);
+
+            // Set up a latch to wait for load event (fires after all resources are loaded)
+            CountDownLatch loadEventLatch = new CountDownLatch(1);
             AtomicBoolean loadError = new AtomicBoolean(false);
 
-            // Listen for DOMContentLoaded event
+            // Listen for DOMContentLoaded event (for logging only)
             page.onDomContentEventFired(event -> {
                 logger.trace("DOMContentLoaded event received");
-                domLoadedLatch.countDown();
             });
 
-            // Listen for load error events
+            // Listen for load event (fires after all resources including images are loaded)
             page.onLoadEventFired(event -> {
-                logger.trace("Load event fired");
+                logger.trace("Load event fired - all resources loaded");
+                loadEventLatch.countDown();
             });
+
+            // Inject base URL if provided (note: we still inject it for cases where base URL isn't navigable)
+            String htmlContent = html;
+            if (baseUrl != null && !baseUrl.trim().isEmpty()) {
+                htmlContent = injectBaseUrl(html, baseUrl);
+                logger.debug("Injected base URL into HTML: {}", baseUrl);
+            }
 
             // Set the document content
-            logger.trace("Setting document content (HTML length: {} bytes)", html.length());
-            page.setDocumentContent(page.getFrameTree().getFrame().getId(), html);
+            // Because we navigated to baseUrl first, the page now has that origin and can fetch resources
+            logger.trace("Setting document content (HTML length: {} bytes)", htmlContent.length());
+            page.setDocumentContent(page.getFrameTree().getFrame().getId(), htmlContent);
 
-            // Wait for DOMContentLoaded event with timeout
-            logger.trace("Waiting for DOMContentLoaded event (timeout: {}ms)", loadTimeoutMs);
-            boolean loaded = domLoadedLatch.await(loadTimeoutMs, TimeUnit.MILLISECONDS);
+            // Wait for load event (all resources loaded) with timeout
+            logger.trace("Waiting for load event - all resources including images (timeout: {}ms)", loadTimeoutMs);
+            boolean loaded = loadEventLatch.await(loadTimeoutMs, TimeUnit.MILLISECONDS);
 
             if (!loaded) {
                 throw new PdfGenerationException(
-                    "Timeout waiting for page to load (timeout: " + loadTimeoutMs + "ms)"
+                    "Timeout waiting for page and resources to load (timeout: " + loadTimeoutMs + "ms)"
                 );
             }
 
@@ -170,7 +220,7 @@ public class HtmlToPdfConverter {
                 throw new PdfGenerationException("Error occurred while loading HTML content");
             }
 
-            logger.debug("Page loaded successfully");
+            logger.debug("Page and all resources (including images) loaded successfully");
 
             // Inject custom CSS if provided
             if (customCss != null && !customCss.trim().isEmpty()) {
@@ -409,6 +459,52 @@ public class HtmlToPdfConverter {
             throw e;
         } catch (Exception e) {
             throw new PdfGenerationException("Failed to execute custom JavaScript", e);
+        }
+    }
+
+    /**
+     * Injects a base URL into HTML content by adding a {@code <base>} tag.
+     * The base tag is inserted as the first element in the {@code <head>} section.
+     * If no {@code <head>} tag exists, one is created.
+     *
+     * @param html the HTML content
+     * @param baseUrl the base URL to inject
+     * @return the modified HTML with the base tag
+     */
+    private String injectBaseUrl(String html, String baseUrl) {
+        // Create the base tag
+        String baseTag = String.format("<base href=\"%s\">",
+            baseUrl.replace("\"", "&quot;")); // Escape quotes in URL
+
+        // Try to find <head> tag (case-insensitive)
+        java.util.regex.Pattern headPattern = java.util.regex.Pattern.compile(
+            "(<head[^>]*>)",
+            java.util.regex.Pattern.CASE_INSENSITIVE
+        );
+        java.util.regex.Matcher headMatcher = headPattern.matcher(html);
+
+        if (headMatcher.find()) {
+            // Insert base tag right after opening <head> tag
+            int insertPosition = headMatcher.end();
+            return html.substring(0, insertPosition) + baseTag + html.substring(insertPosition);
+        } else {
+            // No <head> tag found - try to insert after <html> tag
+            java.util.regex.Pattern htmlPattern = java.util.regex.Pattern.compile(
+                "(<html[^>]*>)",
+                java.util.regex.Pattern.CASE_INSENSITIVE
+            );
+            java.util.regex.Matcher htmlMatcher = htmlPattern.matcher(html);
+
+            if (htmlMatcher.find()) {
+                // Insert <head> with base tag after <html>
+                int insertPosition = htmlMatcher.end();
+                return html.substring(0, insertPosition) +
+                       "<head>" + baseTag + "</head>" +
+                       html.substring(insertPosition);
+            } else {
+                // No <html> or <head> tag - prepend a complete head section
+                return "<head>" + baseTag + "</head>" + html;
+            }
         }
     }
 }

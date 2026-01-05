@@ -29,6 +29,13 @@ public class HtmlRequest {
      */
     private String waitStrategy;
 
+    /**
+     * Optional base URL for resolving relative URLs in HTML content.
+     * When provided, relative paths for images, stylesheets, and other resources
+     * will be resolved against this base URL.
+     */
+    private String baseUrl;
+
     public HtmlRequest() {
     }
 
@@ -59,5 +66,13 @@ public class HtmlRequest {
 
     public void setWaitStrategy(String waitStrategy) {
         this.waitStrategy = waitStrategy;
+    }
+
+    public String getBaseUrl() {
+        return baseUrl;
+    }
+
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 }

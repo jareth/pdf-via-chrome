@@ -409,6 +409,86 @@ class PdfGeneratorTest {
         }
     }
 
+    @Test
+    void testGenerationBuilder_withBaseUrl() {
+        PdfGenerator generator = PdfGenerator.create().build();
+
+        PdfGenerator.GenerationBuilder builder = generator
+            .fromHtml("<html><body><img src='/images/logo.png'/></body></html>")
+            .withBaseUrl("http://localhost:8080/");
+
+        assertThat(builder).isNotNull();
+    }
+
+    @Test
+    void testGenerationBuilder_withBaseUrl_nullThrowsException() {
+        PdfGenerator generator = PdfGenerator.create().build();
+
+        assertThatThrownBy(() ->
+            generator.fromHtml("<html></html>").withBaseUrl(null)
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Base URL cannot be null or empty");
+    }
+
+    @Test
+    void testGenerationBuilder_withBaseUrl_emptyThrowsException() {
+        PdfGenerator generator = PdfGenerator.create().build();
+
+        assertThatThrownBy(() ->
+            generator.fromHtml("<html></html>").withBaseUrl("")
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Base URL cannot be null or empty");
+    }
+
+    @Test
+    void testGenerationBuilder_withBaseUrl_whitespaceThrowsException() {
+        PdfGenerator generator = PdfGenerator.create().build();
+
+        assertThatThrownBy(() ->
+            generator.fromHtml("<html></html>").withBaseUrl("   ")
+        ).isInstanceOf(IllegalArgumentException.class)
+          .hasMessageContaining("Base URL cannot be null or empty");
+    }
+
+    @Test
+    void testGenerationBuilder_withBaseUrl_methodChaining() {
+        PdfGenerator generator = PdfGenerator.create().build();
+
+        PdfOptions options = PdfOptions.builder()
+            .landscape(true)
+            .printBackground(true)
+            .build();
+
+        PdfGenerator.GenerationBuilder builder = generator
+            .fromHtml("<html><body><img src='/logo.png'/></body></html>")
+            .withBaseUrl("http://localhost:8080/")
+            .withOptions(options);
+
+        assertThat(builder).isNotNull();
+    }
+
+    @Test
+    void testFluentApi_completeExampleWithBaseUrl() {
+        // This test verifies the fluent API with base URL compiles and chains correctly
+        try (PdfGenerator generator = PdfGenerator.create()
+            .withTimeout(Duration.ofSeconds(30))
+            .withHeadless(true)
+            .build()) {
+
+            PdfGenerator.GenerationBuilder builder = generator
+                .fromHtml("<html><body><img src='/images/logo.png'/></body></html>")
+                .withBaseUrl("http://localhost:8080/")
+                .withOptions(PdfOptions.builder()
+                    .landscape(true)
+                    .paperSize(PdfOptions.PaperFormat.A4)
+                    .margins(0.5)
+                    .printBackground(true)
+                    .build());
+
+            assertThat(builder).isNotNull();
+        }
+    }
+
     /**
      * Helper method to create a simple DOM Document for testing.
      */

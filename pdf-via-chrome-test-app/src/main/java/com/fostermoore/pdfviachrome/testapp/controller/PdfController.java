@@ -54,8 +54,17 @@ public class PdfController {
             logger.debug("Starting PDF generation with options: landscape={}, scale={}, printBackground={}",
                 options.isLandscape(), options.getScale(), options.isPrintBackground());
 
+            // Build PDF generation request
+            var generationBuilder = pdfGenerator.fromHtml(request.getContent());
+
+            // Add base URL if provided
+            if (request.getBaseUrl() != null && !request.getBaseUrl().trim().isEmpty()) {
+                logger.debug("Using base URL: {}", request.getBaseUrl());
+                generationBuilder.withBaseUrl(request.getBaseUrl());
+            }
+
             // Generate PDF
-            byte[] pdfBytes = pdfGenerator.fromHtml(request.getContent())
+            byte[] pdfBytes = generationBuilder
                 .withOptions(options)
                 .generate();
 

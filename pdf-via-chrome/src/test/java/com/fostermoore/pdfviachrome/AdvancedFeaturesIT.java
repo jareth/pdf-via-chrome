@@ -501,6 +501,102 @@ class AdvancedFeaturesIT {
         logger.info("Mixed page range formats test passed");
     }
 
+    @Test
+    void testBaseUrlWithRelativeImages() throws IOException {
+        logger.info("Testing base URL feature for resolving relative image paths");
+
+        // HTML with relative image path (would fail without base URL)
+        String htmlWithRelativeImage = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Base URL Test</title>
+            </head>
+            <body>
+                <h1>Testing Base URL</h1>
+                <p>This document contains a reference to a relative resource.</p>
+                <img src="/images/test.png" alt="Test Image"/>
+                <p>If base URL works correctly, the image path will be resolved.</p>
+            </body>
+            </html>
+            """;
+
+        // When - Generate PDF with base URL
+        // Note: This test verifies the feature works without errors
+        // A full end-to-end test with actual image loading would require a running web server
+        byte[] pdfBytes = pdfGenerator.fromHtml(htmlWithRelativeImage)
+                .withBaseUrl("http://localhost:8080/")
+                .generate();
+
+        // Then - Verify PDF is valid
+        assertThat(pdfBytes).isNotEmpty();
+        assertValidPdf(pdfBytes);
+
+        // Verify content is present
+        assertPdfContainsText(pdfBytes, "Testing Base URL");
+        assertPdfContainsText(pdfBytes, "This document contains a reference to a relative resource");
+
+        logger.info("Base URL test passed");
+    }
+
+    @Test
+    void testBaseUrlCombinedWithOtherFeatures() throws IOException {
+        logger.info("Testing base URL combined with CSS and JavaScript");
+
+        // HTML with relative paths
+        String html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="UTF-8">
+                <title>Combined Features Test</title>
+            </head>
+            <body>
+                <div id="content">
+                    <h1>Combined Features</h1>
+                    <img src="/logo.png" alt="Logo"/>
+                </div>
+            </body>
+            </html>
+            """;
+
+        // Custom CSS to style the content
+        String css = """
+            #content {
+                border: 2px solid blue;
+                padding: 20px;
+            }
+            h1 {
+                color: green;
+            }
+            """;
+
+        // JavaScript to add a message
+        String js = """
+            const msg = document.createElement('p');
+            msg.textContent = 'Features combined successfully';
+            document.getElementById('content').appendChild(msg);
+            """;
+
+        // When - Generate PDF with base URL, CSS, and JavaScript
+        byte[] pdfBytes = pdfGenerator.fromHtml(html)
+                .withBaseUrl("http://localhost:8080/")
+                .withCustomCss(css)
+                .executeJavaScript(js)
+                .generate();
+
+        // Then - Verify PDF is valid
+        assertThat(pdfBytes).isNotEmpty();
+        assertValidPdf(pdfBytes);
+
+        // Verify all features worked
+        assertPdfContainsText(pdfBytes, "Combined Features");
+        assertPdfContainsText(pdfBytes, "Features combined successfully");
+
+        logger.info("Base URL combined with other features test passed");
+    }
+
     // ========== Helper Methods ==========
 
     /**

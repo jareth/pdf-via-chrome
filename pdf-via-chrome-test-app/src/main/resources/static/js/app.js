@@ -72,6 +72,7 @@ const templates = {
 
         <h2>Features</h2>
         <p>The styling includes gradients, shadows, rounded corners, and custom fonts.</p>
+        <img src="/images/minifig.png"/>
     </div>
     <div class="footer">
         <p>Generated with PDF via Chrome</p>
@@ -485,6 +486,262 @@ const templates = {
         </div>
     </div>
 </body>
+</html>`,
+    khmer: `<!DOCTYPE html>
+<html>
+<head>
+  <style type="text/css">
+
+    @page {
+    size: A4 landscape;
+      margin-top: 0.3cm;
+      margin-bottom: 0.2cm;
+      margin-left: 0.2cm;
+      margin-right: 0.2cm;
+    }
+    body{
+      background-image: url(/templates/images/background-landscape-new.jpg);
+      -webkit-background-size: cover;
+      -moz-background-size: cover;
+      -o-background-size: cover;
+      background-size: cover;
+      background-repeat: no-repeat;
+      font-size: 8pt;
+      font-weight: normal;
+      font-style: normal;
+      position: relative;
+      box-sizing: border-box;
+      padding: 14mm 20mm 10mm 20mm;
+      overflow: hidden !important;
+      font-family: "KhmerOSmuollight", "KhmerOS", "Noto Sans", sans-serif;
+      /*font-family: 'Noto Sans Khmer', sans-serif;*/
+    }
+    h1{ font-size: 11pt; }
+    .bold{ font-weight: bold; }
+    .strong{ font-weight: 600; }
+    .normal{ font-weight: normal; }
+    .light{ font-weight: 300; }
+    .thin{ font-weight: 100; }
+    .alignLeft{ text-align: left; }
+    .alignCenter{ text-align: center; }
+    .alignRight { text-align: right; }
+    .outerRow{ width: 257mm; float: left; }
+    .row{ width: 100%; float: left; z-index: 1000; }
+    .col{ width: 33%; float: left; }
+    .col.xs { width: 7mm;}
+    .ovf { overflow: visible; }
+    .marginBig{ margin-bottom: 8mm; }
+    .marginMedium{ margin-bottom: 4mm; }
+    .marginSmall{ margin-bottom: 2mm; }
+    .marginXS{ margin-bottom: 1mm; }
+    .clear{ clear: both; width: 100%; height: 1px; overflow: hidden; line-height: 0px; }
+    .stamp { position: relative;  }
+    .stampImg { margin-top:-3mm; margin-left:7mm; width:7cm; }
+    .disclaimer { position: absolute; bottom: 2mm;   }
+
+  .discCol{text-align: justify;
+    text-align-last: center;
+  word-break: break-word;}
+    .shiftTop{ margin-top: -25mm;}
+    .khmer2{ font-weight: 100; font-family: "Khmer OS Muol Light"; }
+    .details  { clear: both; margin-top: 3mm; margin-left: 1.6cm;  width:96%; }
+    .moclock { width: 7cm; float: left; margin-left: -0.5cm; text-align: center; margin-top: 0.5cm; }
+    .topRightCorner { margin-top: -0.7cm; text-align: center; width: 4.5cm; float: right; }
+    .capitalize { text-transform: uppercase; }
+    .row.marginSmall.m2 { margin-bottom: 3.5mm; }
+    .khmerDate { font-size: 12pt;  }
+  </style>
+</head>
+<body>
+<div class="header outerRow marginSmall">
+  <div class="col alignLeft">
+    <div class="moclock">
+        <div class="row">
+          <div style="height: 90px;"><br/></div>
+          <div class="row">
+            <h1 class="khmer2 marginXS">ក្រសួងពាណិជ្ជកម្ម</h1>
+          </div>
+          <div class="row marginMedium">
+            <span style="font-weight: bold;">MINISTRY OF COMMERCE</span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="row">
+            <span>លេខ(No) MOC-99514889 ពណ.ចបព</span>
+          </div>
+        </div>
+        <img src="/templates/images/twirl.svg" alt="twirl image here" style="width:2cm; height: 0.7cm; margin-left: 2.5cm; ">
+    </div>
+  </div>
+  <div class="col alignCenter" style="margin-top: 0.5cm;">
+    <div class="row">
+      <h1 class="khmer2" style="font-size: 24pt">វិញ្ញាបនបត្រ</h1>
+      <h1 class="normal">បញ្ជាក់ការចុះឈ្មោះក្នុងបញ្ជីពាណិជ្ជកម្ម</h1>
+    </div>
+    <div class="row">
+      <h1 class="strong">CERTIFICATE OF INCORPORATION</h1>
+    </div>
+  </div>
+  <div class="col alignRight topRightCorner">
+    <div class="row marginSmall">
+      <div style="height: 5mm;"><br/></div>
+      <div class="row">
+        <h1 class="khmer2" style="margin-bottom:0">ព្រះរាជាណាចក្រកម្ពុជា</h1>
+
+        <span>ជាតិ    សាសនា    ព្រះមហាក្សត្រ</span>
+      </div>
+    </div>
+    <div class="row">
+      <div class="row strong">
+        <span>KINGDOM OF CAMBODIA</span><br/>
+        <span>NATION RELIGION KING</span>
+      </div>
+    </div>
+    <img src="templates/images/twirl.svg" alt="twirl image here" style="width:2cm; height: 0.7cm; margin-left: 1.2cm; ">
+  </div>
+</div>
+<div class="details outerRow marginMedium">
+  <div class="row">
+    <div class="col">
+      <span class="">នាមករណ៍</span>
+    </div>
+    <div class="col xs">
+      <span>:</span>
+    </div>
+    <div class="ovf khmer2">
+      <span>KHMER75156236534136792567</span>
+    </div>
+
+  </div>
+  <div class="row marginSmall m2">
+    <div class="col">
+      <span>NAME</span>
+    </div>
+    <div class="col xs">
+      <span>:</span>
+    </div>
+    <div class="ovf">
+      <span>TEST29932716269345516575 CO., LTD.</span>
+    </div>
+
+  </div>
+  <div class="row marginSmall">
+    <div class="row">
+      <div class="col">
+        <span>ចុះបញ្ជីក្រោមលេខ</span>
+      </div>
+      <div class="col xs">
+        <span>:</span>
+      </div>
+      <div class="ovf">
+        <span>00000001</span>
+      </div>
+
+    </div>
+  </div>
+  <div class="row marginSmall m2">
+    <div class="row">
+      <div class="col">
+        <span>REGISTRATION NUMBER</span>
+      </div>
+      <div class="col xs">
+        <span>:</span>
+      </div>
+      <div class="ovf">
+        <span>00000001</span>
+      </div>
+
+    </div>
+  </div>
+  <div class="row marginSmall">
+    <div class="row">
+      <div class="col">
+        <span>កាលបរិច្ឆេទចុះក្នុងបញ្ជីពាណិជ្ជកម្ម</span>
+      </div>
+      <div class="col xs">
+        <span>:</span>
+      </div>
+      <div class="ovf">
+        <span>05 មករា 2026</span>
+      </div>
+    </div>
+
+  </div>
+  <div class="row marginSmall m2">
+    <div class="row">
+      <div class="col">
+        <span>INCORPORATION DATE</span>
+      </div>
+      <div class="col xs">
+        <span>:</span>
+      </div>
+      <div class="ovf">
+        <span>05  January 2026</span>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="row marginSmall">
+    <div class="row">
+      <div class="col">
+        <span>ត្រូវបានទទួលស្គាល់ថាជា:</span>
+      </div>
+      <div class="col xs">
+        <span>:</span>
+      </div>
+      <div class="ovf">
+        <span>ក្រុមហ៊ុនឯកជនទទួលខុសត្រូវមានកម្រិត</span>
+      </div>
+
+    </div>
+  </div>
+  <div class="row marginSmall m2">
+      <div class="row">
+        <div class="col">
+          <span>IS INCORPORATED AS:</span>
+        </div>
+        <div class="col xs">
+          <span>:</span>
+        </div>
+        <div class="ovf">
+          <span>Private Limited Company</span>
+        </div>
+      </div>
+  </div>
+</div>
+<div class="disclaimer">
+  <div class="col discCol" >
+    <div class="row marginSmall">
+      <span>ស្ថិតក្រោមបទបញ្ញត្តិនៃច្បាប់ស្ដីពីវិធានពាណិជ្ជកម្មនិងបញ្ជីពាណិជ្ជកម្ម ច្បាប់ស្ដីពីសហគ្រាសពាណិជ្ជកម្ម ក្រមរដ្ឋប្បវេណី និងក្រមព្រហ្មទណ្ឌ ដែលមានជាធរមាននៃព្រះរាជាណាចក្រកម្ពុជា។</span>
+    </div>
+    <div class="row">
+      <span>UNDER THE REGULATIONS OF COMMERCIAL RULES AND REGISTER LAW, COMMERCIAL ENTERPRISES LAW, CIVIL CODE AND PENAL CODE OF THE KINGDOM OF CAMBODIA</span>
+    </div>
+  </div>
+  <div class="col" >
+    <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAH0AAAB9AQAAAACn+1GIAAACNUlEQVR4Xt3Uu5WtIAAFUEiwBUmgNUmgBU0EEm0BEmhNE20BEng8mBuMeBsYw72W/M4BkH9/AfwpCIDeB0xyvxYFXyFmJ/fTbnyEPr6Dtnfet2m5T4O/gMHascQn8RWswwcgYJXfIBs+jtTn3X/W8YAAsP35Pnt5QC7DKujVyEXbfgdREaytQghaRV8hu0VfHE34Ek6+g/dm0NFwrIT+AomMMsEwJHG+Qlp8TAg6eiBet99B3sS5rWQmXBrxCnH3TmzMJmxzHbSDMHGZ3QqDSPPyCtnbDR7MDdZI/w76VCOamL8TvF8hjWDZD0T4CNY6aA/4onuSp6IXrlH2UI7HH9BxwHKdtgeWNyT0NU4r/gIAlJRKitaAWoceWEDSe71nG1sMPZgVjdjfx2JqHXpYAhF3CfxaYq1UB9mAZYOlc4OCLf0npJlFAxBgFw7tgDqgRpp1cCuA1r4DYreZwESvaWjreEKYx9KlTcRd4VaHDkBpA7T6TEuqleogJljusXcETKxO20Ea4v9mlkfjEK0OT8i7mtkFSm3B2Er3hESPeYYJlrvYrmkHgdMSNFkRO3WdtoOo5MY2mNA88RpUB2kdp3JE7Lbb0GLooCz9QkwbGe+2jicEqgifAREBtEp1UJ4cn4QvF5nF/RUCIDSUQ761tj8xPCBma89EFUu41bIHbdMqFE1gBsM3cIMjKw3s/PzyBLPOfMaOEFovUA/lreAlaSAcqUF1UJ7gA6rFyVJ9/Qq/v78N/wCFXmRxOQtL/wAAAABJRU5ErkJggg==" alt="Scan to show company details" title="Scan to show company details" style="margin-left: 1.7cm;"/>
+  </div>
+ <div class="col alignCenter shiftTop" >
+
+   <div class="row marginSmall">
+      <span class="capitalize khmerDate">ភ្នំពេញ, 05 មករា 2026</span>
+      <br/>
+      <span class="capitalize">PHNOM PENH, 05 January 2026</span>
+
+    </div>
+
+    <div class="row marginSmall">
+      <span class="khmer2">ជ. រដ្ឋមន្ត្រីក្រសួងពាណិជ្ជកម្ម</span><br/>
+      <span>F. MINISTER OF COMMERCE</span>
+    </div>
+    <div class="row stamp">
+      <img class="stampImg" src="/templates/images/stamp.png" alt="stamp image here" title="stamp image here" />
+    </div>
+  </div>
+</div>
+<div class="clear"></div>
+</body>
 </html>`
 };
 
@@ -563,11 +820,19 @@ async function generatePdf() {
     // Build PDF options
     const options = buildPdfOptions();
 
+    // Get base URL if provided
+    const baseUrl = document.getElementById('baseUrl').value.trim();
+
     // Prepare request
     const requestData = {
         content: htmlContent,
         options: options
     };
+
+    // Add base URL if provided
+    if (baseUrl) {
+        requestData.baseUrl = baseUrl;
+    }
 
     // Show loading state
     setLoading(true);
@@ -718,6 +983,7 @@ function clearForm() {
         document.getElementById('margins').value = '1cm';
         document.getElementById('scale').value = '1.0';
         document.getElementById('scaleValue').textContent = '1.0';
+        document.getElementById('baseUrl').value = '';
         document.getElementById('printBackground').checked = true;
         document.getElementById('displayHeaderFooter').checked = false;
         document.getElementById('headerTemplate').value = '';

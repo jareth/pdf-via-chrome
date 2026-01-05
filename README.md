@@ -19,6 +19,7 @@ Unlike browser automation frameworks like Selenium or Playwright, this library f
 - **Multiple Input Sources**: Generate PDFs from HTML strings, URLs, or DOM Documents (org.w3c.dom.Document)
 - **Extensive Customization**: Configure page size, margins, orientation, headers, footers, page ranges, and more
 - **CSS & JavaScript Injection**: Inject custom CSS and execute JavaScript before PDF generation
+- **Base URL Support**: Resolve relative URLs for images and resources when converting HTML to PDF
 - **Chrome DevTools Protocol**: Direct integration with Chrome via CDP for optimal performance
 - **Wait Strategies**: Built-in strategies for handling dynamic content:
   - Fixed duration timeout (TimeoutWait)
@@ -304,6 +305,62 @@ try (PdfGenerator generator = PdfGenerator.create().build()) {
     Files.write(Path.of("output.pdf"), pdf);
 }
 ```
+
+### Base URL for Relative Resources
+
+When generating PDFs from HTML content that contains relative URLs (images, stylesheets, scripts), you can specify a base URL to resolve those references:
+
+```java
+// HTML with relative image paths
+String html = """
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta charset="UTF-8">
+        <title>Document with Images</title>
+        <link rel="stylesheet" href="/styles/main.css">
+    </head>
+    <body>
+        <img src="/images/logo.png" alt="Company Logo"/>
+        <img src="/images/chart.png" alt="Sales Chart"/>
+        <p>This document contains images from our web server.</p>
+    </body>
+    </html>
+    """;
+
+// Generate PDF with base URL to resolve relative paths
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(html)
+        .withBaseUrl("http://localhost:8080/")
+        .generate();
+    Files.write(Path.of("document-with-images.pdf"), pdf);
+}
+
+// The base URL tells Chrome how to resolve relative URLs:
+// /images/logo.png -> http://localhost:8080/images/logo.png
+// /styles/main.css -> http://localhost:8080/styles/main.css
+```
+
+The base URL is injected into the HTML as a `<base href="...">` tag, which tells the browser how to resolve relative URLs. This is particularly useful when:
+
+- **Generating PDFs in web applications**: Use your application's base URL to load images and resources from your server
+- **Converting templates with assets**: Reference images, stylesheets, and fonts from a known location
+- **Testing with local servers**: Point to `http://localhost:PORT/` during development
+
+```java
+// Combine base URL with other features
+try (PdfGenerator generator = PdfGenerator.create().build()) {
+    byte[] pdf = generator.fromHtml(html)
+        .withBaseUrl("https://myapp.com/")
+        .withCustomCss(printStyles)
+        .executeJavaScript(prepareForPrint)
+        .withOptions(options)
+        .generate();
+    Files.write(Path.of("output.pdf"), pdf);
+}
+```
+
+**Note**: Base URL only works with HTML content (`fromHtml()` and `fromDocument()`). It has no effect when generating PDFs from URLs (`fromUrl()`), as URLs already have their own base context.
 
 ### Page Ranges
 

@@ -50,6 +50,7 @@
                                     <option value="invoice">Invoice</option>
                                     <option value="report">Report with Table</option>
                                     <option value="newsletter">Newsletter</option>
+                                    <option value="khmer">Khmer</option>
                                 </select>
                             </div>
 
@@ -153,6 +154,20 @@
                                 <input type="range" class="form-range" id="scale"
                                     min="0.1" max="2.0" step="0.1" value="1.0">
                                 <div class="form-text">Scale of rendering (0.1 to 2.0)</div>
+                            </div>
+
+                            <!-- Base URL -->
+                            <div class="mb-3">
+                                <label for="baseUrl" class="form-label">Base URL (Optional)</label>
+                                <div class="input-group">
+                                    <input type="text" id="baseUrl" class="form-control"
+                                        placeholder="e.g., http://localhost:8080/">
+                                    <span class="input-group-text">
+                                        <i class="bi bi-question-circle" data-bs-toggle="tooltip"
+                                            title="Base URL for resolving relative paths in HTML (images, stylesheets, etc.)"></i>
+                                    </span>
+                                </div>
+                                <div class="form-text">Base URL for resolving relative resource paths (images, CSS, etc.)</div>
                             </div>
 
                             <!-- Boolean Options -->
