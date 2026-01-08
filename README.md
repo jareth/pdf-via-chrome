@@ -68,8 +68,8 @@ mvn verify -Psecurity
 ```
 
 The build will produce:
-- `pdf-via-chrome/target/pdf-via-chrome-1.0.0-SNAPSHOT.jar` - Core library
-- `pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0-SNAPSHOT.jar` - Test application
+- `pdf-via-chrome/target/pdf-via-chrome-1.0.0.jar` - Core library
+- `pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0.jar` - Test application
 
 ## Module Structure
 
@@ -112,7 +112,7 @@ Add the dependency to your `pom.xml`:
 <dependency>
     <groupId>com.fostermoore</groupId>
     <artifactId>pdf-via-chrome</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.0</version>
 </dependency>
 ```
 

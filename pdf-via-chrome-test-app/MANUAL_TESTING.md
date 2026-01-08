@@ -10,7 +10,7 @@ mvn spring-boot:run -pl pdf-via-chrome-test-app
 
 # Or build and run the JAR
 mvn clean package -pl pdf-via-chrome-test-app
-java -jar pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0-SNAPSHOT.jar
+java -jar pdf-via-chrome-test-app/target/pdf-via-chrome-test-app-1.0.0.jar
 ```
 
 The application will start on `http://localhost:8080`
