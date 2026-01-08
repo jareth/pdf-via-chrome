@@ -407,8 +407,8 @@
                         <skipTestScope>false</skipTestScope>
 
                         <!-- NVD API settings (optional - improves performance) -->
-                         <nvdApiKey>b0b991c6-6867-49d7-812c-fa26770247e9</nvdApiKey>
-                         <nvdApiDelay>4000</nvdApiDelay>
+                        <!-- <nvdApiKey></nvdApiKey> -->
+                        <!-- <nvdApiDelay>4000</nvdApiDelay> -->
 
                         <!-- Performance settings -->
                         <assemblyAnalyzerEnabled>false</assemblyAnalyzerEnabled>
