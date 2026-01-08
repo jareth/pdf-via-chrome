@@ -63,10 +63,8 @@ mvn verify
 # Some test are skipped by default due to requiring a local chrome setup
 mvn verify -DCHROME_INTEGRATION_TESTS=true
 
-# Run security vulnerability scan
-mvn dependency-check:check
-
-# Security scan is automatically run during 'mvn verify'
+# Run security vulnerability scan (opt-in via profile)
+mvn verify -Psecurity
 ```
 
 The build will produce:
@@ -991,14 +989,11 @@ This project includes automated security vulnerability scanning using OWASP Depe
 
 ### Dependency Scanning
 
-The build automatically scans all dependencies for known security vulnerabilities:
+Run security vulnerability scanning on-demand using the `security` profile:
 
 ```bash
-# Run security scan manually
-mvn dependency-check:check
-
-# Security scan runs automatically during verify phase
-mvn verify
+# Run security scan with the security profile
+mvn verify -Psecurity
 ```
 
 **Configuration:**

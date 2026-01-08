@@ -23,6 +23,9 @@ mvn verify
 # Run URL integration tests (requires Chrome and internet)
 mvn verify -DCHROME_INTEGRATION_TESTS=true
 
+# Run OWASP dependency vulnerability scan
+mvn verify -Psecurity
+
 # Run performance benchmarks
 mvn test-compile exec:java -Dexec.classpathScope=test \
     -Dexec.mainClass=com.fostermoore.pdfviachrome.performance.BenchmarkRunner
@@ -203,4 +206,4 @@ generator.fromHtml(html)
 - **Logging levels**: Use TRACE for CDP protocol events, DEBUG for internal operations, INFO for major lifecycle events
 - **Docker environments**: Use `withNoSandbox(true)` and `withDisableDevShmUsage(true)` when running in containers
 - **Security**: URL validation is automatically applied in UrlToPdfConverter to prevent SSRF attacks; see SECURITY.md for comprehensive security guidance
-- **Vulnerability scanning**: Run `mvn verify` to execute OWASP Dependency Check; build fails on critical/high vulnerabilities (CVSS ≥ 7)
+- **Vulnerability scanning**: Run `mvn verify -Psecurity` to execute OWASP Dependency Check; build fails on critical/high vulnerabilities (CVSS ≥ 7)
