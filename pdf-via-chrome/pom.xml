@@ -87,6 +87,20 @@
             <scope>test</scope>
         </dependency>
 
+        <!-- PDF Accessibility Validation -->
+        <dependency>
+            <groupId>org.verapdf</groupId>
+            <artifactId>validation-model</artifactId>
+            <version>1.28.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.verapdf</groupId>
+            <artifactId>core</artifactId>
+            <version>1.28.1</version>
+            <scope>test</scope>
+        </dependency>
+
         <!-- Security: Override commons-lang3 version to fix CVE-2025-48924 -->
         <dependency>
             <groupId>org.apache.commons</groupId>

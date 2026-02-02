@@ -754,6 +754,31 @@ services:
           cpus: '2'
 ```
 
+### PDF Accessibility Validation
+
+The library includes comprehensive accessibility testing for generated PDFs:
+
+```java
+// Example: Validate PDF accessibility in your tests
+import com.fostermoore.pdfviachrome.accessibility.*;
+
+byte[] pdfBytes = generator.fromHtml(html).generate();
+AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
+
+// Check compliance
+assertTrue(report.isCompliant());
+assertTrue(report.isTagged());
+assertTrue(report.hasMetadata());
+assertTrue(report.hasStructureTree());
+assertTrue(report.readingOrderIssues().isEmpty());
+```
+
+**Validation coverage:**
+- **Tier 1 (veraPDF)**: PDF/UA and PDF/A standard compliance
+- **Tier 2 (PDFBox)**: WCAG 2.1 features - tagged structure, metadata (title/language), structure tree, logical reading order
+
+See `PdfAccessibilityIT` for complete examples of accessibility validation tests.
+
 ### Testcontainers Support
 
 For integration testing with Docker:

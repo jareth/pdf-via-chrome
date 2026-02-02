@@ -116,8 +116,15 @@ The project uses the builder pattern for configuration objects:
 
 **Key test suites**:
 - `AdvancedFeaturesIT` - 14 tests for CSS, JS, headers/footers, page ranges
+- `PdfAccessibilityIT` - 7 tests for PDF accessibility validation (PDF/UA, PDF/A, WCAG 2.1 compliance)
 - `UrlToPdfConverterIT` - 13 tests (disabled by default, enable with `-DCHROME_INTEGRATION_TESTS=true`)
 - 33 security tests in `UrlValidatorTest` for SSRF protection
+
+**Accessibility testing** (in `com.fostermoore.pdfviachrome.accessibility` package):
+- Uses veraPDF for PDF/UA and PDF/A standard validation (Tier 1)
+- Uses PDFBox for WCAG 2.1 compliance checks: tagged PDFs, metadata, structure tree, reading order (Tier 2)
+- `AccessibilityValidator` - utility class combining both validation tiers
+- `AccessibilityReport` - comprehensive report record with compliance status
 
 **Performance benchmarks**: See `docs/PERFORMANCE.md` for full details
 - Run benchmarks: `mvn test-compile exec:java -Dexec.classpathScope=test -Dexec.mainClass=com.fostermoore.pdfviachrome.performance.BenchmarkRunner`

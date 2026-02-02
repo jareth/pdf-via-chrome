@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Accessibility Test Document</title>
+    <meta name="description" content="Test document for PDF accessibility validation">
+</head>
+<body>
+    <header>
+        <h1>Accessibility Test Document</h1>
+        <nav>
+            <ul>
+                <li><a href="#section1">Section 1</a></li>
+                <li><a href="#section2">Section 2</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <article id="section1">
+            <h2>Section 1: Semantic HTML</h2>
+            <p>This document uses semantic HTML5 elements to ensure proper structure and accessibility.</p>
+            <ul>
+                <li>Proper heading hierarchy (h1, h2, h3)</li>
+                <li>Semantic tags (header, nav, main, article, footer)</li>
+                <li>Alt text for images</li>
+                <li>Language attribute on html tag</li>
+            </ul>
+        </article>
+
+        <article id="section2">
+            <h2>Section 2: Document Structure</h2>
+            <h3>Subsection 2.1</h3>
+            <p>Proper heading hierarchy ensures logical document structure for screen readers.</p>
+
+            <h3>Subsection 2.2</h3>
+            <p>All images should have descriptive alt text:</p>
+            <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Crect width='100' height='100' fill='%23cccccc'/%3E%3C/svg%3E"
+                 alt="Gray placeholder rectangle representing a test image">
+        </article>
+    </main>
+
+    <footer>
+        <p>Footer content - Document created for accessibility testing</p>
+    </footer>
+</body>
+</html>
