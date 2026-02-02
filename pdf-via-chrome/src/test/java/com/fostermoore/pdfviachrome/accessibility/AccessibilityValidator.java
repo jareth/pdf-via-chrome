@@ -22,7 +22,6 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Utility class for validating PDF accessibility compliance.
@@ -39,25 +38,13 @@ public class AccessibilityValidator {
 
     private static final Logger logger = LoggerFactory.getLogger(AccessibilityValidator.class);
 
-    // Flag to track initialization status
-    private static final boolean VERAPDF_INITIALIZED;
-
-    // Initialize veraPDF once during class loading (thread-safe via JVM guarantee)
     static {
-        boolean initialized = false;
         try {
-            logger.info("Initializing veraPDF VeraGreenfieldFoundryProvider...");
             VeraGreenfieldFoundryProvider.initialise();
-            initialized = true;
-            logger.info("veraPDF initialization successful");
+            logger.info("veraPDF initialized");
         } catch (Exception e) {
-            logger.error("Failed to initialize veraPDF: {}", e.getMessage(), e);
-            throw new ExceptionInInitializerError(
-                "veraPDF initialization failed. Accessibility validation is not available. " +
-                "Check veraPDF dependencies and classpath. Error: " + e.getMessage()
-            );
+            throw new ExceptionInInitializerError("veraPDF initialization failed: " + e.getMessage());
         }
-        VERAPDF_INITIALIZED = initialized;
     }
 
     // Private constructor to prevent instantiation
@@ -290,29 +277,21 @@ public class AccessibilityValidator {
      * @param elementTypes List to collect element types
      */
     private static void traverseStructureTree(Object element, List<String> elementTypes) {
-        try {
-            if (element instanceof PDStructureTreeRoot) {
-                PDStructureTreeRoot root = (PDStructureTreeRoot) element;
-                for (Object kid : root.getKids()) {
+        if (element instanceof PDStructureTreeRoot root) {
+            for (Object kid : root.getKids()) {
+                traverseStructureTree(kid, elementTypes);
+            }
+        } else if (element instanceof PDStructureElement structElement) {
+            String type = structElement.getStructureType();
+            if (type != null) {
+                elementTypes.add(type);
+            }
+            List<?> kids = structElement.getKids();
+            if (kids != null) {
+                for (Object kid : kids) {
                     traverseStructureTree(kid, elementTypes);
                 }
-            } else if (element instanceof PDStructureElement) {
-                PDStructureElement structElement = (PDStructureElement) element;
-                String type = structElement.getStructureType();
-                if (type != null) {
-                    elementTypes.add(type);
-                }
-
-                // Traverse children
-                List<?> kids = structElement.getKids();
-                if (kids != null) {
-                    for (Object kid : kids) {
-                        traverseStructureTree(kid, elementTypes);
-                    }
-                }
             }
-        } catch (Exception e) {
-            logger.warn("Error traversing structure element", e);
         }
     }
 

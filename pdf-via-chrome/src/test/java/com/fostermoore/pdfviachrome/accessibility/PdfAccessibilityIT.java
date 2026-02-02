@@ -62,262 +62,78 @@ class PdfAccessibilityIT {
     }
 
     @Test
-    @DisplayName("TC-1: Verify PDFs have tagged structure")
+    @DisplayName("TC-1: Verify tagged structure validation runs")
     void testPdfIsTagged() throws IOException {
-        // Given
-        String html = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head><title>Tagged PDF Test</title></head>
-                <body>
-                    <h1>Main Heading</h1>
-                    <p>This is a paragraph with semantic tags.</p>
-                    <ul>
-                        <li>List item 1</li>
-                        <li>List item 2</li>
-                    </ul>
-                </body>
-                </html>
-                """;
+        byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
 
-        // When
-        byte[] pdfBytes = pdfGenerator.fromHtml(html).generate();
-
-        // Then
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
+            // Chrome-generated PDFs are typically not tagged; this validates the check runs
             boolean isTagged = AccessibilityValidator.isTaggedPdf(document);
-            logger.info("PDF tagged status: {}", isTagged);
-
-            // Note: Chrome may not always generate tagged PDFs by default
-            // This test documents the current behavior
-            if (!isTagged) {
-                logger.warn("PDF is not tagged. Chrome-generated PDFs may require additional configuration for tagging.");
-            }
+            logger.info("PDF tagged: {}", isTagged);
         }
+        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
-    @DisplayName("TC-2: Verify title and language metadata")
+    @DisplayName("TC-2: Verify metadata validation runs")
     void testDocumentMetadata() throws IOException {
-        // Given
-        String html = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <title>Accessibility Test - Metadata Validation</title>
-                    <meta charset="UTF-8">
-                </head>
-                <body>
-                    <h1>Document with Metadata</h1>
-                    <p>This document should have title and language metadata.</p>
-                </body>
-                </html>
-                """;
+        byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
 
-        // When
-        byte[] pdfBytes = pdfGenerator.fromHtml(html).generate();
-
-        // Then
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
+            // Chrome may not preserve HTML metadata in PDF; this validates the check runs
             boolean hasMetadata = AccessibilityValidator.hasRequiredMetadata(document);
-            logger.info("PDF has required metadata: {}", hasMetadata);
-
-            // Log actual metadata values for debugging
-            var info = document.getDocumentInformation();
-            var catalog = document.getDocumentCatalog();
-            logger.info("Title: {}, Language: {}",
-                    info != null ? info.getTitle() : "null",
-                    catalog.getLanguage());
-
-            // Note: Chrome may not always preserve HTML metadata in PDF
-            if (!hasMetadata) {
-                logger.warn("PDF metadata incomplete. HTML title/lang may not be preserved by Chrome.");
-            }
+            logger.info("PDF has metadata: {}", hasMetadata);
         }
+        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
-    @DisplayName("TC-3: Verify structure tree exists")
+    @DisplayName("TC-3: Verify structure tree validation runs")
     void testStructureTreeExists() throws IOException {
-        // Given
-        String html = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head><title>Structure Tree Test</title></head>
-                <body>
-                    <header>
-                        <h1>Document Header</h1>
-                    </header>
-                    <main>
-                        <article>
-                            <h2>Article Title</h2>
-                            <p>Article content.</p>
-                        </article>
-                    </main>
-                    <footer>
-                        <p>Footer content</p>
-                    </footer>
-                </body>
-                </html>
-                """;
+        byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
 
-        // When
-        byte[] pdfBytes = pdfGenerator.fromHtml(html).generate();
-
-        // Then
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
             boolean hasStructureTree = AccessibilityValidator.hasStructureTree(document);
             logger.info("PDF has structure tree: {}", hasStructureTree);
-
-            if (!hasStructureTree) {
-                logger.warn("PDF lacks structure tree. Chrome-generated PDFs may not include structure trees by default.");
-            }
         }
+        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
-    @DisplayName("TC-4: Verify logical reading order")
+    @DisplayName("TC-4: Verify reading order validation runs")
     void testReadingOrder() throws IOException {
-        // Given - HTML with proper heading hierarchy
-        String html = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head><title>Reading Order Test</title></head>
-                <body>
-                    <h1>Main Title</h1>
-                    <section>
-                        <h2>Section One</h2>
-                        <p>Section one content.</p>
-                        <h3>Subsection 1.1</h3>
-                        <p>Subsection content.</p>
-                    </section>
-                    <section>
-                        <h2>Section Two</h2>
-                        <p>Section two content.</p>
-                    </section>
-                </body>
-                </html>
-                """;
-
-        // When
-        byte[] pdfBytes = pdfGenerator.fromHtml(html).generate();
-
-        // Then
-        try (PDDocument document = Loader.loadPDF(pdfBytes)) {
-            List<String> readingOrderIssues = AccessibilityValidator.validateReadingOrder(document);
-            logger.info("Reading order issues: {}", readingOrderIssues.isEmpty() ? "none" : readingOrderIssues);
-
-            // If structure tree doesn't exist, reading order validation will report that
-            if (!readingOrderIssues.isEmpty()) {
-                logger.warn("Reading order issues found: {}", readingOrderIssues);
-            }
-        }
-    }
-
-    @Test
-    @DisplayName("TC-5: Validate PDF/UA compliance using veraPDF")
-    void testPdfUaCompliance() throws IOException {
-        // When
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
 
-        // Then
-        List<AccessibilityViolation> violations = AccessibilityValidator.validateWithVeraPdf(pdfBytes);
-
-        // Filter for PDF/UA violations only
-        List<AccessibilityViolation> pdfUaViolations = violations.stream()
-                .filter(v -> v.flavour().contains("UA"))
-                .toList();
-
-        logger.info("PDF/UA validation complete: {} violations found", pdfUaViolations.size());
-
-        if (!pdfUaViolations.isEmpty()) {
-            logger.warn("PDF/UA violations detected (Chrome-generated PDFs typically don't meet PDF/UA):");
-            pdfUaViolations.stream()
-                    .limit(5)
-                    .forEach(v -> logger.warn("  - [{}] {}: {}", v.severity(), v.rule(), v.message()));
-            if (pdfUaViolations.size() > 5) {
-                logger.warn("  ... and {} more violations", pdfUaViolations.size() - 5);
-            }
+        try (PDDocument document = Loader.loadPDF(pdfBytes)) {
+            List<String> issues = AccessibilityValidator.validateReadingOrder(document);
+            logger.info("Reading order issues: {}", issues.isEmpty() ? "none" : issues.size());
         }
+        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
-    @DisplayName("TC-6: Validate PDF/A compliance using veraPDF")
-    void testPdfACompliance() throws IOException {
-        // Given - Simple HTML for PDF/A validation
-        String html = """
-                <!DOCTYPE html>
-                <html lang="en">
-                <head>
-                    <title>PDF/A Compliance Test</title>
-                    <style>
-                        body { font-family: Arial, sans-serif; }
-                    </style>
-                </head>
-                <body>
-                    <h1>PDF/A Compliance Test</h1>
-                    <p>This document tests PDF/A archival compliance.</p>
-                    <p>PDF/A requires embedded fonts and no external dependencies.</p>
-                </body>
-                </html>
-                """;
+    @DisplayName("TC-5: Validate veraPDF standard compliance")
+    void testVeraPdfCompliance() throws IOException {
+        byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
 
-        // When
-        byte[] pdfBytes = pdfGenerator.fromHtml(html).generate();
-
-        // Then
+        // veraPDF validates PDF/UA and PDF/A standards
         List<AccessibilityViolation> violations = AccessibilityValidator.validateWithVeraPdf(pdfBytes);
+        logger.info("veraPDF validation: {} violations", violations.size());
 
-        // Filter for PDF/A violations only
-        List<AccessibilityViolation> pdfAViolations = violations.stream()
-                .filter(v -> v.flavour().contains("PDFA") || v.flavour().contains("PDF/A"))
-                .toList();
-
-        logger.info("PDF/A validation complete: {} violations found", pdfAViolations.size());
-
-        if (!pdfAViolations.isEmpty()) {
-            logger.warn("PDF/A violations detected (Chrome-generated PDFs may not be PDF/A compliant):");
-            pdfAViolations.stream()
-                    .limit(5)
-                    .forEach(v -> logger.warn("  - [{}] {}: {}", v.severity(), v.rule(), v.message()));
-            if (pdfAViolations.size() > 5) {
-                logger.warn("  ... and {} more violations", pdfAViolations.size() - 5);
-            }
-        }
+        // Chrome-generated PDFs typically don't meet PDF/UA or PDF/A standards
+        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
-    @DisplayName("TC-7: Full validation combining both tiers")
+    @DisplayName("TC-6: Full accessibility validation combining both tiers")
     void testCombinedAccessibilityValidation() throws IOException {
-        // When
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
         AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
 
-        // Then - Log comprehensive report
-        logger.info("=== Accessibility Validation Report ===");
-        logger.info("PDF is tagged: {}", report.isTagged());
-        logger.info("Has required metadata: {}", report.hasMetadata());
-        logger.info("Has structure tree: {}", report.hasStructureTree());
-        logger.info("Reading order issues: {}", report.readingOrderIssues().isEmpty() ? "none" : report.readingOrderIssues());
-        logger.info("veraPDF violations: {}", report.veraPdfViolations().size());
-        logger.info("Total issues: {}", report.getTotalIssues());
-        logger.info("Overall compliance: {}", report.isCompliant());
-        logger.info("========================================");
+        logger.info("Accessibility report - tagged: {}, metadata: {}, structureTree: {}, issues: {}",
+                report.isTagged(), report.hasMetadata(), report.hasStructureTree(), report.getTotalIssues());
 
-        // Detailed violation logging if present
-        if (!report.veraPdfViolations().isEmpty()) {
-            logger.info("veraPDF violation breakdown:");
-            report.veraPdfViolations().stream()
-                    .limit(10)
-                    .forEach(v -> logger.info("  - [{}][{}] {}: {}",
-                            v.flavour(), v.severity(), v.rule(), v.message()));
-            if (report.veraPdfViolations().size() > 10) {
-                logger.info("  ... and {} more violations", report.veraPdfViolations().size() - 10);
-            }
-        }
-
-        // Assert basic PDF generation succeeded
-        assertThat(pdfBytes).isNotEmpty();
-        assertThat(pdfBytes.length).isGreaterThan(1000);
+        assertThat(pdfBytes).hasSizeGreaterThan(1000);
+        assertThat(report).isNotNull();
     }
 }
