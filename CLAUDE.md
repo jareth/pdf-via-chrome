@@ -116,7 +116,7 @@ The project uses the builder pattern for configuration objects:
 
 **Key test suites**:
 - `AdvancedFeaturesIT` - 14 tests for CSS, JS, headers/footers, page ranges
-- `PdfAccessibilityIT` - 7 tests for PDF accessibility validation (PDF/UA, PDF/A, WCAG 2.1 compliance)
+- `PdfAccessibilityIT` - 6 tests for PDF accessibility validation (PDF/UA, PDF/A, WCAG 2.1 compliance)
 - `UrlToPdfConverterIT` - 13 tests (disabled by default, enable with `-DCHROME_INTEGRATION_TESTS=true`)
 - 33 security tests in `UrlValidatorTest` for SSRF protection
 

@@ -65,75 +65,88 @@ class PdfAccessibilityIT {
     @DisplayName("TC-1: Verify tagged structure validation runs")
     void testPdfIsTagged() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
+        assertThat(pdfBytes).isNotEmpty();
 
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
-            // Chrome-generated PDFs are typically not tagged; this validates the check runs
             boolean isTagged = AccessibilityValidator.isTaggedPdf(document);
             logger.info("PDF tagged: {}", isTagged);
+            // Chrome produces tagged PDFs from well-structured HTML
+            assertThat(isTagged).isTrue();
         }
-        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
     @DisplayName("TC-2: Verify metadata validation runs")
     void testDocumentMetadata() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
+        assertThat(pdfBytes).isNotEmpty();
 
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
-            // Chrome may not preserve HTML metadata in PDF; this validates the check runs
             boolean hasMetadata = AccessibilityValidator.hasRequiredMetadata(document);
             logger.info("PDF has metadata: {}", hasMetadata);
+            // Chrome preserves title and language from the test HTML
+            assertThat(hasMetadata).isTrue();
         }
-        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
     @DisplayName("TC-3: Verify structure tree validation runs")
     void testStructureTreeExists() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
+        assertThat(pdfBytes).isNotEmpty();
 
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
             boolean hasStructureTree = AccessibilityValidator.hasStructureTree(document);
             logger.info("PDF has structure tree: {}", hasStructureTree);
+            // Chrome generates a structure tree from well-structured HTML
+            assertThat(hasStructureTree).isTrue();
         }
-        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
     @DisplayName("TC-4: Verify reading order validation runs")
     void testReadingOrder() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
+        assertThat(pdfBytes).isNotEmpty();
 
         try (PDDocument document = Loader.loadPDF(pdfBytes)) {
             List<String> issues = AccessibilityValidator.validateReadingOrder(document);
             logger.info("Reading order issues: {}", issues.isEmpty() ? "none" : issues.size());
+            // Well-structured test HTML should produce valid reading order
+            assertThat(issues).isEmpty();
         }
-        assertThat(pdfBytes).isNotEmpty();
     }
 
     @Test
     @DisplayName("TC-5: Validate veraPDF standard compliance")
     void testVeraPdfCompliance() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
+        assertThat(pdfBytes).isNotEmpty();
 
         // veraPDF validates PDF/UA and PDF/A standards
         List<AccessibilityViolation> violations = AccessibilityValidator.validateWithVeraPdf(pdfBytes);
         logger.info("veraPDF validation: {} violations", violations.size());
 
-        // Chrome-generated PDFs typically don't meet PDF/UA or PDF/A standards
-        assertThat(pdfBytes).isNotEmpty();
+        // Chrome PDFs are not marked as PDF/A or PDF/UA, so veraPDF skips standard validation
+        assertThat(violations).isEmpty();
     }
 
     @Test
     @DisplayName("TC-6: Full accessibility validation combining both tiers")
     void testCombinedAccessibilityValidation() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
+        assertThat(pdfBytes).hasSizeGreaterThan(1000);
+
         AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
 
         logger.info("Accessibility report - tagged: {}, metadata: {}, structureTree: {}, issues: {}",
                 report.isTagged(), report.hasMetadata(), report.hasStructureTree(), report.getTotalIssues());
 
-        assertThat(pdfBytes).hasSizeGreaterThan(1000);
         assertThat(report).isNotNull();
+        // Chrome produces accessible PDFs from well-structured HTML with proper metadata
+        assertThat(report.isTagged()).isTrue();
+        assertThat(report.hasMetadata()).isTrue();
+        assertThat(report.hasStructureTree()).isTrue();
+        assertThat(report.isCompliant()).isTrue();
     }
 }

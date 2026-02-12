@@ -7,7 +7,7 @@ package com.fostermoore.pdfviachrome.accessibility;
  * @param flavour PDF standard flavour (e.g., "PDF/UA-1", "PDF/A-2B")
  * @param rule Rule identifier that was violated (e.g., "6.1-1: Document structure")
  * @param message Human-readable description of the violation
- * @param severity Severity level ("error", "warning")
+ * @param severity Severity level derived from {@code TestAssertion.Status} (e.g., "failed", "error")
  */
 public record AccessibilityViolation(
     String flavour,

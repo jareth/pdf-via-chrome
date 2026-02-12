@@ -767,12 +767,14 @@ import com.fostermoore.pdfviachrome.accessibility.*;
 byte[] pdfBytes = generator.fromHtml(html).generate();
 AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
 
-// Check compliance
-assertTrue(report.isCompliant());
+// Chrome produces accessible PDFs from well-structured HTML with proper metadata.
+// Inspect the report to verify accessibility characteristics:
+assertNotNull(report);
 assertTrue(report.isTagged());
 assertTrue(report.hasMetadata());
 assertTrue(report.hasStructureTree());
 assertTrue(report.readingOrderIssues().isEmpty());
+assertTrue(report.isCompliant());
 ```
 
 **Validation coverage:**

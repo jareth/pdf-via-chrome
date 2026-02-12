@@ -22,6 +22,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Utility class for validating PDF accessibility compliance.
@@ -43,7 +44,7 @@ public class AccessibilityValidator {
             VeraGreenfieldFoundryProvider.initialise();
             logger.info("veraPDF initialized");
         } catch (Exception e) {
-            throw new ExceptionInInitializerError("veraPDF initialization failed: " + e.getMessage());
+            throw new ExceptionInInitializerError(e);
         }
     }
 
@@ -124,7 +125,7 @@ public class AccessibilityValidator {
                                 flavour.toString(),
                                 assertion.getRuleId().getClause(),
                                 assertion.getMessage(),
-                                assertion.getStatus().toString().toLowerCase()
+                                assertion.getStatus().toString().toLowerCase(Locale.ROOT)
                         ));
                     }
                 }
@@ -137,6 +138,12 @@ public class AccessibilityValidator {
                     "Add verapdf-validation dependency for full profile support.", flavour);
         } catch (Exception e) {
             logger.warn("Error validating against {}: {}", flavour, e.getMessage());
+            violations.add(new AccessibilityViolation(
+                    flavour.toString(),
+                    "validation-error",
+                    "Validation failed: " + e.getMessage(),
+                    "error"
+            ));
         }
 
         return violations;
