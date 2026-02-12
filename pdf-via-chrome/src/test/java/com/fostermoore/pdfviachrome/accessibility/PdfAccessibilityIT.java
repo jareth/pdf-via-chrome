@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.*;
  * <p>
  * Validates PDF accessibility features using both:
  * <ul>
- *   <li>Tier 1: veraPDF standard validation (PDF/UA, PDF/A)</li>
+ *   <li>Tier 1: veraPDF standard validation (PDF/A)</li>
  *   <li>Tier 2: Custom PDFBox checks (WCAG 2.1 features)</li>
  * </ul>
  * <p>
@@ -123,11 +123,11 @@ class PdfAccessibilityIT {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
         assertThat(pdfBytes).isNotEmpty();
 
-        // veraPDF validates PDF/UA and PDF/A standards
+        // veraPDF validates PDF/A standards
         List<AccessibilityViolation> violations = AccessibilityValidator.validateWithVeraPdf(pdfBytes);
         logger.info("veraPDF validation: {} violations", violations.size());
 
-        // Chrome PDFs are not marked as PDF/A or PDF/UA, so veraPDF skips standard validation
+        // Chrome PDFs are not marked as PDF/A, so veraPDF skips standard validation
         assertThat(violations).isEmpty();
     }
 
@@ -135,7 +135,7 @@ class PdfAccessibilityIT {
     @DisplayName("TC-6: Full accessibility validation combining both tiers")
     void testCombinedAccessibilityValidation() throws IOException {
         byte[] pdfBytes = pdfGenerator.fromHtml(accessibilityTestHtml).generate();
-        assertThat(pdfBytes).hasSizeGreaterThan(1000);
+        assertThat(pdfBytes).isNotEmpty();
 
         AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
 

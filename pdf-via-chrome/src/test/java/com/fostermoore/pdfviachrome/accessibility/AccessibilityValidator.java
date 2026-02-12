@@ -29,7 +29,7 @@ import java.util.Locale;
  * <p>
  * Implements two-tier validation approach:
  * <ul>
- *   <li>Tier 1: veraPDF standard validation for PDF/UA and PDF/A compliance</li>
+ *   <li>Tier 1: veraPDF standard validation for PDF/A compliance</li>
  *   <li>Tier 2: Custom PDFBox checks for WCAG 2.1 compliance features</li>
  * </ul>
  * <p>
@@ -54,7 +54,7 @@ public class AccessibilityValidator {
     }
 
     /**
-     * Validates PDF using veraPDF for PDF/UA and PDF/A compliance (Tier 1).
+     * Validates PDF using veraPDF for PDF/A compliance (Tier 1).
      * <p>
      * This method attempts to validate against detected PDF flavours. If validation
      * profiles are not available (common with the basic veraPDF dependencies),
@@ -71,7 +71,7 @@ public class AccessibilityValidator {
              VeraPDFFoundry foundry = Foundries.defaultInstance();
              PDFAParser parser = foundry.createParser(inputStream)) {
 
-            // Detect PDF/A and PDF/UA flavours
+            // Detect PDF/A flavour
             PDFAFlavour detectedFlavour = parser.getFlavour();
             logger.debug("Detected PDF flavour: {}", detectedFlavour);
 
@@ -80,8 +80,8 @@ public class AccessibilityValidator {
                 violations.addAll(validateAgainstFlavour(foundry, parser, detectedFlavour));
             } else {
                 // For regular PDFs (no specific flavour), try available profiles
-                logger.info("No specific PDF/A or PDF/UA flavour detected. Skipping standard validation.");
-                logger.info("Chrome-generated PDFs are typically not marked as PDF/A or PDF/UA.");
+                logger.info("No specific PDF/A flavour detected. Skipping standard validation.");
+                logger.info("Chrome-generated PDFs are typically not marked as PDF/A.");
             }
 
         } catch (Exception e) {

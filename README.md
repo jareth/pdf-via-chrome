@@ -761,7 +761,7 @@ The library includes test utilities for validating accessibility of generated PD
 ```java
 // Example: Validate PDF accessibility in your integration tests
 // Note: AccessibilityValidator is a test-scoped utility (not included in the library artifact).
-// Copy or adapt it for your own test suite, or add the test-jar as a test dependency.
+// Copy or adapt it for your own test suite.
 import com.fostermoore.pdfviachrome.accessibility.*;
 
 byte[] pdfBytes = generator.fromHtml(html).generate();
@@ -778,7 +778,7 @@ assertTrue(report.isCompliant());
 ```
 
 **Validation coverage:**
-- **Tier 1 (veraPDF)**: PDF/UA and PDF/A standard compliance
+- **Tier 1 (veraPDF)**: PDF/A standard compliance
 - **Tier 2 (PDFBox)**: WCAG 2.1 features - tagged structure, metadata (title/language), structure tree, logical reading order
 
 See `PdfAccessibilityIT` for complete examples of accessibility validation tests.
