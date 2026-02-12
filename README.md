@@ -756,10 +756,12 @@ services:
 
 ### PDF Accessibility Validation
 
-The library includes comprehensive accessibility testing for generated PDFs:
+The library includes test utilities for validating accessibility of generated PDFs. These classes are in the test scope (`src/test/java`) and are intended for use in your own integration tests — they are not part of the published library API.
 
 ```java
-// Example: Validate PDF accessibility in your tests
+// Example: Validate PDF accessibility in your integration tests
+// Note: AccessibilityValidator is a test-scoped utility (not included in the library artifact).
+// Copy or adapt it for your own test suite, or add the test-jar as a test dependency.
 import com.fostermoore.pdfviachrome.accessibility.*;
 
 byte[] pdfBytes = generator.fromHtml(html).generate();

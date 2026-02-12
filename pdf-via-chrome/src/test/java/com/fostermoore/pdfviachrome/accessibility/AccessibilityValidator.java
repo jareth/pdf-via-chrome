@@ -247,8 +247,8 @@ public class AccessibilityValidator {
                     }
 
                     // Headings should not skip levels (e.g., H1 to H3)
-                    if (level > lastHeadingLevel + 1) {
-                        issues.add("Heading level skipped: " + elementTypes.get(i - 1) +
+                    if (lastHeadingLevel > 0 && level > lastHeadingLevel + 1) {
+                        issues.add("Heading level skipped: H" + lastHeadingLevel +
                                 " followed by " + type);
                     }
 
