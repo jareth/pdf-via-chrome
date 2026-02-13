@@ -754,6 +754,37 @@ services:
           cpus: '2'
 ```
 
+### PDF Accessibility Validation
+
+The library includes test utilities for validating accessibility of generated PDFs. These classes are in the test scope (`src/test/java`) and are intended for use in your own integration tests — they are not part of the published library API.
+
+```java
+// Example: Validate PDF accessibility in your integration tests
+// Note: AccessibilityValidator is a test-scoped utility (not included in the library artifact).
+// Copy or adapt it for your own test suite.
+import com.fostermoore.pdfviachrome.accessibility.*;
+
+byte[] pdfBytes = generator.fromHtml(html).generate();
+AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
+
+// Inspect the report for accessibility characteristics:
+System.out.println("Tagged: " + report.isTagged());
+System.out.println("Has metadata: " + report.hasMetadata());
+System.out.println("Has structure tree: " + report.hasStructureTree());
+System.out.println("Reading order issues: " + report.readingOrderIssues());
+System.out.println("Tier 1 (PDF/A) ran: " + report.tier1Ran());
+System.out.println("Total issues: " + report.getTotalIssues());
+
+// Chrome generates tagged PDFs from well-structured HTML with title and lang attributes.
+// PDF/A validation (Tier 1) is skipped for Chrome PDFs since they are not marked as PDF/A.
+```
+
+**Validation coverage:**
+- **Tier 1 (veraPDF)**: PDF/A standard compliance (skipped when PDF is not marked as PDF/A)
+- **Tier 2 (PDFBox)**: WCAG 2.1 features - tagged structure, metadata (title/language), structure tree, logical reading order
+
+See `PdfAccessibilityIT` for complete examples of accessibility validation tests.
+
 ### Testcontainers Support
 
 For integration testing with Docker:
