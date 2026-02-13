@@ -767,18 +767,20 @@ import com.fostermoore.pdfviachrome.accessibility.*;
 byte[] pdfBytes = generator.fromHtml(html).generate();
 AccessibilityReport report = AccessibilityValidator.validateAll(pdfBytes);
 
-// Chrome produces accessible PDFs from well-structured HTML with proper metadata.
-// Inspect the report to verify accessibility characteristics:
-assertNotNull(report);
-assertTrue(report.isTagged());
-assertTrue(report.hasMetadata());
-assertTrue(report.hasStructureTree());
-assertTrue(report.readingOrderIssues().isEmpty());
-assertTrue(report.isCompliant());
+// Inspect the report for accessibility characteristics:
+System.out.println("Tagged: " + report.isTagged());
+System.out.println("Has metadata: " + report.hasMetadata());
+System.out.println("Has structure tree: " + report.hasStructureTree());
+System.out.println("Reading order issues: " + report.readingOrderIssues());
+System.out.println("Tier 1 (PDF/A) ran: " + report.tier1Ran());
+System.out.println("Total issues: " + report.getTotalIssues());
+
+// Chrome generates tagged PDFs from well-structured HTML with title and lang attributes.
+// PDF/A validation (Tier 1) is skipped for Chrome PDFs since they are not marked as PDF/A.
 ```
 
 **Validation coverage:**
-- **Tier 1 (veraPDF)**: PDF/A standard compliance
+- **Tier 1 (veraPDF)**: PDF/A standard compliance (skipped when PDF is not marked as PDF/A)
 - **Tier 2 (PDFBox)**: WCAG 2.1 features - tagged structure, metadata (title/language), structure tree, logical reading order
 
 See `PdfAccessibilityIT` for complete examples of accessibility validation tests.

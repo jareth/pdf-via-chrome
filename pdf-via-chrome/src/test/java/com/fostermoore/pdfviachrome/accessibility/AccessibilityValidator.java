@@ -56,15 +56,15 @@ public class AccessibilityValidator {
     /**
      * Validates PDF using veraPDF for PDF/A compliance (Tier 1).
      * <p>
-     * This method attempts to validate against detected PDF flavours. If validation
-     * profiles are not available (common with the basic veraPDF dependencies),
-     * it gracefully handles the error and returns an empty list.
+     * This method attempts to validate against detected PDF/A flavours. If no
+     * PDF/A flavour is detected (typical for Chrome-generated PDFs), validation
+     * is skipped and the result will indicate that Tier 1 was not executed.
      *
      * @param pdfBytes PDF document as byte array
-     * @return List of accessibility violations found (empty if profiles unavailable)
+     * @return Tier 1 validation result containing violations and whether validation ran
      * @throws IOException if PDF parsing fails
      */
-    public static List<AccessibilityViolation> validateWithVeraPdf(byte[] pdfBytes) throws IOException {
+    public static VeraPdfResult validateWithVeraPdf(byte[] pdfBytes) throws IOException {
         List<AccessibilityViolation> violations = new ArrayList<>();
 
         try (ByteArrayInputStream inputStream = new ByteArrayInputStream(pdfBytes);
@@ -78,19 +78,18 @@ public class AccessibilityValidator {
             // Only validate if a specific flavour is detected
             if (detectedFlavour != null && detectedFlavour != PDFAFlavour.NO_FLAVOUR) {
                 violations.addAll(validateAgainstFlavour(foundry, parser, detectedFlavour));
+                logger.info("veraPDF validation complete: {} violations found", violations.size());
+                return new VeraPdfResult(violations, true);
             } else {
-                // For regular PDFs (no specific flavour), try available profiles
                 logger.info("No specific PDF/A flavour detected. Skipping standard validation.");
                 logger.info("Chrome-generated PDFs are typically not marked as PDF/A.");
+                return new VeraPdfResult(violations, false);
             }
 
         } catch (Exception e) {
             logger.error("Error during veraPDF validation", e);
             throw new IOException("veraPDF validation failed", e);
         }
-
-        logger.info("veraPDF validation complete: {} violations found", violations.size());
-        return violations;
     }
 
     /**
@@ -313,7 +312,7 @@ public class AccessibilityValidator {
         logger.info("Starting comprehensive accessibility validation");
 
         // Tier 1: veraPDF validation
-        List<AccessibilityViolation> veraPdfViolations = validateWithVeraPdf(pdfBytes);
+        VeraPdfResult veraPdfResult = validateWithVeraPdf(pdfBytes);
 
         // Tier 2: PDFBox validation
         boolean isTagged = false;
@@ -332,7 +331,7 @@ public class AccessibilityValidator {
         }
 
         AccessibilityReport report = new AccessibilityReport(
-                veraPdfViolations,
+                veraPdfResult,
                 isTagged,
                 hasMetadata,
                 hasStructureTree,
