@@ -39,4 +39,14 @@
 
     <!-- Add your suppressions below this line -->
 
+    <suppress>
+        <notes><![CDATA[
+            False positive: CVE-2025-7962 is an SMTP injection vulnerability in org.eclipse.angus:smtp (angus-mail),
+            not angus-activation. The CPE cpe:2.3:a:eclipse:angus_mail incorrectly matches angus-activation.
+            See: https://github.com/dependency-check/DependencyCheck/issues/8144
+        ]]></notes>
+        <packageUrl regex="true">^pkg:maven/org\.eclipse\.angus/angus\-activation@.*$</packageUrl>
+        <cve>CVE-2025-7962</cve>
+    </suppress>
+
 </suppressions>
