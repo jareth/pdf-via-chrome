@@ -22,6 +22,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <!-- Dependency Versions -->
+        <jackson.version>2.21.1</jackson.version>
         <chrome-devtools.version>4.0.0-fluidsonic-1</chrome-devtools.version>
         <slf4j.version>2.0.9</slf4j.version>
         <logback.version>1.5.25</logback.version>
@@ -51,8 +52,16 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- BOMs (Bill of Materials) - Order matters! Later BOMs can override earlier ones -->
-            <!-- TestContainers BOM first to ensure we use the latest version -->
+            <!-- BOMs (Bill of Materials) - First declaration wins in Maven -->
+            <!-- Jackson BOM first to fix GHSA-72hv-8253-57qq (async parser DoS) -->
+            <dependency>
+                <groupId>com.fasterxml.jackson</groupId>
+                <artifactId>jackson-bom</artifactId>
+                <version>${jackson.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- TestContainers BOM -->
             <dependency>
                 <groupId>org.testcontainers</groupId>
                 <artifactId>testcontainers-bom</artifactId>
